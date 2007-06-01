@@ -165,12 +165,12 @@ CalendarDateSelect.prototype = {
       time_div.build("span", {innerHTML:" @ "})
       this.hour_select = time_div.build("select", {
         calendar_date_select: this,
-        onchange: function() { this.calendar_date_select.select_day( { hour: this.value });}
+        onchange: function() { this.calendar_date_select.update_selected_date( { hour: this.value });}
       });
       time_div.build("span", {innerHTML:"&nbsp; : "});
       this.minute_select = time_div.build("select", {
         calendar_date_select: this,
-        onchange: function() { this.calendar_date_select.select_day( {minute: this.value }) }
+        onchange: function() { this.calendar_date_select.update_selected_date( {minute: this.value }) }
       });
       
       // populate hours
@@ -248,7 +248,7 @@ CalendarDateSelect.prototype = {
           className: (CalendarDateSelect.same_day(iterator, today) ? "today " : "") + (iterator.getMonth() == this.date.getMonth() ? "" : "other") ,
           onmouseover: function () { this.calendar_date_select.day_hover(this); },
           onmouseout: function () { this.calendar_date_select.day_hover_out(this) },
-          onclick: function() { this.calendar_date_select.select_day(this); }
+          onclick: function() { this.calendar_date_select.update_selected_date(this); }
         },
         { cursor: "pointer" }
       );
@@ -295,7 +295,7 @@ CalendarDateSelect.prototype = {
     if (isNaN(this.date.getDate())) this.date = new Date();
     this.selectedDate = new Date(this.date);    
   },
-  select_day:function(parts) {
+  update_selected_date:function(parts) {
     if (parts.day) {
       this.selectedDate.setDate(parts.day);
       this.selectedDate.setMonth(parts.month);
@@ -308,7 +308,7 @@ CalendarDateSelect.prototype = {
     
     if (this.options.embedded) { this.target_element.value = this.date_string(); }
     if (this.options.close_on_click) { this.ok(); }
-    
+    this.update_footer();
     this.set_selected_class();
   },
   ok: function() {
