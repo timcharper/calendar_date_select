@@ -1,0 +1,102 @@
+.calendar_date_select {
+  background-color: #660000;
+  color:white;
+  border:#777 1px solid;
+  display:block;
+  width:196px;
+}
+
+.calendar_date_select .weekdays td {
+  font-weight:bold;
+  background-color: #E7E8E8;
+  border-bottom:2px solid black;
+  color: black !important;
+}
+
+.calendar_date_select .time, .calendar_date_select .buttons {
+  text-align:center;
+  padding:5px 0px;
+}
+
+.calendar_date_select .buttons {
+  background-color:#E7E8E8;
+  border-top: 2px solid black;
+  border-bottom: 1px solid black;
+}
+
+.calendar_date_select button {
+  background-color:#E7E8E8;
+  border: 1px solid #666;
+}
+
+.calendar_date_select .footer {
+  background-color: black;
+  padding:3px;
+  text-align:center;
+}
+
+.calendar_date_select .header select {
+  background-color:#ccc;
+  border: 0px;
+}
+
+.calendar_date_select .time select {
+  background-color:#660000;
+  color: white;
+  border: 0px;
+}
+
+.calendar_date_select table {
+  margin: 0px;
+  padding: 0px;
+}
+
+
+.calendar_date_select .header {
+  background-color: #ccc;
+  border-bottom: 2px solid #aaa;
+}
+.calendar_date_select .header button {
+  width:22px;
+}
+.calendar_date_select .header select {
+  width:90px;
+}
+
+.calendar_date_select .header select+select {
+  width:55px;
+}
+
+.calendar_date_select td {
+  font-size:12px;
+  width: 24px;
+  height: 21px;
+  text-align:center;
+  vertical-align: middle;
+}
+
+.calendar_date_select td.other {
+  color: #B27777;
+}
+
+.calendar_date_select .days td {
+  border: 1px solid #660000;
+  border-bottom: 1px solid #550000;
+  border-right: 1px solid #550000;
+}
+.calendar_date_select td.selected {
+  background-color:white;
+  color:black;
+  border: 1px solid #ddd;
+}
+
+.calendar_date_select td.hover {
+  background-color:#ccc;
+}
+
+.calendar_date_select td.today {
+  border: 1px dashed red;
+}
+
+/* adjust bordered cells to have slightly smaller inner areas so they look the same as the rest of the elements */
+ 
