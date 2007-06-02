@@ -115,18 +115,17 @@ CalendarDateSelect.prototype = {
     
     this.init_time_div();
     this.init_buttons_div();
-    this.footer_div.update("&nbsp;");
+    this.update_footer("&nbsp;");
     // make the header buttons
-    this.prev_month_button = header_div.build("button", { innerHTML : "&lt;", type: "button"});
+    this.prev_month_button = header_div.build("input", { type: "button", value : "<" });
     this.month_select = header_div.build("select");
     this.year_select = header_div.build("select");
-    this.next_month_button = header_div.build("button", { innerHTML : "&gt;", type: "button"});
+    this.next_month_button = header_div.build("input", { type: "button", value : ">" });
     
     // make the month selector
     for(x=0; x<12; x++)
       this.month_select.options[x]=new Option(CalendarDateSelect.months[x],x);
-    
-    Event.observe(this.prev_month_button, 'click', (function () { this.nav_month(-1) }).bindAsEventListener(this));
+    Event.observe(this.prev_month_button, 'click', function () { this.nav_month(-1) }.bindAsEventListener(this));
     Event.observe(this.next_month_button, 'click', (function () { this.nav_month(1) }).bindAsEventListener(this));
     Event.observe(this.month_select, 'change', (function () { this.set_month($F(this.month_select)) }).bindAsEventListener(this));
     Event.observe(this.year_select, 'change', (function () { this.set_year($F(this.year_select)) }).bindAsEventListener(this));
@@ -137,20 +136,20 @@ CalendarDateSelect.prototype = {
   {
     buttons_div = this.buttons_div;
     
-    buttons_div.build("button", {
-      innerHTML: (this.options["time"] ? "Now" : "Today" ),
+    buttons_div.build("input", {
+      value: (this.options["time"] ? "Now" : "Today" ),
       onclick: this.today.bindAsEventListener(this), 
       type: "button"
     });
     if (this.allow_close_buttons()) 
     {
-      buttons_div.build("button", {
-        innerHTML: "Ok",
+      buttons_div.build("input", {
+        value: "Ok",
         onclick: this.ok.bindAsEventListener(this),
         type: "button"
       });
-      buttons_div.build("button", {
-        innerHTML: "Cancel",
+      buttons_div.build("input", {
+        value: "Cancel",
         onclick: this.close.bindAsEventListener(this), 
         type: "button"
       });
@@ -229,7 +228,6 @@ CalendarDateSelect.prototype = {
     // Make the days!
     days_row = days_table.build("tr", {className: "days"});
     iterator = new Date(this.date);
-    
     pre_days = iterator.getDay() // draw some days before the fact
     if (pre_days < 3) pre_days+=7;
     iterator.setDate(1 - pre_days);
@@ -264,7 +262,6 @@ CalendarDateSelect.prototype = {
       
       this.hour_select.onchange();
       this.minute_select.onchange();
-
     }
     
     this.set_selected_class();
@@ -274,10 +271,9 @@ CalendarDateSelect.prototype = {
     element.addClassName("hover");
     hover_date = new Date(this.selectedDate);
     hover_date.setYear(element.year); hover_date.setMonth(element.month); hover_date.setDate(element.day);
-    this.footer_div.update(CalendarDateSelect.date_string(hover_date, this.options['time']));
+    this.update_footer(CalendarDateSelect.date_string(hover_date, this.options['time']));
   },
-  day_hover_out: function(element) { element.removeClassName("hover"); this.update_footer();},
-  update_footer: function() { this.footer_div.update(this.date_string()); },
+  day_hover_out: function(element) { element.removeClassName("hover"); this.update_footer(); },
   set_selected_class: function() {
     // clear selection
     this.body_div.getElementsBySelector(".selected").each(function(e) { e.removeClassName("selected")});
@@ -295,6 +291,7 @@ CalendarDateSelect.prototype = {
     if (isNaN(this.date.getDate())) this.date = new Date();
     this.selectedDate = new Date(this.date);    
   },
+  update_footer:function(text) { if (!text) text=this.date_string(); this.footer_div.purgeChildren(); this.footer_div.build("text", {innerHTML: text }); },
   update_selected_date:function(parts) {
     if (parts.day) {
       this.selectedDate.setDate(parts.day);
