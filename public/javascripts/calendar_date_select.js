@@ -117,10 +117,11 @@ CalendarDateSelect.prototype = {
     this.init_buttons_div();
     this.update_footer("&nbsp;");
     // make the header buttons
-    this.prev_month_button = header_div.build("input", { type: "button", value : "<" });
+    this.prev_month_button = header_div.build("input", { type: "button", value : "<", className: "button" });
+
     this.month_select = header_div.build("select");
     this.year_select = header_div.build("select");
-    this.next_month_button = header_div.build("input", { type: "button", value : ">" });
+    this.next_month_button = header_div.build("input", { type: "button", value : ">", className: "button" });
     
     // make the month selector
     for(x=0; x<12; x++)
