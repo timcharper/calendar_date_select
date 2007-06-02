@@ -1,5 +1,5 @@
 // CalendarDateSelect - a small prototype based date picker
-// Version 1.0
+// Version 1.1
 // Questions, comments, bugs? - email the Author - Tim Harper <"timseeharper@gmail.seeom".gsub("see", "c")> 
 Element.addMethods({
   purgeChildren: function(element) {
