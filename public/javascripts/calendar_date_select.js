@@ -188,11 +188,7 @@ CalendarDateSelect.prototype = {
   },
   set_month: function(month) {
     prev_day = this.date.getDate();
-    // do it twice to force the month if the date is out of range
     this.date.setMonth(month);
-    this.date.setMonth(month);
-    
-    if (this.date.getDate()!=prev_day ) this.date.setDate(28);
     
     this.refresh();
   },
@@ -229,6 +225,7 @@ CalendarDateSelect.prototype = {
     // Make the days!
     days_row = days_table.build("tr", {className: "days"});
     iterator = new Date(this.date);
+    iterator.setDate(1);
     pre_days = iterator.getDay() // draw some days before the fact
     if (pre_days < 3) pre_days+=7;
     iterator.setDate(1 - pre_days);
@@ -290,7 +287,8 @@ CalendarDateSelect.prototype = {
     // try a few things to get a valid date
     this.date = new Date(this.options['date'] || $F(this.target_element));
     if (isNaN(this.date.getDate())) this.date = new Date();
-    this.selectedDate = new Date(this.date);    
+    this.selectedDate = new Date(this.date);
+    this.date.setDate(1);  
   },
   update_footer:function(text) { if (!text) text=this.date_string(); this.footer_div.purgeChildren(); this.footer_div.build("text", {innerHTML: text }); },
   update_selected_date:function(parts) {
