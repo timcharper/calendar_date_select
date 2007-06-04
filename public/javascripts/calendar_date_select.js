@@ -105,6 +105,9 @@ CalendarDateSelect.prototype = {
         this.options['close_on_click'] = true;
     }
     
+    // set the click handler to check if a user has clicked away from the document
+    if(!this.options["embedded"]) Event.observe(document.body, "mousedown", this.body_click_handler=this.body_click.bindAsEventListener(this));
+    
     this.init_frame();
   },
   init_frame: function() {
@@ -116,6 +119,7 @@ CalendarDateSelect.prototype = {
     
     this.init_time_div();
     this.init_buttons_div();
+    
     this.update_footer("&nbsp;");
     // make the header buttons
     this.prev_month_button = header_div.build("input", { type: "button", value : "<", className: "button" });
@@ -326,6 +330,10 @@ CalendarDateSelect.prototype = {
   },
   close: function() {
     this.target_element.calendar_date_select = nil;
+    Event.stopObserving(document.body, "mousedown", this.body_click_handler);
     this.calendar_div.remove();
+  },
+  body_click: function(e) { // checks to see if somewhere other than calendar date select grid was clicked.  in which case, close
+    if (! $(Event.element(e)).descendantOf(this.calendar_div) ) this.close();
   }
 }
