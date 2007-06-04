@@ -31,11 +31,12 @@ nil=null;
 CalendarDateSelect = Class.create();
 CalendarDateSelect.weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 CalendarDateSelect.months = $w("January February March April May June July August September October November December" );
-CalendarDateSelect.same_month = function(a,b) { return ( (a.getMonth()==b.getMonth()) && (a.getFullYear()==b.getFullYear()) ) }
-CalendarDateSelect.same_day = function(a,b) { return ( (a.getDate()==b.getDate()) && (a.getMonth()==b.getMonth()) && (a.getFullYear()==b.getFullYear()) ) }
 CalendarDateSelect.padded2 = function(hour) { padded2 = hour.toString(); if (parseInt(hour) < 10) padded2="0" + padded2; return padded2; }
 CalendarDateSelect.ampm = function(hour) { return (hour < 12) ? "AM" : "PM"; }
 CalendarDateSelect.ampm_hour = function(hour) { return (hour == 0) ? 12 : (hour > 12 ? hour - 12 : hour ) }
+Date.one_day = 24*60*60*1000;
+Date.prototype.strip_time = function() { this.setHours(0); this.setMinutes(0); this.setSeconds(0); this.setMilliseconds(0); return this;};
+Date.prototype.days_distance = function(compare_date) { return (compare_date - this) / Date.one_day; };
 CalendarDateSelect.date_string = function(date, time){
   if (! date) return ""; 
   str = "";
@@ -126,11 +127,35 @@ CalendarDateSelect.prototype = {
     // make the month selector
     for(x=0; x<12; x++)
       this.month_select.options[x]=new Option(CalendarDateSelect.months[x],x);
-    Event.observe(this.prev_month_button, 'click', function () { this.nav_month(-1) }.bindAsEventListener(this));
-    Event.observe(this.next_month_button, 'click', (function () { this.nav_month(1) }).bindAsEventListener(this));
+    Event.observe(this.prev_month_button, 'mousedown', function () { this.nav_month(-1) }.bindAsEventListener(this));
+    Event.observe(this.next_month_button, 'mousedown', (function () { this.nav_month(1) }).bindAsEventListener(this));
     Event.observe(this.month_select, 'change', (function () { this.set_month($F(this.month_select)) }).bindAsEventListener(this));
     Event.observe(this.year_select, 'change', (function () { this.set_year($F(this.year_select)) }).bindAsEventListener(this));
     
+    // build the calendar day grid
+    this.calendar_day_grid = [];
+    days_table = body_div.build("table", { cellPadding: "0px", cellSpacing: "0px", width: "100%" }).build("tbody");
+
+    // make the weekdays!
+    weekdays_row = days_table.build("tr", {className: "weekdays"});
+    CalendarDateSelect.weekdays.each( function(weekday) { 
+      weekdays_row.build("td", {innerHTML: weekday});
+    });
+    
+    // Make the days!
+    for(cell_index=0; cell_index<42; cell_index++)
+    {
+      if ( cell_index %7==0 ) days_row = days_table.build("tr", {className: "days"});
+      (this.calendar_day_grid[cell_index] = days_row.build("td", {
+          calendar_date_select: this,
+          onmouseover: function () { this.calendar_date_select.day_hover(this); },
+          onmouseout: function () { this.calendar_date_select.day_hover_out(this) },
+          onclick: function() { this.calendar_date_select.update_selected_date(this); }
+        },
+        { cursor: "pointer" }
+      )).build("div");
+      this.calendar_day_grid[cell_index];
+    }
     this.refresh();
   },
   init_buttons_div: function()
@@ -209,50 +234,31 @@ CalendarDateSelect.prototype = {
       year = x+(this.date.getFullYear() - range);
       this.year_select.options[x]=new Option(year,year);
     }
-    this.year_select.selectedIndex=range;
     
-    // make the calendar!!
-    (body_div=this.body_div).purgeChildren();
-    days_table = body_div.build("table", { cellPadding: "0px", cellSpacing: "0px", width: "100%" }).build("tbody");
-
-    // make the weekdays!
-    weekdays_row = days_table.build("tr", {className: "weekdays"});
+    this.year_select.selectedIndex = range;
     
-    CalendarDateSelect.weekdays.each( function(weekday) { 
-      weekdays_row.build("td", {innerHTML: weekday});
-    });
-    
-    // Make the days!
-    days_row = days_table.build("tr", {className: "days"});
+    // populate the calendar_day_grid
     iterator = new Date(this.date);
     iterator.setDate(1);
     pre_days = iterator.getDay() // draw some days before the fact
     if (pre_days < 3) pre_days+=7;
-    iterator.setDate(1 - pre_days);
-    cells_to_render = 42;
-    cell_index = 0;
-    today = new Date();
     
-    do {
-      day = iterator.getDate();
-      day_td = days_row.build("td", {
-          innerHTML: day,
-          day: day,
-          month: iterator.getMonth(),
-          year: iterator.getFullYear(),
-          calendar_date_select: this,
-          className: (CalendarDateSelect.same_day(iterator, today) ? "today " : "") + (iterator.getMonth() == this.date.getMonth() ? "" : "other") ,
-          onmouseover: function () { this.calendar_date_select.day_hover(this); },
-          onmouseout: function () { this.calendar_date_select.day_hover_out(this) },
-          onclick: function() { this.calendar_date_select.update_selected_date(this); }
-        },
-        { cursor: "pointer" }
-      );
+    iterator.strip_time().setDate(1 - pre_days);
+    beginning_date = new Date(iterator);
+    today = new Date().strip_time();
+    this_month = this.date.getMonth();
+    for (cell_index=0;cell_index<42; cell_index++)
+    {
+      day = iterator.getDate(); month = iterator.getMonth();
+      cell = this.calendar_day_grid[cell_index];
+      Element.remove(cell.childNodes[0]); cell.build("div", {innerHTML:day});
+      cell.day=day; cell.month = month; cell.year = iterator.getFullYear();
+      cell.className = month==this_month ? "" : "other"; //clear the class
+
       iterator.setDate( day + 1);
-      cell_index++;
-      if ( cell_index %7==0 ) days_row = days_table.build("tr", {className: "days"});
-    } while ( cells_to_render > cell_index );
-    
+    }
+    if ( $R(0,42).include(days_until = beginning_date.days_distance(today)) ) this.calendar_day_grid[days_until].addClassName("today");
+     
     // set the time
     if (this.options["time"]) {
       this.hour_select.selectedIndex = this.selectedDate.getHours();
