@@ -37,6 +37,10 @@ CalendarDateSelect.ampm_hour = function(hour) { return (hour == 0) ? 12 : (hour 
 Date.one_day = 24*60*60*1000;
 Date.prototype.strip_time = function() { this.setHours(0); this.setMinutes(0); this.setSeconds(0); this.setMilliseconds(0); return this;};
 Date.prototype.days_distance = function(compare_date) { return (compare_date - this) / Date.one_day; };
+
+window.f_height = function() { return([window.innerHeight ? window.innerHeight : null, document.documentElement ? document.documentElement.clientHeight : null, document.body ? document.body.clientHeight : null].compact().first()); }
+window.f_scrollTop = function() { return ([window.pageYOffset ? window.pageYOffset : null, document.documentElement ? document.documentElement.scrollTop : null, document.body ? document.body.scrollTop : null].compact().first() ); }
+
 CalendarDateSelect.date_string = function(date, time){
   if (! date) return ""; 
   str = "";
@@ -87,10 +91,7 @@ CalendarDateSelect.prototype = {
     if (this.calendar_div == nil) { this.calendar_div = $( this.options.embedded ? this.target_element.parentNode : document.body ).build('div'); }
     if (!this.options.embedded) {
       this.calendar_div.style.position = "absolute";
-      pos = Position.cumulativeOffset(this.target_element);
-      
-      this.calendar_div.style.left = pos[0].toString() + "px";
-      this.calendar_div.style.top = (pos[1] + this.target_element.getDimensions().height ).toString() + "px";
+      this.position_calendar_div();
     }
     
     this.calendar_div.addClassName("calendar_date_select");
@@ -109,6 +110,19 @@ CalendarDateSelect.prototype = {
     if(!this.options["embedded"]) Event.observe(document.body, "mousedown", this.body_click_handler=this.body_click.bindAsEventListener(this));
     
     this.init_frame();
+    if(!this.options["embedded"]) setTimeout(function(){
+      if (( parseInt(this.calendar_div.style.top) + this.calendar_div.getDimensions().height ) > (window.f_scrollTop() + window.f_height()))
+        this.position_calendar_div(true);
+      }.bindAsEventListener(this), 1);
+  },
+  position_calendar_div: function(above) {
+    pos = Position.cumulativeOffset(this.target_element);
+    
+    this.calendar_div.style.left = pos[0].toString() + "px";
+    if (above)
+      this.calendar_div.style.top = (pos[1] - this.calendar_div.getDimensions().height ).toString() + "px";
+    else
+      this.calendar_div.style.top = (pos[1] + this.target_element.getDimensions().height ).toString() + "px";
   },
   init_frame: function() {
     that=this;
