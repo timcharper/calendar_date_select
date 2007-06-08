@@ -41,22 +41,11 @@ Date.prototype.days_distance = function(compare_date) { return (compare_date - t
 window.f_height = function() { return([window.innerHeight ? window.innerHeight : null, document.documentElement ? document.documentElement.clientHeight : null, document.body ? document.body.clientHeight : null].compact().first()); }
 window.f_scrollTop = function() { return ([window.pageYOffset ? window.pageYOffset : null, document.documentElement ? document.documentElement.scrollTop : null, document.body ? document.body.scrollTop : null].compact().first() ); }
 
-CalendarDateSelect.date_string = function(date, time){
+CalendarDateSelect.date_string = function(date, include_time){
   if (! date) return ""; 
-  str = "";
-  str += CalendarDateSelect.months[date.getMonth()] + " ";
-  str += date.getDate().toString() + ", ";
-  str += date.getFullYear().toString();
+  str = CalendarDateSelect.months[date.getMonth()] + " " + date.getDate().toString() + ", " + date.getFullYear().toString();
   
-  if (time)
-  {
-    str += " ";
-    hour = date.getHours();
-    
-    str += CalendarDateSelect.ampm_hour(hour).toString() +
-           ":" + CalendarDateSelect.padded2( date.getMinutes() ) + 
-           " " + CalendarDateSelect.ampm(hour)
-  }
+  if (include_time) { hour=date.getHours(); str += " " + CalendarDateSelect.ampm_hour(hour).toString() + ":" + CalendarDateSelect.padded2( date.getMinutes() ) + " " + CalendarDateSelect.ampm(hour) }
   return str;
 }
 
@@ -299,27 +288,24 @@ CalendarDateSelect.prototype = {
   set_selected_class: function() {
     // clear selection
     this.body_div.getElementsBySelector(".selected").each(function(e) { e.removeClassName("selected")});
-    
     if (!this.selection_made) return;
-    
     day = this.selectedDate.getDate(); month = this.selectedDate.getMonth();
     this.body_div.getElementsBySelector("td").each(function(e) { if ((e.day == day) && (e.month == month)) {e.addClassName("selected")} } );
   },
   reparse: function() { this.parse_date(); this.refresh(); },
   parse_date: function()
   {
-    // try a few things to get a valid date
     this.date = new Date(this.options['date'] || $F(this.target_element));
     if (isNaN(this.date.getDate())) this.date = new Date();
     this.selectedDate = new Date(this.date);
-    this.date.setDate(1);  
+    this.date.setDate(1);
   },
   update_footer:function(text) { if (!text) text=this.date_string(); this.footer_div.purgeChildren(); this.footer_div.build("text", {innerHTML: text }); },
   update_selected_date:function(parts) {
     if (parts.day) {
       this.selectedDate.setDate(parts.day);
       this.selectedDate.setMonth(parts.month);
-      this.selectedDate.setYear(parts.year); //this.date.getFullYear());
+      this.selectedDate.setYear(parts.year);
       this.selection_made = true;
     }
     
