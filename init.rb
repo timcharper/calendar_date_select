@@ -1,4 +1,7 @@
-require 'calendar_date_select.rb'
+<<EOF.split("\n").each { |file| require File.join( File.dirname(__FILE__), "lib",file) }
+calendar_date_select.rb 
+view_helper.rb
+EOF
 
 ActionView::Helpers::FormHelper.send(:include, CalendarDateSelect::FormHelper)
 ActionView::Base.send(:include, CalendarDateSelect::FormHelper)
