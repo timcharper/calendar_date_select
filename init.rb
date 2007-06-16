@@ -1,10 +1,11 @@
-<<EOF.split("\n").each { |file| require File.join( File.dirname(__FILE__), "lib",file) }
+<<EOF.split("\n").each { |file| load File.join( File.dirname(__FILE__), "lib",file) }
 calendar_date_select.rb 
-view_helper.rb
+includes_helper.rb
 EOF
 
 ActionView::Helpers::FormHelper.send(:include, CalendarDateSelect::FormHelper)
 ActionView::Base.send(:include, CalendarDateSelect::FormHelper)
+ActionView::Base.send(:include, CalendarDateSelect::IncludesHelper)
 
 # install files
 ['/public/javascripts', '/public/stylesheets', '/public/images'].each{|dir|

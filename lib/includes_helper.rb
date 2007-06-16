@@ -1,12 +1,12 @@
 module CalendarDateSelect
-  module ViewHelper
+  module IncludesHelper
     def calendar_date_select_includes(template=nil)
-      css_file = "calendar_date_select"
-      css_file << "_#{template}" if template
+      cds_css_file = "calendar_date_select"
+      cds_css_file << "_#{template}" if template
       
       [
         javascript_include_tag("calendar_date_select"),
-        stylesheet_link_tag(template)
+        stylesheet_link_tag(cds_css_file)
       ] * "\n"
     end
   end

@@ -74,7 +74,9 @@
   background-color: #5a0000;
 }
 
-
+.calendar_date_select td div {
+  color: #fff;
+}
 .calendar_date_select td div.other {
   color: #93554C;
 }
