@@ -1,7 +1,6 @@
 module CalendarDateSelect
   module FormHelper
     def calendar_date_select_tag( name, value = nil, options = {})
-
       calendar_options = calendar_date_select_process_options(options)
       value = (value.strftime(options[:format]) rescue "") if (value.respond_to?("strftime"))
       options[:id] ||= name
@@ -32,7 +31,12 @@ module CalendarDateSelect
     end
     
     def calendar_date_select(object, method, options={})
-      obj = instance_eval("@#{object}")
+      obj = instance_eval("@#{object}") || options[:object]
+      
+      if obj.class.respond_to?("columns_hash")
+        column_type = (obj.class.columns_hash[method.to_s].type rescue nil)
+        options[:time] ||= true if column_type==:datetime
+      end
       
       calendar_options = calendar_date_select_process_options(options)
       
