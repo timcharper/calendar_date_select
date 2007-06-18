@@ -1,4 +1,4 @@
-// CalendarDateSelect version 1.5- a small prototype based date picker
+// CalendarDateSelect version 1.4- a small prototype based date picker
 // Questions, comments, bugs? - email the Author - Tim Harper <"timseeharper@gmail.seeom".gsub("see", "c")> 
 Element.addMethods({
   purgeChildren: function(element) { $A(element.childNodes).each(function(e){$(e).remove();}); },
@@ -105,7 +105,7 @@ CalendarDateSelect.prototype = {
   initFrame: function() {
     that=this;
     // create the divs
-    $w("header body time buttons footer").each(function(name) {
+    $w("header body time footer buttons").each(function(name) {
       eval(name + "_div = that." + name + "_div = that.calendar_div.build('div', { className: 'cds_"+name+"' }, { clear: 'left'} ); ");
     });
     
