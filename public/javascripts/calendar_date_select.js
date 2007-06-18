@@ -1,4 +1,4 @@
-// CalendarDateSelect version 1.4- a small prototype based date picker
+// CalendarDateSelect version 1.5- a small prototype based date picker
 // Questions, comments, bugs? - email the Author - Tim Harper <"timseeharper@gmail.seeom".gsub("see", "c")> 
 Element.addMethods({
   purgeChildren: function(element) { $A(element.childNodes).each(function(e){$(e).remove();}); },
