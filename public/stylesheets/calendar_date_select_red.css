@@ -75,11 +75,15 @@
 }
 
 .calendar_date_select td div {
-  color: #fff;
+  color:#fff;
 }
 .calendar_date_select td div.other {
   color: #93554C;
 }
+.calendar_date_select td.selected div {
+  color:black;
+}
+
 
 .calendar_date_select .days td {
   border-bottom: 1px solid #550000;

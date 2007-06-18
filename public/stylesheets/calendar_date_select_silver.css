@@ -8,9 +8,9 @@
 
 .calendar_date_select .weekdays td {
   font-weight:bold;
-  background-color: #aaa;
+  background-color: #000;
   border-top:1px solid #777;
-  border-bottom:1px solid #777;
+  border-bottom:2px solid #333;
   color: white !important;
 }
 
@@ -22,7 +22,7 @@
 
 .calendar_date_select .cds_buttons {
   background-color:#E7E8E8;
-  border-top: 1px solid #777;
+  border-top: 2px solid black;
   border-bottom: 1px solid black;
 }
 
@@ -68,29 +68,27 @@
   height: 21px;
   text-align:center;
   vertical-align: middle;
-  background-color: #fff;
+  background-color: #666666;
 }
 .calendar_date_select td.weekend {
-  background-color: #eee;
-  border-left:1px solid #ddd;
-  border-right:1px solid #ddd;
+  background-color: #606060;
 }
 
 .calendar_date_select td div {
-  color: #000;
+  color: #fff;
 }
 .calendar_date_select td div.other {
-  color: #ccc;
+  color: #888;
 }
 .calendar_date_select td.selected div {
-  color:white;
+  color:black;
 }
 
 .calendar_date_select .days td {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #555;
 }
 .calendar_date_select td.selected {
-  background-color:#777;
+  background-color:white;
 }
 
 .calendar_date_select td.hover {
