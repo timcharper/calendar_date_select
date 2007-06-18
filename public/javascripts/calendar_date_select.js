@@ -313,9 +313,8 @@ CalendarDateSelect.prototype = {
     this.setSelectedClass();
   },
   today: function() {
-    this.selection_made=true;
-    this.selected_date = new Date();
     this.date = new Date();
+    d=new Date(); this.updateSelectedDate( { day: d.getDate(), month: d.getMonth(), year: d.getFullYear() } );
     this.refresh();
   },
   close: function() {
