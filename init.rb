@@ -1,6 +1,6 @@
-<<EOF.split("\n").each { |file| load File.join( File.dirname(__FILE__), "lib",file) }
-calendar_date_select.rb 
-includes_helper.rb
+<<EOF.split("\n").each { |file| require File.join( File.dirname(__FILE__), "lib",file) }
+calendar_date_select
+includes_helper
 EOF
 
 ActionView::Helpers::FormHelper.send(:include, CalendarDateSelect::FormHelper)
