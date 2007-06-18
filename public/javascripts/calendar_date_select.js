@@ -314,7 +314,7 @@ CalendarDateSelect.prototype = {
   },
   today: function() {
     this.date = new Date();
-    d=new Date(); this.updateSelectedDate( { day: d.getDate(), month: d.getMonth(), year: d.getFullYear() } );
+    d=new Date(); this.updateSelectedDate( { day: d.getDate(), month: d.getMonth(), year: d.getFullYear(), hour: d.getHours(), minute: d.getMinutes() } );
     this.refresh();
   },
   close: function() {
