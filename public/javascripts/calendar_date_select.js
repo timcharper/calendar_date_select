@@ -1,4 +1,4 @@
-// CalendarDateSelect version 1.4- a small prototype based date picker
+// CalendarDateSelect version 1.5.1 - a small prototype based date picker
 // Questions, comments, bugs? - email the Author - Tim Harper <"timseeharper@gmail.seeom".gsub("see", "c")> 
 Element.addMethods({
   purgeChildren: function(element) { $A(element.childNodes).each(function(e){$(e).remove();}); },
@@ -27,7 +27,7 @@ Date.prototype.getPaddedMinutes = function() { return Date.padded2(this.getMinut
 Date.prototype.getAMPMHour = function() { hour=this.getHours(); return (hour == 0) ? 12 : (hour > 12 ? hour - 12 : hour ) }
 Date.prototype.getAMPM = function() { return (this.getHours() < 12) ? "AM" : "PM"; }
 Date.prototype.stripTime = function() { return new Date(this.getFullYear(), this.getMonth(), this.getDate());};
-Date.prototype.daysDistance = function(compare_date) { return (compare_date - this) / Date.one_day; };
+Date.prototype.daysDistance = function(compare_date) { return Math.round((compare_date - this) / Date.one_day); };
 Date.prototype.toFormattedString = function(include_time){
   str = Date.months[this.getMonth()] + " " + this.getDate() + ", " + this.getFullYear();
   
@@ -298,9 +298,10 @@ CalendarDateSelect.prototype = {
   updateSelectedDate:function(parts) {
     if (parts.day) {
       this.selection_made = true;
+      for (x=0; x<=1; x++) {
       this.selected_date.setDate(parts.day);
       this.selected_date.setMonth(parts.month);
-      this.selected_date.setYear(parts.year);
+      this.selected_date.setYear(parts.year);}
     }
     
     if (parts.hour) this.selected_date.setHours(parts.hour);

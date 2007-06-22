@@ -3,6 +3,9 @@ module CalendarDateSelect
     def calendar_date_select_tag( name, value = nil, options = {})
       calendar_options = calendar_date_select_process_options(options)
       value = (value.strftime(options[:format]) rescue "") if (value.respond_to?("strftime"))
+      
+      options.delete(:format)
+      
       options[:id] ||= name
       
       if calendar_options[:embedded]
@@ -25,7 +28,7 @@ module CalendarDateSelect
       calendar_options[:embedded] = options.delete(:embedded) ? true : false
       calendar_options[:year_range] = options.delete(:year_range) || 10
       
-      options[:format]||="%B %d, %Y" + (calendar_options[:time] ? " %I:%M %p" : '')
+      options[:format] ||= "%B %d, %Y" + (calendar_options[:time] ? " %I:%M %p" : '')
       
       calendar_options
     end
@@ -42,15 +45,22 @@ module CalendarDateSelect
       
       value = obj.send(method).strftime(options[:format]) rescue ""
       
+      options.delete(:format)
+      
       options[:id]||="#{object}#{obj.id ? ('_'+obj.id.to_s) : ''}_#{method}"
-      
-      out = text_field(object, method, options.merge('value' => value))
-      out << " "
-      
-      out << image_tag("calendar.gif", 
-          :onclick => "new CalendarDateSelect('#{options[:id]}', #{options_for_javascript(calendar_options)} );",
-          :id => "_#{options[:id]}_link", 
-          :style => 'border:0px; cursor:pointer;')
+
+      if calendar_options[:embedded]
+        out = hidden_field(object, method, options.merge('value' => value))
+        out << javascript_tag("new CalendarDateSelect('#{options[:id]}', #{options_for_javascript(calendar_options)} ); ")
+      else
+        out = text_field(object, method, options.merge('value' => value))
+        out << " "
+        
+        out << image_tag("calendar.gif", 
+            :onclick => "new CalendarDateSelect('#{options[:id]}', #{options_for_javascript(calendar_options)} );",
+            :id => "_#{options[:id]}_link", 
+            :style => 'border:0px; cursor:pointer;')
+      end
       
       if obj.respond_to?(:errors) and obj.errors.on(method) then
         ActionView::Base.field_error_proc.call(out, nil) # What should I pass ?
