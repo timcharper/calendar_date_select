@@ -33,7 +33,8 @@ Date.prototype.toFormattedString = function(include_time){
   
   if (include_time) { hour=this.getHours(); str += " " + this.getAMPMHour() + ":" + this.getPaddedMinutes() + " " + this.getAMPM() }
   return str;
-} 
+}
+Date.parseFormattedString = function(string) { return new Date(string);}
 window.f_height = function() { return([window.innerHeight ? window.innerHeight : null, document.documentElement ? document.documentElement.clientHeight : null, document.body ? document.body.clientHeight : null].compact().first()); }
 window.f_scrollTop = function() { return ([window.pageYOffset ? window.pageYOffset : null, document.documentElement ? document.documentElement.scrollTop : null, document.body ? document.body.scrollTop : null].compact().first() ); }
 
@@ -289,7 +290,7 @@ CalendarDateSelect.prototype = {
   reparse: function() { this.parseDate(); this.refresh(); },
   parseDate: function()
   {
-    this.date = new Date(this.options['date'] || $F(this.target_element));
+    this.date = Date.parseFormattedString(this.options['date'] || $F(this.target_element));
     if (isNaN(this.date.getDate())) this.date = new Date();
     this.selected_date = new Date(this.date);
     this.date.setDate(1);
