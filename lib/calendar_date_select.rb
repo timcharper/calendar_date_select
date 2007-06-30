@@ -36,9 +36,9 @@ module CalendarDateSelect
     def calendar_date_select(object, method, options={})
       obj = instance_eval("@#{object}") || options[:object]
       
-      if obj.class.respond_to?("columns_hash")
+      if !options.include?(:time) && obj.class.respond_to?("columns_hash")
         column_type = (obj.class.columns_hash[method.to_s].type rescue nil)
-        options[:time] ||= true if column_type==:datetime
+        options[:time] = true if column_type==:datetime
       end
       
       calendar_options = calendar_date_select_process_options(options)
