@@ -41,6 +41,11 @@ Date.parseFormattedString = function(string) { return new Date(string);}
 window.f_height = function() { return([window.innerHeight ? window.innerHeight : null, document.documentElement ? document.documentElement.clientHeight : null, document.body ? document.body.clientHeight : null].compact().first()); }
 window.f_scrollTop = function() { return ([window.pageYOffset ? window.pageYOffset : null, document.documentElement ? document.documentElement.scrollTop : null, document.body ? document.body.scrollTop : null].compact().first() ); }
 
+_translations = {
+  "OK": "OK",
+  "Now": "Now",
+  "Today": "Today"
+}
 CalendarDateSelect = Class.create();
 CalendarDateSelect.prototype = {
   initialize: function(target_element, options) {
@@ -170,7 +175,7 @@ CalendarDateSelect.prototype = {
     if (!this.options["buttons"]) { Element.remove(buttons_div); return false; };
     
     buttons_div.build("input", {
-      value: (this.options["time"] ? "Now" : "Today" ),
+      value: (this.options["time"] ? _translations["Now"] : _translations["Today"] ),
       onclick: this.today.bindAsEventListener(this), 
       type: "button"
     });
@@ -178,7 +183,7 @@ CalendarDateSelect.prototype = {
     if (this.allowCloseButtons())
     {
       buttons_div.build("input", {
-        value: "OK",
+        value: _translations["OK"],
         onclick: this.close.bindAsEventListener(this), 
         type: "button"
       });
