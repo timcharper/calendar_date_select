@@ -204,7 +204,7 @@ CalendarDateSelect.prototype = {
       // populate hours
       for(x=0;x<=23;x++) { t.setHours(x); this.hour_select.options[x] = new Option( "" + t.getAMPMHour() + " " + t.getAMPM(), x ) }
       // populate minutes
-      x=0; for(m=0;m<=60;m+=this.options["minute_interval"]) { this.minute_select.options[x++] = new Option( Date.padded2(m), m ) }
+      x=0; for(m=0;m<60;m+=this.options["minute_interval"]) { this.minute_select.options[x++] = new Option( Date.padded2(m), m ) }
     } else (time_div.remove());
   },
   allowCloseButtons: function() { return ( !this.options["embedded"] && this.options["time"]); },
