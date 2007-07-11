@@ -1,5 +1,8 @@
-// CalendarDateSelect version 1.5.1 - a small prototype based date picker
+// CalendarDateSelect version 1.5.2 - a small prototype based date picker
 // Questions, comments, bugs? - email the Author - Tim Harper <"timseeharper@gmail.seeom".gsub("see", "c")> 
+if (typeof Prototype == 'undefined')
+  alert("CalendarDateSelect Error: Prototype could not be found. Please make sure that your application's layout includes prototype.js (e.g. <%= javascript_include_tag :defaults %>) *before* it includes calendar_date_select.js (e.g. <%= calendar_date_select_includes %>).");
+
 Element.addMethods({
   purgeChildren: function(element) { $A(element.childNodes).each(function(e){$(e).remove();}); },
   build: function(element, type, options, style) {
@@ -45,10 +48,12 @@ CalendarDateSelect.prototype = {
     this.options = $H({
       embedded: false,
       time: false,
+      buttons: true,
       year_range: 10,
       calendar_div: nil,
       close_on_click: nil,
-      minute_interval: 5
+      minute_interval: 5,
+      onchange: nil
     }).merge(options || {});
     
     this.target_element = $(target_element); // make sure it's an element, not a string
@@ -90,8 +95,11 @@ CalendarDateSelect.prototype = {
     
     this.initFrame();
     if(!this.options["embedded"]) setTimeout(function(){
-      if (( parseInt(this.calendar_div.style.top) + this.calendar_div.getDimensions().height ) > (window.f_scrollTop() + window.f_height()))
-        this.positionCalendarDiv(true);
+      c_h = this.calendar_div.getDimensions().height; w_t = window.f_scrollTop(); 
+      if (( parseInt(this.calendar_div.style.top) + c_h ) > (w_t + window.f_height()))
+        e_t = Position.cumulativeOffset(this.target_element)[1];
+        if ( (e_t - c_h) > w_t ) // will it stay below the top of the window
+          this.positionCalendarDiv(true);
       }.bindAsEventListener(this), 1);
   },
   positionCalendarDiv: function(above) {
@@ -159,6 +167,7 @@ CalendarDateSelect.prototype = {
   initButtonsDiv: function()
   {
     buttons_div = this.buttons_div;
+    if (!this.options["buttons"]) { Element.remove(buttons_div); return false; };
     
     buttons_div.build("input", {
       value: (this.options["time"] ? "Now" : "Today" ),
@@ -308,11 +317,16 @@ CalendarDateSelect.prototype = {
     if (parts.hour) this.selected_date.setHours(parts.hour);
     if (parts.minute) this.selected_date.setMinutes(parts.minute);
     
-    if (this.selection_made) this.target_element.value = this.dateString();
-    if (this.options.close_on_click) { this.close(); }
-    
     this.updateFooter();
     this.setSelectedClass();
+    
+    if (this.selection_made) this.updateValue();
+    if (this.options.close_on_click) { this.close(); }
+    
+  },
+  updateValue: function() {
+    this.target_element.value = this.dateString();
+    if (this.target_element.onchange) this.target_element.onchange();
   },
   today: function() {
     this.date = new Date();

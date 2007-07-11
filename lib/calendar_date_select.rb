@@ -24,10 +24,10 @@ module CalendarDateSelect
     
     def calendar_date_select_process_options(options)
       calendar_options = {}
-      calendar_options[:time] = options.delete(:time) ? true : false
-      calendar_options[:embedded] = options.delete(:embedded) ? true : false
+      for key in [:time, :embedded, :buttons]
+        calendar_options[key] = options.delete(key) if options.has_key?(key)
+      end
       calendar_options[:year_range] = options.delete(:year_range) || 10
-      
       options[:format] ||= "%B %d, %Y" + (calendar_options[:time] ? " %I:%M %p" : '')
       
       calendar_options
