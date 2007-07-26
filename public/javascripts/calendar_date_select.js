@@ -101,11 +101,11 @@ CalendarDateSelect.prototype = {
     this.initFrame();
     if(!this.options["embedded"]) setTimeout(function(){
       c_h = this.calendar_div.getDimensions().height; w_t = window.f_scrollTop(); 
-      if (( parseInt(this.calendar_div.style.top) + c_h ) > (w_t + window.f_height()))
+      if (( parseInt(this.calendar_div.style.top) + c_h ) > (w_t + window.f_height())) {
         e_t = Position.cumulativeOffset(this.target_element)[1];
-        if ( (e_t - c_h) > w_t ) // will it stay below the top of the window
-          this.positionCalendarDiv(true);
-      }.bindAsEventListener(this), 1);
+        if ( (e_t - c_h) > w_t ) this.positionCalendarDiv(true); // will it stay below the top of the window
+      }
+    }.bindAsEventListener(this), 1);
   },
   positionCalendarDiv: function(above) {
     pos = Position.cumulativeOffset(this.target_element);
