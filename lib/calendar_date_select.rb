@@ -1,10 +1,39 @@
-module CalendarDateSelect
+class CalendarDateSelect
+  FORMATS = {
+    :natural => {
+      :date => "%B %d, %Y",
+      :time => " %I:%M %p"
+    },
+    :hyphen_ampm => {
+      :date => "%Y-%m-%d",
+      :time => " %I:%M %p",
+      :javascript_include => "calendar_date_select_format_hyphen_ampm"
+    }
+  }
+  
+  cattr_reader :format
+  @@format = FORMATS[:natural]
+  class << self
+    def format=(format)
+      raise "CalendarDateSelect: Unrecognized format specification: #{format}" unless FORMATS.has_key?(format)
+      @@format = FORMATS[format]
+    end
+    
+    def javascript_format_include
+      @@format[:javascript_include]
+    end
+    
+    def date_format_string(time=false)
+      @@format[:date] + ( time ? @@format[:time] : "" )
+    end
+  end
+  
   module FormHelper
     def calendar_date_select_tag( name, value = nil, options = {})
       calendar_options = calendar_date_select_process_options(options)
-      value = (value.strftime(options[:format]) rescue "") if (value.respond_to?("strftime"))
+      value = (value.strftime(calendar_options[:format]) rescue "") if (value.respond_to?("strftime"))
       
-      options.delete(:format)
+      calendar_options.delete(:format)
       
       options[:id] ||= name
       
@@ -17,18 +46,18 @@ module CalendarDateSelect
         
         out << image_tag("calendar.gif", 
             :onclick => "new CalendarDateSelect('#{options[:id]}', #{options_for_javascript(calendar_options)} );",
-            :id => "_#{name}_link", 
+            :id => "#{name}_image_link", 
             :style => 'border:0px; cursor:pointer;')
       end
     end
     
     def calendar_date_select_process_options(options)
       calendar_options = {}
-      for key in [:time, :embedded, :buttons]
+      for key in [:time, :embedded, :buttons, :format, :year_range]
         calendar_options[key] = options.delete(key) if options.has_key?(key)
       end
-      calendar_options[:year_range] = options.delete(:year_range) || 10
-      options[:format] ||= "%B %d, %Y" + (calendar_options[:time] ? " %I:%M %p" : '')
+      calendar_options[:year_range] ||= 10
+      calendar_options[:format] ||= CalendarDateSelect.date_format_string(calendar_options[:time])
       
       calendar_options
     end
@@ -43,9 +72,9 @@ module CalendarDateSelect
       
       calendar_options = calendar_date_select_process_options(options)
       
-      value = obj.send(method).strftime(options[:format]) rescue ""
+      value = obj.send(method).strftime(calendar_options[:format]) rescue ""
       
-      options.delete(:format)
+      calendar_options.delete(:format)
       
       options[:id]||="#{object}#{obj.id ? ('_'+obj.id.to_s) : ''}_#{method}"
 
@@ -58,7 +87,7 @@ module CalendarDateSelect
         
         out << image_tag("calendar.gif", 
             :onclick => "new CalendarDateSelect('#{options[:id]}', #{options_for_javascript(calendar_options)} );",
-            :id => "_#{options[:id]}_link", 
+            :id => "#{options[:id]}_image_link", 
             :style => 'border:0px; cursor:pointer;')
       end
       

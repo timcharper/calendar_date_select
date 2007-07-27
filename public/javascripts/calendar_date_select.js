@@ -1,4 +1,4 @@
-// CalendarDateSelect version 1.5.2 - a small prototype based date picker
+// CalendarDateSelect version 1.6.0 - a small prototype based date picker
 // Questions, comments, bugs? - email the Author - Tim Harper <"timseeharper@gmail.seeom".gsub("see", "c")> 
 if (typeof Prototype == 'undefined')
   alert("CalendarDateSelect Error: Prototype could not be found. Please make sure that your application's layout includes prototype.js (e.g. <%= javascript_include_tag :defaults %>) *before* it includes calendar_date_select.js (e.g. <%= calendar_date_select_includes %>).");
@@ -38,8 +38,8 @@ Date.prototype.toFormattedString = function(include_time){
   return str;
 }
 Date.parseFormattedString = function(string) { return new Date(string);}
-window.f_height = function() { return([window.innerHeight ? window.innerHeight : null, document.documentElement ? document.documentElement.clientHeight : null, document.body ? document.body.clientHeight : null].compact().first()); }
-window.f_scrollTop = function() { return ([window.pageYOffset ? window.pageYOffset : null, document.documentElement ? document.documentElement.scrollTop : null, document.body ? document.body.scrollTop : null].compact().first() ); }
+window.f_height = function() { return( [window.innerHeight ? window.innerHeight : null, document.documentElement ? document.documentElement.clientHeight : null, document.body ? document.body.clientHeight : null].select(function(x){return x>0}).first()||0); }
+window.f_scrollTop = function() { return ([window.pageYOffset ? window.pageYOffset : null, document.documentElement ? document.documentElement.scrollTop : null, document.body ? document.body.scrollTop : null].select(function(x){return x>0}).first()||0 ); }
 
 _translations = {
   "OK": "OK",
@@ -79,7 +79,7 @@ CalendarDateSelect.prototype = {
     // by default, stick it by the target element (if embedded, that's where we'll want it to show up)
     if (this.calendar_div == nil) { this.calendar_div = $( this.options.embedded ? this.target_element.parentNode : document.body ).build('div'); }
     if (!this.options.embedded) {
-      this.calendar_div.style.position = "absolute";
+      this.calendar_div.setStyle( { position:"absolute", visibility: "hidden" } )
       this.positionCalendarDiv();
     }
     
@@ -99,22 +99,26 @@ CalendarDateSelect.prototype = {
     if(!this.options["embedded"]) Event.observe(document.body, "mousedown", this.bodyClick_handler=this.bodyClick.bindAsEventListener(this));
     
     this.initFrame();
-    if(!this.options["embedded"]) setTimeout(function(){
-      c_h = this.calendar_div.getDimensions().height; w_t = window.f_scrollTop(); 
-      if (( parseInt(this.calendar_div.style.top) + c_h ) > (w_t + window.f_height())) {
-        e_t = Position.cumulativeOffset(this.target_element)[1];
-        if ( (e_t - c_h) > w_t ) this.positionCalendarDiv(true); // will it stay below the top of the window
-      }
-    }.bindAsEventListener(this), 1);
+    if(!this.options["embedded"]) { this.positionCalendarDiv(true) }//.bindAsEventListener(this), 1);
   },
-  positionCalendarDiv: function(above) {
-    pos = Position.cumulativeOffset(this.target_element);
+  positionCalendarDiv: function(post_painted) {
+    above=false;
+    c_pos = Position.cumulativeOffset(this.target_element); c_left = c_pos[0]; c_top = c_pos[1]; c_dim = this.calendar_div.getDimensions(); c_height = c_dim.height; c_width = c_dim.width; 
+    w_top = window.f_scrollTop(); w_height = window.f_height();
+    e_dim = Position.cumulativeOffset(this.target_element); e_top = e_dim[1]; e_left = e_dim[0];
     
-    this.calendar_div.style.left = pos[0].toString() + "px";
-    if (above)
-      this.calendar_div.style.top = (pos[1] - this.calendar_div.getDimensions().height ).toString() + "px";
-    else
-      this.calendar_div.style.top = (pos[1] + this.target_element.getDimensions().height ).toString() + "px";
+    if ( (post_painted) && (( c_top + c_height ) > (w_top + w_height)) && ( c_top - c_height > w_top )) above=true;
+    left_px = e_left.toString() + "px";
+    top_px = (above ? (e_top - c_height ) : ( e_top + this.target_element.getDimensions().height )).toString() + "px";
+    
+    this.calendar_div.style.left = left_px;  this.calendar_div.style.top = top_px;
+    
+    // draw an iframe behind the calendar -- ugly hack
+    if (post_painted)
+    {
+      this.iframe = $(document.body).build("iframe", {}, { position:"absolute", left: left_px, top: top_px, height: c_height.toString()+"px", width: c_width.toString()+"px", border: "0px"})
+      this.calendar_div.setStyle({visibility:""});
+    }
   },
   initFrame: function() {
     that=this;
@@ -174,19 +178,18 @@ CalendarDateSelect.prototype = {
     buttons_div = this.buttons_div;
     if (!this.options["buttons"]) { Element.remove(buttons_div); return false; };
     
-    buttons_div.build("input", {
-      value: (this.options["time"] ? _translations["Now"] : _translations["Today"] ),
+    b=buttons_div.build("input", {
       onclick: this.today.bindAsEventListener(this), 
       type: "button"
     });
+    b.value = (this.options["time"] ? _translations["Now"] : _translations["Today"] );
     
-    if (this.allowCloseButtons())
-    {
-      buttons_div.build("input", {
-        value: _translations["OK"],
-        onclick: this.close.bindAsEventListener(this), 
+    if (this.allowCloseButtons()) {
+      b=buttons_div.build("input", {
+        onclick: this.close.bindAsEventListener(this),
         type: "button"
       });
+      b.value = _translations["OK"];
     }
   },
   initTimeDiv: function()
@@ -305,12 +308,13 @@ CalendarDateSelect.prototype = {
   parseDate: function()
   {
     this.date = Date.parseFormattedString(this.options['date'] || $F(this.target_element));
-    if (isNaN(this.date.getDate())) this.date = new Date();
+    if (isNaN(this.date)) this.date = new Date();
     this.selected_date = new Date(this.date);
     this.date.setDate(1);
   },
   updateFooter:function(text) { if (!text) text=this.dateString(); this.footer_div.purgeChildren(); this.footer_div.build("text", {innerHTML: text }); },
   updateSelectedDate:function(parts) {
+    if (this.target_element.disabled || this.target_element.readOnly) return false;
     if (parts.day) {
       this.selection_made = true;
       for (x=0; x<=1; x++) {
@@ -331,7 +335,7 @@ CalendarDateSelect.prototype = {
   },
   updateValue: function() {
     this.target_element.value = this.dateString();
-    if (this.target_element.onchange) this.target_element.onchange();
+    if (this.target_element.onchange) { this.target_element.onchange(); }
   },
   today: function() {
     this.date = new Date();
@@ -342,6 +346,7 @@ CalendarDateSelect.prototype = {
     this.target_element.calendar_date_select = nil;
     Event.stopObserving(document.body, "mousedown", this.bodyClick_handler);
     this.calendar_div.remove();
+    if (this.iframe) this.iframe.remove();
     this.target_element.focus();
   },
   bodyClick: function(e) { // checks to see if somewhere other than calendar date select grid was clicked.  in which case, close
