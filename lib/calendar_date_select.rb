@@ -11,6 +11,9 @@ class CalendarDateSelect
     }
   }
   
+  cattr_accessor :image
+  @@image = "calendar.gif"
+  
   cattr_reader :format
   @@format = FORMATS[:natural]
   class << self
@@ -31,7 +34,7 @@ class CalendarDateSelect
   module FormHelper
     def calendar_date_select_tag( name, value = nil, options = {})
       calendar_options = calendar_date_select_process_options(options)
-      value = (value.strftime(calendar_options[:format]) rescue "") if (value.respond_to?("strftime"))
+      value = (value.strftime(calendar_options[:format]) rescue value) if (value.respond_to?("strftime"))
       
       calendar_options.delete(:format)
       
@@ -44,7 +47,7 @@ class CalendarDateSelect
         out = text_field_tag(name, value, options)
         out << " "
         
-        out << image_tag("calendar.gif", 
+        out << image_tag(CalendarDateSelect.image, 
             :onclick => "new CalendarDateSelect('#{options[:id]}', #{options_for_javascript(calendar_options)} );",
             :id => "#{name}_image_link", 
             :style => 'border:0px; cursor:pointer;')
@@ -77,25 +80,22 @@ class CalendarDateSelect
       calendar_options.delete(:format)
       
       options[:id]||="#{object}#{obj.id ? ('_'+obj.id.to_s) : ''}_#{method}"
-
+      
+      options = options.merge(:value => value)
       if calendar_options[:embedded]
-        out = hidden_field(object, method, options.merge('value' => value))
+        out = ActionView::Helpers::InstanceTag.new(object, method, self, nil, options.delete(:object)).to_input_field_tag("hidden", options)
         out << javascript_tag("new CalendarDateSelect('#{options[:id]}', #{options_for_javascript(calendar_options)} ); ")
       else
-        out = text_field(object, method, options.merge('value' => value))
+        out = ActionView::Helpers::InstanceTag.new(object, method, self, nil, options.delete(:object)).to_input_field_tag("text", options)
         out << " "
         
-        out << image_tag("calendar.gif", 
+        out << image_tag(CalendarDateSelect.image, 
             :onclick => "new CalendarDateSelect('#{options[:id]}', #{options_for_javascript(calendar_options)} );",
             :id => "#{options[:id]}_image_link", 
             :style => 'border:0px; cursor:pointer;')
       end
       
-      if obj.respond_to?(:errors) and obj.errors.on(method) then
-        ActionView::Base.field_error_proc.call(out, nil) # What should I pass ?
-      else
-        out
-      end
+      out
     end  
   end
 end
