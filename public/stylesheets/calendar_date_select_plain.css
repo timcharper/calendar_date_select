@@ -1,34 +1,27 @@
 .calendar_date_select {
-  color:white;
   border:#777 1px solid;
   display:block;
   width:210px;
   z-index: 1000;
+  background-color:white;
 }
 
 .calendar_date_select .weekdays td {
-  font-weight:bold;
-  background-color: #E7E8E8;
-  border-bottom:2px solid black;
   color: black !important;
+  font-weight:bold;
 }
 
 .calendar_date_select .cds_time, .calendar_date_select .cds_buttons {
   text-align:center;
   padding:5px 0px;
-  background-color: #5f0000;
-
 }
 
 .calendar_date_select .cds_buttons {
-  background-color:#E7E8E8;
-  border-top: 2px solid black;
-  border-bottom: 1px solid black;
 }
 
 .calendar_date_select .cds_footer {
-  background-color: black;
   padding:3px;
+  font-size:10px;
   text-align:center;
 }
 
@@ -39,12 +32,18 @@
 
 
 .calendar_date_select .cds_header {
-  background-color: #ccc;
-  border-bottom: 2px solid #aaa;
   text-align:center;
 }
 
-.calendar_date_select input, .calendar_date_select select { height:21px; font-size:13px;}
+.calendar_date_select input, .calendar_date_select select { 
+  height:21px; font-size:13px;
+}
+
+.calendar_date_select .cds_header * {
+  border:0px;
+  background-color:white;  
+}
+
 .calendar_date_select .cds_header input.prev {
   width:22px;
   float:left;
@@ -53,7 +52,6 @@
   width:22px;
   float:right;
 }
-
 .calendar_date_select .cds_header select.month {
   width:95px;
 }
@@ -63,43 +61,36 @@
 }
 
 .calendar_date_select td {
-  background-color: #660000;
   font-size:12px;
   width: 24px;
   height: 21px;
   text-align:center;
   vertical-align: middle;
+  background-color: #fff;
 }
 .calendar_date_select td.weekend {
-  background-color: #5a0000;
 }
 
 .calendar_date_select td div {
-  color:#fff;
+  color: #000;
 }
 .calendar_date_select td div.other {
-  color: #93554C;
+  color: #ccc;
 }
 .calendar_date_select td.selected div {
-  color:black;
+  color:white;
 }
-
 
 .calendar_date_select .days td {
-  border-bottom: 1px solid #550000;
 }
-.calendar_date_select .days td.selected {
-  background-color:white;
-  color:black;
+.calendar_date_select td.selected {
+  background-color:#777;
 }
 
-.calendar_date_select .days td.hover {
+.calendar_date_select td.hover {
   background-color:#ccc;
 }
 
-.calendar_date_select .days td.today {
-  border: 1px dashed red;
+.calendar_date_select td.today {
+  border: 1px dashed #999;
 }
-
-/* adjust bordered cells to have slightly smaller inner areas so they look the same as the rest of the elements */
- 
