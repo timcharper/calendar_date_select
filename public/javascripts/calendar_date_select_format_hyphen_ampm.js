@@ -21,8 +21,6 @@ Date.parseFormattedString = function (string) {
     is_pm = (d[9].toLowerCase()=="pm")
     if (is_pm && hours <= 11) hours+=12;
     if (!is_pm && hours == 12) hours=0;
-    console.log(d);
-
     date.setHours(hours); 
     
   }

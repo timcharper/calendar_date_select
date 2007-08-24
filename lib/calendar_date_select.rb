@@ -56,9 +56,16 @@ class CalendarDateSelect
     
     def calendar_date_select_process_options(options)
       calendar_options = {}
-      for key in [:time, :embedded, :buttons, :format, :year_range]
+      callbacks = [:before_show, :before_close, :after_show, :after_close, :after_navigate]
+      for key in [:time, :embedded, :buttons, :format, :year_range] + callbacks
         calendar_options[key] = options.delete(key) if options.has_key?(key)
       end
+      
+      # surround any callbacks with a function, if not already done so
+      for key in callbacks
+        calendar_options[key] = "function(param) { #{calendar_options[key]} }" unless calendar_options[key].include?("function") if calendar_options[key]
+      end
+    
       calendar_options[:year_range] ||= 10
       calendar_options[:format] ||= CalendarDateSelect.date_format_string(calendar_options[:time])
       
