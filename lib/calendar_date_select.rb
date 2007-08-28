@@ -16,6 +16,7 @@ class CalendarDateSelect
   
   cattr_reader :format
   @@format = FORMATS[:natural]
+  
   class << self
     def format=(format)
       raise "CalendarDateSelect: Unrecognized format specification: #{format}" unless FORMATS.has_key?(format)
@@ -39,19 +40,11 @@ class CalendarDateSelect
       calendar_options.delete(:format)
       
       options[:id] ||= name
+      tag = calendar_options[:embedded] ? 
+        hidden_field_tag(name, value, options) :
+        text_field_tag(name, value, options)
       
-      if calendar_options[:embedded]
-        out = hidden_field_tag(name, value, options)
-        out << javascript_tag("new CalendarDateSelect('#{options[:id]}', #{options_for_javascript(calendar_options)} ); ")
-      else
-        out = text_field_tag(name, value, options)
-        out << " "
-        
-        out << image_tag(CalendarDateSelect.image, 
-            :onclick => "new CalendarDateSelect('#{options[:id]}', #{options_for_javascript(calendar_options)} );",
-            :id => "#{name}_image_link", 
-            :style => 'border:0px; cursor:pointer;')
-      end
+      calendar_date_select_ouput(tag, calendar_options)
     end
     
     def calendar_date_select_process_options(options)
@@ -82,28 +75,36 @@ class CalendarDateSelect
       
       calendar_options = calendar_date_select_process_options(options)
       
-      value = obj.send(method).strftime(calendar_options[:format]) rescue ""
-      
+      value = obj.send(method).strftime(calendar_options[:format]) rescue obj.send("#{method}_before_type_cast")
+
       calendar_options.delete(:format)
-      
-      options[:id]||="#{object}#{obj.id ? ('_'+obj.id.to_s) : ''}_#{method}"
-      
       options = options.merge(:value => value)
+
+      tag = ActionView::Helpers::InstanceTag.new(object, method, self, nil, options.delete(:object))
+      calendar_date_select_ouput(
+        tag.to_input_field_tag(calendar_options[:embedded] ? "hidden" : "text"), 
+        calendar_options
+      )
+    end  
+    
+    def calendar_date_select_ouput(input, calendar_options = {})
+      out = input
       if calendar_options[:embedded]
-        out = ActionView::Helpers::InstanceTag.new(object, method, self, nil, options.delete(:object)).to_input_field_tag("hidden", options)
-        out << javascript_tag("new CalendarDateSelect('#{options[:id]}', #{options_for_javascript(calendar_options)} ); ")
+        uniq_id = "cds_placeholder_#{(rand*100000).to_i}"
+        # we need to be able to locate the target input element, so lets stick an invisible span tag here we can easily locate
+        out << content_tag(:span, nil, :style => "display: none; position: absolute;", :id => uniq_id)
+        
+        out << javascript_tag("new CalendarDateSelect( $('#{uniq_id}').previous(), #{options_for_javascript(calendar_options)} ); ")
       else
-        out = ActionView::Helpers::InstanceTag.new(object, method, self, nil, options.delete(:object)).to_input_field_tag("text", options)
         out << " "
         
         out << image_tag(CalendarDateSelect.image, 
-            :onclick => "new CalendarDateSelect('#{options[:id]}', #{options_for_javascript(calendar_options)} );",
-            :id => "#{options[:id]}_image_link", 
+            :onclick => "new CalendarDateSelect( $(this).previous(), #{options_for_javascript(calendar_options)} );",
             :style => 'border:0px; cursor:pointer;')
       end
       
       out
-    end  
+    end
   end
 end
 

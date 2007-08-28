@@ -1,4 +1,4 @@
-// CalendarDateSelect version 1.6.1 - a small prototype based date picker
+// CalendarDateSelect version 1.7.0 - a small prototype based date picker
 // Questions, comments, bugs? - email the Author - Tim Harper <"timseeharper@gmail.seeom".gsub("see", "c")> 
 if (typeof Prototype == 'undefined')
   alert("CalendarDateSelect Error: Prototype could not be found. Please make sure that your application's layout includes prototype.js (e.g. <%= javascript_include_tag :defaults %>) *before* it includes calendar_date_select.js (e.g. <%= calendar_date_select_includes %>).");
@@ -49,6 +49,7 @@ _translations = {
 CalendarDateSelect = Class.create();
 CalendarDateSelect.prototype = {
   initialize: function(target_element, options) {
+    this.target_element = $(target_element); // make sure it's an element, not a string
     // initialize the date control
     this.options = $H({
       embedded: false,
@@ -58,19 +59,14 @@ CalendarDateSelect.prototype = {
       calendar_div: nil,
       close_on_click: nil,
       minute_interval: 5,
-      onchange: nil
+      onchange: this.target_element.onchange
     }).merge(options || {});
     
-    this.target_element = $(target_element); // make sure it's an element, not a string
     this.selection_made = $F(this.target_element)!="";
     
-    if (this.target_element.calendar_date_select)
-    {
-      this.target_element.calendar_date_select.close();
-      return false;
-    }
+    if (this.target_element.calendar_date_select) { this.target_element.calendar_date_select.close(); return false; }
     this.target_element.calendar_date_select = this;
-    
+    this.callback("before_show")
     this.calendar_div = $(this.options['calendar_div']);
     if (!this.target_element) { alert("Target element " + target_element + " not found!"); return false;}
     
@@ -100,6 +96,7 @@ CalendarDateSelect.prototype = {
     
     this.initFrame();
     if(!this.options["embedded"]) { this.positionCalendarDiv(true) }//.bindAsEventListener(this), 1);
+    this.callback("after_show")
   },
   positionCalendarDiv: function(post_painted) {
     above=false;
@@ -113,7 +110,7 @@ CalendarDateSelect.prototype = {
     
     this.calendar_div.style.left = left_px;  this.calendar_div.style.top = top_px;
     
-    // draw an iframe behind the calendar -- ugly hack
+    // draw an iframe behind the calendar -- ugly hack to make IE 6 happy
     if (post_painted)
     {
       this.iframe = $(document.body).build("iframe", {}, { position:"absolute", left: left_px, top: top_px, height: c_height.toString()+"px", width: c_width.toString()+"px", border: "0px"})
@@ -224,10 +221,12 @@ CalendarDateSelect.prototype = {
     this.date.setMonth(month);
     
     this.refresh();
+    this.callback("after_navigate", this.date);
   },
   navYear: function(year) {
     this.date.setYear(year);
     this.refresh();
+    this.callback("after_navigate", this.date);
   },
   refresh: function ()
   {
@@ -334,8 +333,9 @@ CalendarDateSelect.prototype = {
     
   },
   updateValue: function() {
+    last_value = this.target_element.value;
     this.target_element.value = this.dateString();
-    if (this.target_element.onchange) { this.target_element.onchange(); }
+    if (last_value!=this.target_element.value) this.callback("onchange");
   },
   today: function() {
     this.date = new Date();
@@ -343,13 +343,16 @@ CalendarDateSelect.prototype = {
     this.refresh();
   },
   close: function() {
+    this.callback("before_close");
     this.target_element.calendar_date_select = nil;
     Event.stopObserving(document.body, "mousedown", this.bodyClick_handler);
     this.calendar_div.remove();
     if (this.iframe) this.iframe.remove();
     this.target_element.focus();
+    this.callback("after_close");
   },
   bodyClick: function(e) { // checks to see if somewhere other than calendar date select grid was clicked.  in which case, close
     if (! $(Event.element(e)).descendantOf(this.calendar_div) ) this.close();
-  }
+  },
+  callback: function(name, param) { if (this.options[name]) { this.options[name].bind(this.target_element)(param); } }
 }
