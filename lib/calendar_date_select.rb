@@ -44,7 +44,7 @@ class CalendarDateSelect
         hidden_field_tag(name, value, options) :
         text_field_tag(name, value, options)
       
-      calendar_date_select_ouput(tag, calendar_options)
+      calendar_date_select_output(tag, calendar_options)
     end
     
     def calendar_date_select_process_options(options)
@@ -81,13 +81,13 @@ class CalendarDateSelect
       options = options.merge(:value => value)
 
       tag = ActionView::Helpers::InstanceTag.new(object, method, self, nil, options.delete(:object))
-      calendar_date_select_ouput(
-        tag.to_input_field_tag(calendar_options[:embedded] ? "hidden" : "text"), 
+      calendar_date_select_output(
+        tag.to_input_field_tag(calendar_options[:embedded] ? "hidden" : "text", options), 
         calendar_options
       )
     end  
     
-    def calendar_date_select_ouput(input, calendar_options = {})
+    def calendar_date_select_output(input, calendar_options = {})
       out = input
       if calendar_options[:embedded]
         uniq_id = "cds_placeholder_#{(rand*100000).to_i}"
