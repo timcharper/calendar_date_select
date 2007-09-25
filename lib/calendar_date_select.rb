@@ -8,6 +8,11 @@ class CalendarDateSelect
       :date => "%Y-%m-%d",
       :time => " %I:%M %p",
       :javascript_include => "format_hyphen_ampm"
+    },
+    :finnish => {
+      :date => "%d.%m.%Y",
+      :time => " %H:%M",
+      :javascript_include => "format_finnish"
     }
   }
   
