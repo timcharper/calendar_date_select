@@ -24,6 +24,7 @@ nil=null;
 
 Date.one_day = 24*60*60*1000;
 Date.weekdays = $w("S M T W T F S");
+Date.first_day_of_week = 0;
 Date.months = $w("January February March April May June July August September October November December" );
 Date.padded2 = function(hour) { padded2 = hour.toString(); if (parseInt(hour) < 10) padded2="0" + padded2; return padded2; }
 Date.prototype.getPaddedMinutes = function() { return Date.padded2(this.getMinutes()); }
@@ -155,7 +156,7 @@ CalendarDateSelect.prototype = {
     // Make the days!
     for(cell_index=0; cell_index<42; cell_index++)
     {
-      weekday=cell_index%7;
+      weekday=(cell_index+Date.first_day_of_week )%7;
       if ( cell_index %7==0 ) days_row = days_table.build("tr", {className: "days"});
       (this.calendar_day_grid[cell_index] = days_row.build("td", {
           calendar_date_select: this,
@@ -249,7 +250,7 @@ CalendarDateSelect.prototype = {
     this.beginning_date.setDate(1);
     pre_days = this.beginning_date.getDay() // draw some days before the fact
     if (pre_days < 3) pre_days+=7;
-    this.beginning_date.setDate(1 - pre_days);
+    this.beginning_date.setDate(1 - pre_days + Date.first_day_of_week);
     
     iterator = new Date(this.beginning_date);
     

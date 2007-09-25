@@ -7,12 +7,12 @@ class CalendarDateSelect
     :hyphen_ampm => {
       :date => "%Y-%m-%d",
       :time => " %I:%M %p",
-      :javascript_include => "calendar_date_select_format_hyphen_ampm"
+      :javascript_include => "format_hyphen_ampm"
     }
   }
   
   cattr_accessor :image
-  @@image = "calendar.gif"
+  @@image = "calendar_date_select/calendar.gif"
   
   cattr_reader :format
   @@format = FORMATS[:natural]
@@ -24,7 +24,7 @@ class CalendarDateSelect
     end
     
     def javascript_format_include
-      @@format[:javascript_include]
+      @@format[:javascript_include] && "calendar_date_select/#{@@format[:javascript_include]}"
     end
     
     def date_format_string(time=false)
