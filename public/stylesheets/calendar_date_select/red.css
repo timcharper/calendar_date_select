@@ -44,13 +44,23 @@
   text-align:center;
 }
 
-.calendar_date_select input, .calendar_date_select select { height:21px; font-size:13px;}
-.calendar_date_select .cds_header input.prev {
+.calendar_date_select select { font-size:10px;}
+
+.calendar_date_select .cds_header a:hover {
+  color: white;
+}
+.calendar_date_select .cds_header a {
   width:22px;
+  height:20px;
+  text-decoration: none;
+  font-size:14px;
+  color:black;
+}
+
+.calendar_date_select .cds_header a.prev {
   float:left;
 }
-.calendar_date_select .cds_header input.next {
-  width:22px;
+.calendar_date_select .cds_header a.next {
   float:right;
 }
 
@@ -62,6 +72,10 @@
   width:56px;
 }
 
+.calendar_date_select .cds_time a {
+  color: white;
+  font-size: 9px;
+}
 .calendar_date_select td {
   background-color: #660000;
   font-size:12px;

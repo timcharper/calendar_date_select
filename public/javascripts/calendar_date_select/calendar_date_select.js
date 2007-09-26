@@ -122,22 +122,20 @@ CalendarDateSelect.prototype = {
   initFrame: function() {
     that=this;
     // create the divs
-    $w("header body time footer buttons").each(function(name) {
+    $w("top header body time footer bottom").each(function(name) {
       eval(name + "_div = that." + name + "_div = that.calendar_div.build('div', { className: 'cds_"+name+"' }, { clear: 'left'} ); ");
     });
     
     this.initTimeDiv();
-    this.initButtonsDiv();
-    
     this.updateFooter("&nbsp;");
     // make the header buttons
-    this.next_month_button = header_div.build("input", { type: "button", value : ">", className: "next" });
-    this.prev_month_button = header_div.build("input", { type: "button", value : "<", className: "prev" });
+    this.next_month_button = header_div.build("a", { innerHTML: ">", href:"#", onclick:function(){return false;}, className: "next" });
+    this.prev_month_button = header_div.build("a", { innerHTML: "<", href:"#", onclick:function(){return false;}, className: "prev" });
     if (this.options.month_year=="dropdowns") {
       this.month_select = new SelectBox(header_div, $R(0,11).map(function(m){return [Date.months[m], m]}), {className: "month", onchange: function () { this.navMonth(this.month_select.getValue()) }.bindAsEventListener(this)}); 
       this.year_select = new SelectBox(header_div, [], {className: "year", onchange: function () { this.navYear(this.year_select.getValue()) }.bindAsEventListener(this)}); 
     } else {
-      this.month_year_label = header_div.build("div")
+      this.month_year_label = header_div.build("span")
     }
     
     Event.observe(this.prev_month_button, 'mousedown', function () { this.navMonth(this.date.getMonth() - 1 ) }.bindAsEventListener(this));
@@ -171,32 +169,13 @@ CalendarDateSelect.prototype = {
     }
     this.refresh();
   },
-  initButtonsDiv: function()
-  {
-    buttons_div = this.buttons_div;
-    if (!this.options["buttons"]) { Element.remove(buttons_div); return false; };
-    
-    b=buttons_div.build("input", {
-      onclick: this.today.bindAsEventListener(this), 
-      type: "button"
-    });
-    b.value = (this.options["time"] ? _translations["Now"] : _translations["Today"] );
-    
-    if (this.allowCloseButtons()) {
-      b=buttons_div.build("input", {
-        onclick: this.close.bindAsEventListener(this),
-        type: "button"
-      });
-      b.value = _translations["OK"];
-    }
-  },
   initTimeDiv: function()
   {
     time_div = this.time_div;
     // make the time div
     if (this.options["time"])
     {
-      blank_time = $A(this.options.time=="mixed" ? [["", ""]] : []);
+      blank_time = $A(this.options.time=="mixed" ? [["all", ""]] : []);
       time_div.build("span", {innerHTML:" @ "});
       
       t=new Date();
@@ -216,7 +195,23 @@ CalendarDateSelect.prototype = {
           onchange: function() { this.calendar_date_select.updateSelectedDate( {minute: this.value }) } 
         }
       );
-    } else (time_div.remove());
+    } //else (time_div.remove());
+    
+    time_div.build("span", {innerHTML: " "});
+    // Build Today button
+    if (this.options.time=="mixed" || !this.options.time) b=time_div.build("a", {
+        innerHTML: _translations["Today"],
+        href: "#",
+        onclick: function() {this.today(false); return false;}.bindAsEventListener(this)
+      });
+    
+    if (this.options.time=="mixed") time_div.build("span", {innerHTML: " | ", className:"button_seperator"})
+    
+    if (this.options.time) b = time_div.build("a", {
+      innerHTML: _translations["Now"],
+      href: "#",
+      onclick: function() {this.today(true); return false}.bindAsEventListener(this)
+    });
   },
   allowCloseButtons: function() { return ( !this.options["embedded"] && this.options["time"]); },
   dateString: function() {
@@ -354,9 +349,11 @@ CalendarDateSelect.prototype = {
     this.target_element.value = this.dateString();
     if (last_value!=this.target_element.value) this.callback("onchange");
   },
-  today: function() {
-    this.date = new Date();
-    d=new Date(); this.updateSelectedDate( { day: d.getDate(), month: d.getMonth(), year: d.getFullYear(), hour: d.getHours(), minute: d.getMinutes() } );
+  today: function(now) {
+    d=new Date(); this.date = new Date();
+    o = $H({ day: d.getDate(), month: d.getMonth(), year: d.getFullYear(), hour: d.getHours(), minute: d.getMinutes()});
+    if (!now) o = o.merge({hour: "", minute:""}); 
+    this.updateSelectedDate(o);
     this.refresh();
   },
   close: function() {

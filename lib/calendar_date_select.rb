@@ -54,10 +54,15 @@ class CalendarDateSelect
     
     def calendar_date_select_process_options(options)
       calendar_options = {}
+      
       callbacks = [:before_show, :before_close, :after_show, :after_close, :after_navigate]
-      for key in [:time, :embedded, :buttons, :format, :year_range] + callbacks
+      for key in [:time, :embedded, :buttons, :format, :year_range, :month_year] + callbacks
         calendar_options[key] = options.delete(key) if options.has_key?(key)
       end
+      
+      # if passing in mixed, pad it with single quotes
+      calendar_options[:time] = "'mixed'" if calendar_options[:time].to_s=="mixed"
+      calendar_options[:month_year] = "'#{calendar_options[:month_year]}'" if calendar_options[:month_year]
       
       # surround any callbacks with a function, if not already done so
       for key in callbacks
