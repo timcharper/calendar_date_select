@@ -47,6 +47,24 @@ _translations = {
   "Now": "Now",
   "Today": "Today"
 }
+SelectBox = Class.create();
+SelectBox.prototype = {
+  initialize: function(parent_element, values, html_options, style_options) {
+    this.element = $(parent_element).build("select", html_options, style_options);
+    this.populate(values);
+  },
+  populate: function(values) {
+    this.element.purgeChildren();
+    that=this; $A(values).each(function(pair) { if (typeof(pair)!="object") {pair = [pair, pair]}; that.element.build("option", { value: pair[1], innerHTML: pair[0]}) });
+  },
+  setValue: function(value, callback) {
+    e = this.element;
+    matched=false;
+    $R(0, e.options.length - 1 ).each(function(i) { if(e.options[i].value==value.toString()) {e.selectedIndex = i; matched=true;}; } );
+    return matched;
+  },
+  getValue: function() { return $F(this.element)}
+}
 CalendarDateSelect = Class.create();
 CalendarDateSelect.prototype = {
   initialize: function(target_element, options) {
@@ -55,6 +73,7 @@ CalendarDateSelect.prototype = {
     // initialize the date control
     this.options = $H({
       embedded: false,
+      popup: nil,
       time: false,
       buttons: true,
       year_range: 10,
@@ -122,15 +141,18 @@ CalendarDateSelect.prototype = {
   initFrame: function() {
     that=this;
     // create the divs
-    $w("top header body time footer bottom").each(function(name) {
+    $w("top header body buttons footer bottom").each(function(name) {
       eval(name + "_div = that." + name + "_div = that.calendar_div.build('div', { className: 'cds_"+name+"' }, { clear: 'left'} ); ");
     });
     
     this.initTimeDiv();
     this.updateFooter("&nbsp;");
     // make the header buttons
-    this.next_month_button = header_div.build("a", { innerHTML: ">", href:"#", onclick:function(){return false;}, className: "next" });
-    this.prev_month_button = header_div.build("a", { innerHTML: "<", href:"#", onclick:function(){return false;}, className: "prev" });
+    this.prev_month_button = header_div.build("a", { innerHTML: "&lt;", href:"#", onclick:function(){return false;}, className: "prev" });
+    this.next_month_button = header_div.build("a", { innerHTML: "&gt;", href:"#", onclick:function(){return false;}, className: "next" });
+    Event.observe(this.prev_month_button, 'mousedown', function () { this.navMonth(this.date.getMonth() - 1 ) }.bindAsEventListener(this));
+    Event.observe(this.next_month_button, 'mousedown', function () { this.navMonth(this.date.getMonth() + 1 ) }.bindAsEventListener(this));
+    
     if (this.options.month_year=="dropdowns") {
       this.month_select = new SelectBox(header_div, $R(0,11).map(function(m){return [Date.months[m], m]}), {className: "month", onchange: function () { this.navMonth(this.month_select.getValue()) }.bindAsEventListener(this)}); 
       this.year_select = new SelectBox(header_div, [], {className: "year", onchange: function () { this.navYear(this.year_select.getValue()) }.bindAsEventListener(this)}); 
@@ -138,24 +160,21 @@ CalendarDateSelect.prototype = {
       this.month_year_label = header_div.build("span")
     }
     
-    Event.observe(this.prev_month_button, 'mousedown', function () { this.navMonth(this.date.getMonth() - 1 ) }.bindAsEventListener(this));
-    Event.observe(this.next_month_button, 'mousedown', function () { this.navMonth(this.date.getMonth() + 1 ) }.bindAsEventListener(this));
-    
     // build the calendar day grid
     this.calendar_day_grid = [];
-    days_table = body_div.build("table", { cellPadding: "0px", cellSpacing: "0px", width: "100%" }).build("tbody");
-
+    days_table = body_div.build("table", { cellPadding: "0px", cellSpacing: "0px", width: "100%" })
     // make the weekdays!
-    weekdays_row = days_table.build("tr", {className: "weekdays"});
+    weekdays_row = days_table.build("thead").build("tr");
     Date.weekdays.each( function(weekday) { 
-      weekdays_row.build("td", {innerHTML: weekday});
+      weekdays_row.build("th", {innerHTML: weekday});
     });
     
+    days_tbody = days_table.build("tbody")
     // Make the days!
     for(cell_index=0; cell_index<42; cell_index++)
     {
-      weekday=(cell_index+Date.first_day_of_week )%7;
-      if ( cell_index %7==0 ) days_row = days_table.build("tr", {className: "days"});
+      weekday=(cell_index+Date.first_day_of_week ) % 7;
+      if ( cell_index % 7==0 ) days_row = days_tbody.build("tr");
       (this.calendar_day_grid[cell_index] = days_row.build("td", {
           calendar_date_select: this,
           onmouseover: function () { this.calendar_date_select.dayHover(this); },
@@ -171,49 +190,50 @@ CalendarDateSelect.prototype = {
   },
   initTimeDiv: function()
   {
-    time_div = this.time_div;
+    buttons_div = this.buttons_div;
     // make the time div
     if (this.options["time"])
     {
-      blank_time = $A(this.options.time=="mixed" ? [["all", ""]] : []);
-      time_div.build("span", {innerHTML:" @ "});
+      blank_time = $A(this.options.time=="mixed" ? [[" - ", ""]] : []);
+      buttons_div.build("span", {innerHTML:" @ "});
       
       t=new Date();
-      this.hour_select = new SelectBox(time_div,
+      this.hour_select = new SelectBox(buttons_div,
         blank_time.concat($R(0,23).map(function(x) {t.setHours(x); return $A([t.getAMPMHour()+ " " + t.getAMPM(),x])} )),
         { 
           calendar_date_select: this, 
           onchange: function() { this.calendar_date_select.updateSelectedDate( { hour: this.value });} 
         }
       );
-      time_div.build("span", {innerHTML:"&nbsp; : "});
+      buttons_div.build("span", {innerHTML:" : "});
       that=this;
-      this.minute_select = new SelectBox(time_div,
+      this.minute_select = new SelectBox(buttons_div,
         blank_time.concat($R(0,59).select(function(x){return (x % that.options.minute_interval==0)}).map(function(x){ return $A([ Date.padded2(x), x]); } ) ),
         { 
           calendar_date_select: this, 
           onchange: function() { this.calendar_date_select.updateSelectedDate( {minute: this.value }) } 
         }
       );
-    } //else (time_div.remove());
+    } else if (! this.options.buttons) buttons_div.remove();
     
-    time_div.build("span", {innerHTML: " "});
-    // Build Today button
-    if (this.options.time=="mixed" || !this.options.time) b=time_div.build("a", {
-        innerHTML: _translations["Today"],
+    if (this.options.buttons) {
+      buttons_div.build("span", {innerHTML: " "});
+      // Build Today button
+      if (this.options.time=="mixed" || !this.options.time) b=buttons_div.build("a", {
+          innerHTML: _translations["Today"],
+          href: "#",
+          onclick: function() {this.today(false); return false;}.bindAsEventListener(this)
+        });
+      
+      if (this.options.time=="mixed") buttons_div.build("span", {innerHTML: " | ", className:"button_seperator"})
+      
+      if (this.options.time) b = buttons_div.build("a", {
+        innerHTML: _translations["Now"],
         href: "#",
-        onclick: function() {this.today(false); return false;}.bindAsEventListener(this)
+        onclick: function() {this.today(true); return false}.bindAsEventListener(this)
       });
-    
-    if (this.options.time=="mixed") time_div.build("span", {innerHTML: " | ", className:"button_seperator"})
-    
-    if (this.options.time) b = time_div.build("a", {
-      innerHTML: _translations["Now"],
-      href: "#",
-      onclick: function() {this.today(true); return false}.bindAsEventListener(this)
-    });
+    }
   },
-  allowCloseButtons: function() { return ( !this.options["embedded"] && this.options["time"]); },
   dateString: function() {
     return (this.selection_made) ? this.selected_date.toFormattedString(this.use_time) : "&nbsp;";
   },
@@ -234,19 +254,19 @@ CalendarDateSelect.prototype = {
     m=this.date.getMonth()
     y=this.date.getFullYear();
     // set the month
-    if (this.options.month_year == "dropdowns") {
+    if (this.options.month_year == "dropdowns") 
+    {
       this.month_select.setValue(m, false);
       
       e=this.year_select.element; 
-      if ( !(this.year_select.setValue(y)) || e.selectedIndex <= 1 || e.selectedIndex >= e.options.length -2 ) { 
-        this.year_select.populate( $R( y-this.options.year_range, y+this.options.year_range ).toArray() );
+      if ( !(this.year_select.setValue(y)) || e.selectedIndex <= 1 || e.selectedIndex >= e.options.length - 2 ) { 
+        this.year_select.populate( $R( y - this.options.year_range, y+this.options.year_range ).toArray() );
         this.year_select.setValue(y)
       }
     } else {
       this.month_year_label.update( Date.months[m] + " " + y.toString()  );
     }
       
-        
     // populate the calendar_day_grid
     this.beginning_date = new Date(this.date).stripTime();
     this.beginning_date.setDate(1);
@@ -270,13 +290,13 @@ CalendarDateSelect.prototype = {
     
     if (this.today_cell) this.today_cell.removeClassName("today");
     
-    if ( $R(0,42).include(days_until = this.beginning_date.daysDistance(today)) ) {
+    if ( $R( 0, 42 ).include(days_until = this.beginning_date.daysDistance(today)) ) {
       this.today_cell = this.calendar_day_grid[days_until];
       this.today_cell.addClassName("today");
     }
     
     // set the time
-    this.set_use_time(this.use_time);
+    this.setUseTime(this.use_time);
     
     this.setSelectedClass();
     this.updateFooter();
@@ -302,14 +322,14 @@ CalendarDateSelect.prototype = {
   reparse: function() { this.parseDate(); this.refresh(); },
   parseDate: function()
   {
-    this.date = Date.parseFormattedString(this.options['date'] || $F(this.target_element));
+    this.date = $F(this.target_element).strip()=="" ? NaN : Date.parseFormattedString(this.options['date'] || $F(this.target_element));
     if (isNaN(this.date)) this.date = new Date();
     this.selected_date = new Date(this.date);
     this.date.setDate(1);
   },
   updateFooter:function(text) { if (!text) text=this.dateString(); this.footer_div.purgeChildren(); this.footer_div.build("text", {innerHTML: text }); },
   updateSelectedDate:function(parts) {
-    if (this.target_element.disabled || this.target_element.readOnly) return false;
+    if (!this.options.popup=="force" && (this.target_element.disabled || this.target_element.readOnly)) return false;
     if (parts.day) {
       this.selection_made = true;
       for (x=0; x<=1; x++) {
@@ -322,9 +342,9 @@ CalendarDateSelect.prototype = {
     if (parts.minute) this.selected_date.setMinutes(parts.minute);
     
     if (parts.hour=="" || parts.minute == "") 
-      this.set_use_time(false);
+      this.setUseTime(false);
     else if (parts.hour || parts.minute)
-      this.set_use_time(true);
+      this.setUseTime(true);
     
     this.updateFooter();
     this.setSelectedClass();
@@ -332,7 +352,7 @@ CalendarDateSelect.prototype = {
     if (this.selection_made) this.updateValue();
     if (this.options.close_on_click) { this.close(); }
   },
-  set_use_time: function(turn_on) {
+  setUseTime: function(turn_on) {
     this.use_time = turn_on;
     if (this.use_time) {
       minute = Math.round(this.selected_date.getMinutes() / this.options.minute_interval) * this.options.minute_interval;
@@ -369,22 +389,4 @@ CalendarDateSelect.prototype = {
     if (! $(Event.element(e)).descendantOf(this.calendar_div) ) this.close();
   },
   callback: function(name, param) { if (this.options[name]) { this.options[name].bind(this.target_element)(param); } }
-}
-SelectBox = Class.create();
-SelectBox.prototype = {
-  initialize: function(parent_element, values, html_options, style_options) {
-    this.element = $(parent_element).build("select", html_options, style_options);
-    this.populate(values);
-  },
-  populate: function(values) {
-    this.element.purgeChildren();
-    that=this; $A(values).each(function(pair) { if (typeof(pair)!="object") {pair = [pair, pair]}; that.element.build("option", { value: pair[1], innerHTML: pair[0]}) });
-  },
-  setValue: function(value, callback) {
-    e = this.element;
-    matched=false;
-    $R(0, e.options.length-1).each(function(i) { if(e.options[i].value==value.toString()) {e.selectedIndex = i; matched=true;}; } );
-    return matched;
-  },
-  getValue: function() { return $F(this.element)}
 }
