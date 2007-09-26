@@ -2,7 +2,7 @@
   color:white;
   border:#777 1px solid;
   display:block;
-  width:210px;
+  width:195px;
   z-index: 1000;
 }
 
@@ -44,7 +44,7 @@
   text-align:center;
 }
 
-.calendar_date_select select { font-size:10px;}
+.calendar_date_select select { font-size:11px;}
 
 .calendar_date_select .cds_header a:hover {
   color: white;
@@ -54,7 +54,7 @@
   height:20px;
   text-decoration: none;
   font-size:14px;
-  color:black;
+  color:black !important;
 }
 
 .calendar_date_select .cds_header a.prev {
@@ -65,11 +65,11 @@
 }
 
 .calendar_date_select .cds_header select.month {
-  width:95px;
+  width:90px;
 }
 
 .calendar_date_select .cds_header select.year {
-  width:56px;
+  width:61px;
 }
 
 .calendar_date_select .cds_time a {
