@@ -51,6 +51,7 @@ CalendarDateSelect = Class.create();
 CalendarDateSelect.prototype = {
   initialize: function(target_element, options) {
     this.target_element = $(target_element); // make sure it's an element, not a string
+    this.target_element.calendar_date_select = this;
     // initialize the date control
     this.options = $H({
       embedded: false,
@@ -60,15 +61,15 @@ CalendarDateSelect.prototype = {
       calendar_div: nil,
       close_on_click: nil,
       minute_interval: 5,
+      month_year: "dropdowns",
       onchange: this.target_element.onchange
     }).merge(options || {});
     
     this.selection_made = $F(this.target_element)!="";
+    this.use_time = this.options.time;
     
-    if (this.target_element.calendar_date_select) { this.target_element.calendar_date_select.close(); return false; }
-    this.target_element.calendar_date_select = this;
     this.callback("before_show")
-    this.calendar_div = $(this.options['calendar_div']);
+    this.calendar_div = $(this.options.calendar_div);
     if (!this.target_element) { alert("Target element " + target_element + " not found!"); return false;}
     
     this.parseDate();
@@ -132,16 +133,15 @@ CalendarDateSelect.prototype = {
     // make the header buttons
     this.next_month_button = header_div.build("input", { type: "button", value : ">", className: "next" });
     this.prev_month_button = header_div.build("input", { type: "button", value : "<", className: "prev" });
-    this.month_select = header_div.build("select", { className: "month"});
-    this.year_select = header_div.build("select", { className: "year"});
+    if (this.options.month_year=="dropdowns") {
+      this.month_select = new SelectBox(header_div, $R(0,11).map(function(m){return [Date.months[m], m]}), {className: "month", onchange: function () { this.navMonth(this.month_select.getValue()) }.bindAsEventListener(this)}); 
+      this.year_select = new SelectBox(header_div, [], {className: "year", onchange: function () { this.navYear(this.year_select.getValue()) }.bindAsEventListener(this)}); 
+    } else {
+      this.month_year_label = header_div.build("div")
+    }
     
-    // make the month selector
-    for(x=0; x<12; x++)
-      this.month_select.options[x]=new Option(Date.months[x],x);
     Event.observe(this.prev_month_button, 'mousedown', function () { this.navMonth(this.date.getMonth() - 1 ) }.bindAsEventListener(this));
     Event.observe(this.next_month_button, 'mousedown', function () { this.navMonth(this.date.getMonth() + 1 ) }.bindAsEventListener(this));
-    Event.observe(this.month_select, 'change', (function () { this.navMonth($F(this.month_select)) }).bindAsEventListener(this));
-    Event.observe(this.year_select, 'change', (function () { this.navYear($F(this.year_select)) }).bindAsEventListener(this));
     
     // build the calendar day grid
     this.calendar_day_grid = [];
@@ -196,26 +196,31 @@ CalendarDateSelect.prototype = {
     // make the time div
     if (this.options["time"])
     {
-      time_div.build("span", {innerHTML:" @ "})
-      this.hour_select = time_div.build("select", {
-        calendar_date_select: this,
-        onchange: function() { this.calendar_date_select.updateSelectedDate( { hour: this.value });}
-      });
-      time_div.build("span", {innerHTML:"&nbsp; : "});
-      this.minute_select = time_div.build("select", {
-        calendar_date_select: this,
-        onchange: function() { this.calendar_date_select.updateSelectedDate( {minute: this.value }) }
-      });
+      blank_time = $A(this.options.time=="mixed" ? [["", ""]] : []);
+      time_div.build("span", {innerHTML:" @ "});
+      
       t=new Date();
-      // populate hours
-      for(x=0;x<=23;x++) { t.setHours(x); this.hour_select.options[x] = new Option( "" + t.getAMPMHour() + " " + t.getAMPM(), x ) }
-      // populate minutes
-      x=0; for(m=0;m<60;m+=this.options["minute_interval"]) { this.minute_select.options[x++] = new Option( Date.padded2(m), m ) }
+      this.hour_select = new SelectBox(time_div,
+        blank_time.concat($R(0,23).map(function(x) {t.setHours(x); return $A([t.getAMPMHour()+ " " + t.getAMPM(),x])} )),
+        { 
+          calendar_date_select: this, 
+          onchange: function() { this.calendar_date_select.updateSelectedDate( { hour: this.value });} 
+        }
+      );
+      time_div.build("span", {innerHTML:"&nbsp; : "});
+      that=this;
+      this.minute_select = new SelectBox(time_div,
+        blank_time.concat($R(0,59).select(function(x){return (x % that.options.minute_interval==0)}).map(function(x){ return $A([ Date.padded2(x), x]); } ) ),
+        { 
+          calendar_date_select: this, 
+          onchange: function() { this.calendar_date_select.updateSelectedDate( {minute: this.value }) } 
+        }
+      );
     } else (time_div.remove());
   },
   allowCloseButtons: function() { return ( !this.options["embedded"] && this.options["time"]); },
   dateString: function() {
-    return (this.selection_made) ? this.selected_date.toFormattedString(this.options['time']) : "&nbsp;";
+    return (this.selection_made) ? this.selected_date.toFormattedString(this.use_time) : "&nbsp;";
   },
   navMonth: function(month) {
     prev_day = this.date.getDate();
@@ -231,20 +236,22 @@ CalendarDateSelect.prototype = {
   },
   refresh: function ()
   {
+    m=this.date.getMonth()
+    y=this.date.getFullYear();
     // set the month
-    this.month_select.selectedIndex = this.date.getMonth();
-    
-    // set the year, 
-    range=this.options["year_range"];
-    this.year_select.purgeChildren();
-    for( x=0; x<=range*2; x++)
-    {
-      year = x+(this.date.getFullYear() - range);
-      this.year_select.options[x]=new Option(year,year);
+    if (this.options.month_year == "dropdowns") {
+      this.month_select.setValue(m, false);
+      
+      e=this.year_select.element; 
+      if ( !(this.year_select.setValue(y)) || e.selectedIndex <= 1 || e.selectedIndex >= e.options.length -2 ) { 
+        this.year_select.populate( $R( y-this.options.year_range, y+this.options.year_range ).toArray() );
+        this.year_select.setValue(y)
+      }
+    } else {
+      this.month_year_label.update( Date.months[m] + " " + y.toString()  );
     }
-    
-    this.year_select.selectedIndex = range;
-    
+      
+        
     // populate the calendar_day_grid
     this.beginning_date = new Date(this.date).stripTime();
     this.beginning_date.setDate(1);
@@ -258,7 +265,6 @@ CalendarDateSelect.prototype = {
     this_month = this.date.getMonth();
     for (cell_index=0;cell_index<42; cell_index++)
     {
-
       day = iterator.getDate(); month = iterator.getMonth();
       cell = this.calendar_day_grid[cell_index];
       Element.remove(cell.childNodes[0]); div = cell.build("div", {innerHTML:day});
@@ -275,13 +281,7 @@ CalendarDateSelect.prototype = {
     }
     
     // set the time
-    if (this.options["time"]) {
-      this.hour_select.selectedIndex = this.selected_date.getHours();
-      this.minute_select.selectedIndex = this.selected_date.getMinutes() / this.options["minute_interval"];
-      
-      this.hour_select.onchange();
-      this.minute_select.onchange();
-    }
+    this.set_use_time(this.use_time);
     
     this.setSelectedClass();
     this.updateFooter();
@@ -290,7 +290,7 @@ CalendarDateSelect.prototype = {
     element.addClassName("hover");
     hover_date = new Date(this.selected_date);
     hover_date.setYear(element.year); hover_date.setMonth(element.month); hover_date.setDate(element.day);
-    this.updateFooter(hover_date.toFormattedString(this.options['time']));
+    this.updateFooter(hover_date.toFormattedString(this.use_time));
   },
   dayHoverOut: function(element) { element.removeClassName("hover"); this.updateFooter(); },
   setSelectedClass: function() {
@@ -326,12 +326,28 @@ CalendarDateSelect.prototype = {
     if (parts.hour) this.selected_date.setHours(parts.hour);
     if (parts.minute) this.selected_date.setMinutes(parts.minute);
     
+    if (parts.hour=="" || parts.minute == "") 
+      this.set_use_time(false);
+    else if (parts.hour || parts.minute)
+      this.set_use_time(true);
+    
     this.updateFooter();
     this.setSelectedClass();
     
     if (this.selection_made) this.updateValue();
     if (this.options.close_on_click) { this.close(); }
-    
+  },
+  set_use_time: function(turn_on) {
+    this.use_time = turn_on;
+    if (this.use_time) {
+      minute = Math.round(this.selected_date.getMinutes() / this.options.minute_interval) * this.options.minute_interval;
+      hour = this.selected_date.getHours();
+      
+      this.hour_select.setValue(hour);
+      this.minute_select.setValue(minute)
+    } else if (this.options.time=="mixed") {
+      this.hour_select.setValue(""); this.minute_select.setValue("");
+    }
   },
   updateValue: function() {
     last_value = this.target_element.value;
@@ -356,4 +372,22 @@ CalendarDateSelect.prototype = {
     if (! $(Event.element(e)).descendantOf(this.calendar_div) ) this.close();
   },
   callback: function(name, param) { if (this.options[name]) { this.options[name].bind(this.target_element)(param); } }
+}
+SelectBox = Class.create();
+SelectBox.prototype = {
+  initialize: function(parent_element, values, html_options, style_options) {
+    this.element = $(parent_element).build("select", html_options, style_options);
+    this.populate(values);
+  },
+  populate: function(values) {
+    this.element.purgeChildren();
+    that=this; $A(values).each(function(pair) { if (typeof(pair)!="object") {pair = [pair, pair]}; that.element.build("option", { value: pair[1], innerHTML: pair[0]}) });
+  },
+  setValue: function(value, callback) {
+    e = this.element;
+    matched=false;
+    $R(0, e.options.length-1).each(function(i) { if(e.options[i].value==value.toString()) {e.selectedIndex = i; matched=true;}; } );
+    return matched;
+  },
+  getValue: function() { return $F(this.element)}
 }
