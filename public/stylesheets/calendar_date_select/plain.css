@@ -1,22 +1,19 @@
 .calendar_date_select {
   border:#777 1px solid;
   display:block;
-  width:210px;
+  width:195px;
   z-index: 1000;
   background-color:white;
 }
 
-.calendar_date_select .weekdays td {
+.calendar_date_select thead th {
   color: black !important;
   font-weight:bold;
 }
 
-.calendar_date_select .cds_time, .calendar_date_select .cds_buttons {
+.calendar_date_select .cds_buttons {
   text-align:center;
   padding:5px 0px;
-}
-
-.calendar_date_select .cds_buttons {
 }
 
 .calendar_date_select .cds_footer {
@@ -35,31 +32,42 @@
   text-align:center;
 }
 
-.calendar_date_select input, .calendar_date_select select { 
-  height:21px; font-size:13px;
-}
-
 .calendar_date_select .cds_header * {
   border:0px;
   background-color:white;  
 }
 
-.calendar_date_select .cds_header input.prev {
+.calendar_date_select select { font-size:11px;}
+
+.calendar_date_select .cds_header a:hover {
+  color: white;
+}
+.calendar_date_select .cds_header a {
   width:22px;
+  height:20px;
+  text-decoration: none;
+  font-size:14px;
+  color:black !important;
+}
+
+.calendar_date_select .cds_header a.prev {
   float:left;
 }
-.calendar_date_select .cds_header input.next {
-  width:22px;
+.calendar_date_select .cds_header a.next {
   float:right;
 }
 .calendar_date_select .cds_header select.month {
-  width:95px;
+  width:90px;
 }
 
 .calendar_date_select .cds_header select.year {
-  width:56px;
+  width:61px;
 }
 
+.calendar_date_select .cds_buttons a {
+  color: black;
+  font-size: 9px;
+}
 .calendar_date_select td {
   font-size:12px;
   width: 24px;
@@ -81,7 +89,7 @@
   color:white;
 }
 
-.calendar_date_select .days td {
+.calendar_date_select tbody td {
 }
 .calendar_date_select td.selected {
   background-color:#777;

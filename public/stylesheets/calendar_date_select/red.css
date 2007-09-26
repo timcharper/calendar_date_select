@@ -6,24 +6,18 @@
   z-index: 1000;
 }
 
-.calendar_date_select .weekdays td {
+.calendar_date_select thead th {
   font-weight:bold;
   background-color: #E7E8E8;
   border-bottom:2px solid black;
   color: black !important;
 }
 
-.calendar_date_select .cds_time, .calendar_date_select .cds_buttons {
+.calendar_date_select .cds_buttons {
   text-align:center;
   padding:5px 0px;
   background-color: #5f0000;
 
-}
-
-.calendar_date_select .cds_buttons {
-  background-color:#E7E8E8;
-  border-top: 2px solid black;
-  border-bottom: 1px solid black;
 }
 
 .calendar_date_select .cds_footer {
@@ -72,7 +66,7 @@
   width:61px;
 }
 
-.calendar_date_select .cds_time a {
+.calendar_date_select .cds_buttons a {
   color: white;
   font-size: 9px;
 }
@@ -99,19 +93,19 @@
 }
 
 
-.calendar_date_select .days td {
+.calendar_date_select tbody td {
   border-bottom: 1px solid #550000;
 }
-.calendar_date_select .days td.selected {
+.calendar_date_select tbody td.selected {
   background-color:white;
   color:black;
 }
 
-.calendar_date_select .days td.hover {
+.calendar_date_select tbody td.hover {
   background-color:#ccc;
 }
 
-.calendar_date_select .days td.today {
+.calendar_date_select tbody td.today {
   border: 1px dashed red;
 }
 

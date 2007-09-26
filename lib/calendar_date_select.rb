@@ -35,6 +35,10 @@ class CalendarDateSelect
     def date_format_string(time=false)
       @@format[:date] + ( time ? @@format[:time] : "" )
     end
+    
+    def has_time?(value)
+      /[0-9]:[0-9]{2}/.match(value.to_s)
+    end
   end
   
   module FormHelper
@@ -52,17 +56,24 @@ class CalendarDateSelect
       calendar_date_select_output(tag, calendar_options)
     end
     
+    # extracts any options passed into calendar date select, appropriating them to either the Javascript call or the html tag.
     def calendar_date_select_process_options(options)
       calendar_options = {}
       
       callbacks = [:before_show, :before_close, :after_show, :after_close, :after_navigate]
-      for key in [:time, :embedded, :buttons, :format, :year_range, :month_year] + callbacks
+      for key in [:time, :embedded, :buttons, :format, :year_range, :month_year, :popup] + callbacks
         calendar_options[key] = options.delete(key) if options.has_key?(key)
       end
       
       # if passing in mixed, pad it with single quotes
       calendar_options[:time] = "'mixed'" if calendar_options[:time].to_s=="mixed"
       calendar_options[:month_year] = "'#{calendar_options[:month_year]}'" if calendar_options[:month_year]
+      
+      # if we are forcing the popup, automatically set the readonly property on the input control.
+      if calendar_options[:popup].to_s == "force"
+        calendar_options[:popup] = "'force'"
+        options[:readonly] = true 
+      end
       
       # surround any callbacks with a function, if not already done so
       for key in callbacks
