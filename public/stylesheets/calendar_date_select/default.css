@@ -39,6 +39,12 @@
   text-align:center;
 }
 
+.calendar_date_select .cds_header span {
+  font-size:15px;
+  color: black;
+  font-weight: bold;
+}
+
 .calendar_date_select select { font-size:11px;}
 
 .calendar_date_select .cds_header a:hover {
