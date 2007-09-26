@@ -80,6 +80,7 @@ CalendarDateSelect.prototype = {
       calendar_div: nil,
       close_on_click: nil,
       minute_interval: 5,
+      popup_by: target_element,
       month_year: "dropdowns",
       onchange: this.target_element.onchange
     }).merge(options || {});
@@ -121,13 +122,13 @@ CalendarDateSelect.prototype = {
   },
   positionCalendarDiv: function(post_painted) {
     above=false;
-    c_pos = Position.cumulativeOffset(this.target_element); c_left = c_pos[0]; c_top = c_pos[1]; c_dim = this.calendar_div.getDimensions(); c_height = c_dim.height; c_width = c_dim.width; 
+    c_pos = Position.cumulativeOffset(this.calendar_div); c_left = c_pos[0]; c_top = c_pos[1]; c_dim = this.calendar_div.getDimensions(); c_height = c_dim.height; c_width = c_dim.width; 
     w_top = window.f_scrollTop(); w_height = window.f_height();
-    e_dim = Position.cumulativeOffset(this.target_element); e_top = e_dim[1]; e_left = e_dim[0];
+    e_dim = Position.cumulativeOffset($(this.options.popup_by)); e_top = e_dim[1]; e_left = e_dim[0];
     
     if ( (post_painted) && (( c_top + c_height ) > (w_top + w_height)) && ( c_top - c_height > w_top )) above=true;
     left_px = e_left.toString() + "px";
-    top_px = (above ? (e_top - c_height ) : ( e_top + this.target_element.getDimensions().height )).toString() + "px";
+    top_px = (above ? (e_top - c_height ) : ( e_top + $(this.options.popup_by).getDimensions().height )).toString() + "px";
     
     this.calendar_div.style.left = left_px;  this.calendar_div.style.top = top_px;
     
@@ -171,10 +172,11 @@ CalendarDateSelect.prototype = {
     
     days_tbody = days_table.build("tbody")
     // Make the days!
+    row_number=0
     for(cell_index=0; cell_index<42; cell_index++)
     {
       weekday=(cell_index+Date.first_day_of_week ) % 7;
-      if ( cell_index % 7==0 ) days_row = days_tbody.build("tr");
+      if ( cell_index % 7==0 ) days_row = days_tbody.build("tr", {className: 'row_'+row_number++});
       (this.calendar_day_grid[cell_index] = days_row.build("td", {
           calendar_date_select: this,
           onmouseover: function () { this.calendar_date_select.dayHover(this); },
@@ -195,7 +197,7 @@ CalendarDateSelect.prototype = {
     if (this.options["time"])
     {
       blank_time = $A(this.options.time=="mixed" ? [[" - ", ""]] : []);
-      buttons_div.build("span", {innerHTML:" @ "});
+      buttons_div.build("span", {innerHTML:"@", className: "at_sign"});
       
       t=new Date();
       this.hour_select = new SelectBox(buttons_div,
@@ -205,7 +207,7 @@ CalendarDateSelect.prototype = {
           onchange: function() { this.calendar_date_select.updateSelectedDate( { hour: this.value });} 
         }
       );
-      buttons_div.build("span", {innerHTML:" : "});
+      buttons_div.build("span", {innerHTML:":", className: "seperator"});
       that=this;
       this.minute_select = new SelectBox(buttons_div,
         blank_time.concat($R(0,59).select(function(x){return (x % that.options.minute_interval==0)}).map(function(x){ return $A([ Date.padded2(x), x]); } ) ),
@@ -327,7 +329,7 @@ CalendarDateSelect.prototype = {
     this.selected_date = new Date(this.date);
     this.date.setDate(1);
   },
-  updateFooter:function(text) { if (!text) text=this.dateString(); this.footer_div.purgeChildren(); this.footer_div.build("text", {innerHTML: text }); },
+  updateFooter:function(text) { if (!text) text=this.dateString(); this.footer_div.purgeChildren(); this.footer_div.build("span", {innerHTML: text }); },
   updateSelectedDate:function(parts) {
     if (!this.options.popup=="force" && (this.target_element.disabled || this.target_element.readOnly)) return false;
     if (parts.day) {

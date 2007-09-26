@@ -49,7 +49,7 @@ class CalendarDateSelect
       calendar_options.delete(:format)
       
       options[:id] ||= name
-      tag = calendar_options[:embedded] ? 
+      tag = calendar_options[:hidden] || calendar_options[:embedded] ? 
         hidden_field_tag(name, value, options) :
         text_field_tag(name, value, options)
       
@@ -59,9 +59,8 @@ class CalendarDateSelect
     # extracts any options passed into calendar date select, appropriating them to either the Javascript call or the html tag.
     def calendar_date_select_process_options(options)
       calendar_options = {}
-      
       callbacks = [:before_show, :before_close, :after_show, :after_close, :after_navigate]
-      for key in [:time, :embedded, :buttons, :format, :year_range, :month_year, :popup] + callbacks
+      for key in [:time, :embedded, :buttons, :format, :year_range, :month_year, :popup, :hidden] + callbacks
         calendar_options[key] = options.delete(key) if options.has_key?(key)
       end
       
@@ -74,6 +73,8 @@ class CalendarDateSelect
         calendar_options[:popup] = "'force'"
         options[:readonly] = true 
       end
+      
+      calendar_options[:popup_by] ||= "this" if calendar_options[:hidden]
       
       # surround any callbacks with a function, if not already done so
       for key in callbacks
