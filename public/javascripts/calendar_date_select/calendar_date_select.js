@@ -86,7 +86,7 @@ CalendarDateSelect.prototype = {
       onchange: this.target_element.onchange
     }).merge(options || {});
     
-    this.selection_made = $F(this.target_element)!="";
+    this.selection_made = $F(this.target_element).strip()!=="";
     this.use_time = this.options.time;
     
     this.callback("before_show")

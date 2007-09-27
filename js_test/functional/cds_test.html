@@ -104,15 +104,15 @@
       $("cds_test").readOnly = false;
       cds.close();
     }},
-    test_disabledElement_forcePopup_shouldUpdate: function() {with(this){
+    test_readOnlyElement_forcePopup_shouldUpdate: function() {with(this){
       $("cds_test").value = "May 10, 2007";
-      $("cds_test").disabled = true;
+      $("cds_test").readOnly = true;
       cds = new CalendarDateSelect($("cds_test"), {popup: "force"});
       
       cds.updateSelectedDate({day: 1, month:0, year: 2007});
       assertEqual(1, cds.selected_date.getDate())
       
-      $("cds_test").disabled = false;
+      $("cds_test").readOnly = false;
       cds.close();
     }},
     test_timePassed_notUsingTime_shouldIgnore: function() {with(this) {
@@ -141,6 +141,15 @@
       assertEqual(0, cds.selected_date.getMinutes());
       assertEqual(1, cds.selected_date.getHours());
       
+      cds.close();
+    }},
+    // this checks for a safari 2 bug where safari parses "" as a date back in 1969
+    test_parseDate_blankInput_interpretsAsNotSelected: function() {with(this){
+      $("cds_test").value = " ";
+      cds = new CalendarDateSelect($("cds_test"), {time:true});
+      assertEqual(new Date().getFullYear(), cds.selected_date.getFullYear());
+      assertEqual(new Date().getFullYear(), cds.date.getFullYear());
+      assertEqual(false, cds.selection_made)
       cds.close();
     }}
   });
