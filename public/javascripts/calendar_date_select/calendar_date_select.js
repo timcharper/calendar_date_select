@@ -359,7 +359,7 @@ CalendarDateSelect.prototype = {
     if (this.options.close_on_click) { this.close(); }
   },
   setUseTime: function(turn_on) {
-    this.use_time = this.options.time && turn_on;
+    this.use_time = this.options.time && (this.options.time=="mixed" ? turn_on : true)
     if (this.use_time && this.selected_date) { // only set hour/minute if a date is already selected
       minute = Math.floor_to_interval(this.selected_date.getMinutes(), this.options.minute_interval);
       hour = this.selected_date.getHours();
