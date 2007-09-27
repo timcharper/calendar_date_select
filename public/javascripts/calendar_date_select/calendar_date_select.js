@@ -1,4 +1,4 @@
-// CalendarDateSelect version 1.8.0 - a small prototype based date picker
+// CalendarDateSelect version 1.8.1 - a small prototype based date picker
 // Questions, comments, bugs? - email the Author - Tim Harper <"timseeharper@gmail.seeom".gsub("see", "c")> 
 if (typeof Prototype == 'undefined')
   alert("CalendarDateSelect Error: Prototype could not be found. Please make sure that your application's layout includes prototype.js (e.g. <%= javascript_include_tag :defaults %>) *before* it includes calendar_date_select.js (e.g. <%= calendar_date_select_includes %>).");
@@ -39,6 +39,7 @@ Date.prototype.toFormattedString = function(include_time){
   return str;
 }
 Date.parseFormattedString = function(string) { return new Date(string);}
+Math.floor_to_interval = function(n, i) { return Math.floor(n/i) * i;}
 window.f_height = function() { return( [window.innerHeight ? window.innerHeight : null, document.documentElement ? document.documentElement.clientHeight : null, document.body ? document.body.clientHeight : null].select(function(x){return x>0}).first()||0); }
 window.f_scrollTop = function() { return ([window.pageYOffset ? window.pageYOffset : null, document.documentElement ? document.documentElement.scrollTop : null, document.body ? document.body.scrollTop : null].select(function(x){return x>0}).first()||0 ); }
 
@@ -344,11 +345,11 @@ CalendarDateSelect.prototype = {
       this.selected_date.setYear(parts.year);}
     }
     
-    if (! parts.hour === null) this.selected_date.setHours(parts.hour);
-    if (! parts.minute === null) this.selected_date.setMinutes(parts.minute);
+    if (!isNaN(parts.hour)) this.selected_date.setHours(parts.hour);
+    if (!isNaN(parts.minute)) this.selected_date.setMinutes( Math.floor_to_interval(parts.minute, this.options.minute_interval) );
     if (parts.hour === "" || parts.minute === "") 
       this.setUseTime(false);
-    else if ((parts.hour!==null) || (parts.minute!==null))
+    else if (!isNaN(parts.hour) || !isNaN(parts.minute))
       this.setUseTime(true);
     
     this.updateFooter();
@@ -360,7 +361,7 @@ CalendarDateSelect.prototype = {
   setUseTime: function(turn_on) {
     this.use_time = this.options.time && turn_on;
     if (this.use_time && this.selected_date) { // only set hour/minute if a date is already selected
-      minute = Math.floor(this.selected_date.getMinutes() / this.options.minute_interval) * this.options.minute_interval;
+      minute = Math.floor_to_interval(this.selected_date.getMinutes(), this.options.minute_interval);
       hour = this.selected_date.getHours();
       
       this.hour_select.setValue(hour);
