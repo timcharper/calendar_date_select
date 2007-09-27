@@ -97,7 +97,14 @@ class CalendarDateSelect
       
       calendar_options = calendar_date_select_process_options(options)
       
-      value = obj.send(method).strftime(calendar_options[:format]) rescue obj.send("#{method}_before_type_cast")
+      value = if obj.send(method).respond_to?(:strftime)
+        obj.send(method).strftime(calendar_options[:format])
+      elsif obj.respond_to?("#{method}_before_type_cast") 
+        obj.send("#{method}_before_type_cast")
+      else
+        obj.send(method).to_s
+      end
+      
 
       calendar_options.delete(:format)
       options = options.merge(:value => value)
