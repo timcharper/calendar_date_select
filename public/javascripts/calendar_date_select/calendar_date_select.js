@@ -146,7 +146,7 @@ CalendarDateSelect.prototype = {
       eval(name + "_div = that." + name + "_div = that.calendar_div.build('div', { className: 'cds_"+name+"' }, { clear: 'left'} ); ");
     });
     
-    this.initTimeDiv();
+    this.initButtonsDiv();
     this.updateFooter("&nbsp;");
     // make the header buttons
     this.prev_month_button = header_div.build("a", { innerHTML: "&lt;", href:"#", onclick:function(){return false;}, className: "prev" });
@@ -190,7 +190,7 @@ CalendarDateSelect.prototype = {
     }
     this.refresh();
   },
-  initTimeDiv: function()
+  initButtonsDiv: function()
   {
     buttons_div = this.buttons_div;
     // make the time div
@@ -204,7 +204,8 @@ CalendarDateSelect.prototype = {
         blank_time.concat($R(0,23).map(function(x) {t.setHours(x); return $A([t.getAMPMHour()+ " " + t.getAMPM(),x])} )),
         { 
           calendar_date_select: this, 
-          onchange: function() { this.calendar_date_select.updateSelectedDate( { hour: this.value });} 
+          onchange: function() { this.calendar_date_select.updateSelectedDate( { hour: this.value });},
+          className: "hour" 
         }
       );
       buttons_div.build("span", {innerHTML:":", className: "seperator"});
@@ -213,7 +214,8 @@ CalendarDateSelect.prototype = {
         blank_time.concat($R(0,59).select(function(x){return (x % that.options.minute_interval==0)}).map(function(x){ return $A([ Date.padded2(x), x]); } ) ),
         { 
           calendar_date_select: this, 
-          onchange: function() { this.calendar_date_select.updateSelectedDate( {minute: this.value }) } 
+          onchange: function() { this.calendar_date_select.updateSelectedDate( {minute: this.value }) }, 
+          className: "minute" 
         }
       );
     } else if (! this.options.buttons) buttons_div.remove();
@@ -324,14 +326,16 @@ CalendarDateSelect.prototype = {
   reparse: function() { this.parseDate(); this.refresh(); },
   parseDate: function()
   {
-    this.date = $F(this.target_element).strip()=="" ? NaN : Date.parseFormattedString(this.options['date'] || $F(this.target_element));
+    value = $F(this.target_element).strip()
+    this.date = value=="" ? NaN : Date.parseFormattedString(this.options['date'] || value);
     if (isNaN(this.date)) this.date = new Date();
     this.selected_date = new Date(this.date);
+    this.use_time = /[0-9]:[0-9]{2}/.exec(value) ? true : false;
     this.date.setDate(1);
   },
   updateFooter:function(text) { if (!text) text=this.dateString(); this.footer_div.purgeChildren(); this.footer_div.build("span", {innerHTML: text }); },
   updateSelectedDate:function(parts) {
-    if (!this.options.popup=="force" && (this.target_element.disabled || this.target_element.readOnly)) return false;
+    if ((this.target_element.disabled || this.target_element.readOnly) && this.options.popup!="force") return false;
     if (parts.day) {
       this.selection_made = true;
       for (x=0; x<=1; x++) {
@@ -340,12 +344,11 @@ CalendarDateSelect.prototype = {
       this.selected_date.setYear(parts.year);}
     }
     
-    if (parts.hour) this.selected_date.setHours(parts.hour);
-    if (parts.minute) this.selected_date.setMinutes(parts.minute);
-    
-    if (parts.hour=="" || parts.minute == "") 
+    if (! parts.hour === null) this.selected_date.setHours(parts.hour);
+    if (! parts.minute === null) this.selected_date.setMinutes(parts.minute);
+    if (parts.hour === "" || parts.minute === "") 
       this.setUseTime(false);
-    else if (parts.hour || parts.minute)
+    else if ((parts.hour!==null) || (parts.minute!==null))
       this.setUseTime(true);
     
     this.updateFooter();
@@ -355,9 +358,9 @@ CalendarDateSelect.prototype = {
     if (this.options.close_on_click) { this.close(); }
   },
   setUseTime: function(turn_on) {
-    this.use_time = turn_on;
-    if (this.use_time) {
-      minute = Math.round(this.selected_date.getMinutes() / this.options.minute_interval) * this.options.minute_interval;
+    this.use_time = this.options.time && turn_on;
+    if (this.use_time && this.selected_date) { // only set hour/minute if a date is already selected
+      minute = Math.floor(this.selected_date.getMinutes() / this.options.minute_interval) * this.options.minute_interval;
       hour = this.selected_date.getHours();
       
       this.hour_select.setValue(hour);
@@ -374,15 +377,16 @@ CalendarDateSelect.prototype = {
   today: function(now) {
     d=new Date(); this.date = new Date();
     o = $H({ day: d.getDate(), month: d.getMonth(), year: d.getFullYear(), hour: d.getHours(), minute: d.getMinutes()});
-    if (!now) o = o.merge({hour: "", minute:""}); 
+    if ( ! now ) o = o.merge({hour: "", minute:""}); 
     this.updateSelectedDate(o);
     this.refresh();
   },
   close: function() {
+    if (this.closed) return false;
     this.callback("before_close");
     this.target_element.calendar_date_select = nil;
     Event.stopObserving(document.body, "mousedown", this.bodyClick_handler);
-    this.calendar_div.remove();
+    this.calendar_div.remove(); this.closed=true;
     if (this.iframe) this.iframe.remove();
     this.target_element.focus();
     this.callback("after_close");
