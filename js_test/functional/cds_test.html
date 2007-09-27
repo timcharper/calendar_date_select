@@ -152,7 +152,7 @@
       assertEqual(false, cds.selection_made)
       cds.close();
     }},
-    test_parseDate_timeTrue_noTimePassed_useDateSetToTrueAnyway: function() {with(this){
+    test_parseDate_timeTrue_noTimePassed_useTimeSetToTrueAnyway: function() {with(this){
       $("cds_test").value = "December 1, 2007 ";
       cds = new CalendarDateSelect($("cds_test"), {time:true});
       assertEqual(true, cds.use_time)
