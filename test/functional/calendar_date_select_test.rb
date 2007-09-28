@@ -44,6 +44,6 @@ class HelperMethodsTest < Test::Unit::TestCase
     @model = nil
     output = calendar_date_select(:model, :start_datetime)
     
-    puts output
+    assert_no_match(/value/, output)
   end
 end
