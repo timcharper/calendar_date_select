@@ -1,6 +1,13 @@
-require 'test/unit'
 require "rubygems"
+
+require 'test/unit'
+
 require 'active_support'
+require 'action_pack'
+require 'action_controller'
+require 'action_view'
+
+require 'ostruct'
 
 for file in ["../lib/calendar_date_select.rb", "../lib/includes_helper.rb"]
   require File.expand_path(File.join(File.dirname(__FILE__), file))
