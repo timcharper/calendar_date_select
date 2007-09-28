@@ -80,10 +80,8 @@ class CalendarDateSelect
       for key in callbacks
         calendar_options[key] = "function(param) { #{calendar_options[key]} }" unless calendar_options[key].include?("function") if calendar_options[key]
       end
-    
-      calendar_options[:year_range] ||= 10
-      calendar_options[:format] ||= CalendarDateSelect.date_format_string(calendar_options[:time])
       
+      calendar_options[:year_range] ||= 10
       calendar_options
     end
     
@@ -92,21 +90,25 @@ class CalendarDateSelect
       
       if !options.include?(:time) && obj.class.respond_to?("columns_hash")
         column_type = (obj.class.columns_hash[method.to_s].type rescue nil)
-        options[:time] = true if column_type==:datetime
+        options[:time] = true if column_type == :datetime
+      end
+      
+      use_time = options[:time]
+      
+      if options[:time].to_s=="mixed"
+        use_time = false if Date===obj.send(method)
       end
       
       calendar_options = calendar_date_select_process_options(options)
       
       value = if obj.send(method).respond_to?(:strftime)
-        obj.send(method).strftime(calendar_options[:format])
+        obj.send(method).strftime(CalendarDateSelect.date_format_string(use_time))
       elsif obj.respond_to?("#{method}_before_type_cast") 
         obj.send("#{method}_before_type_cast")
       else
         obj.send(method).to_s
       end
       
-
-      calendar_options.delete(:format)
       options = options.merge(:value => value)
 
       tag = ActionView::Helpers::InstanceTag.new(object, method, self, nil, options.delete(:object))
