@@ -40,4 +40,10 @@ class HelperMethodsTest < Test::Unit::TestCase
     assert_no_match(/12:00 AM/, output, "Shouldn't have outputted a time")
   end
   
+  def test__nil_model__shouldnt_populate_value
+    @model = nil
+    output = calendar_date_select(:model, :start_datetime)
+    
+    puts output
+  end
 end
