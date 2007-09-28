@@ -36,6 +36,14 @@ class CalendarDateSelect
       @@format[:date] + ( time ? @@format[:time] : "" )
     end
     
+    def format_date(date)
+      if Date===date
+        date.strftime(date_format_string(false))
+      else
+        date.strftime(date_format_string(true))
+      end
+    end
+    
     def has_time?(value)
       /[0-9]:[0-9]{2}/.match(value.to_s)
     end
