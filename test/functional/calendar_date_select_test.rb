@@ -21,7 +21,7 @@ class HelperMethodsTest < Test::Unit::TestCase
     output = calendar_date_select(:model, :start_datetime, :time => "mixed")
     assert_no_match(/12:00 AM/, output, "Shouldn't have outputted a time")
   end
-    
+  
   def test_mixed_time__model_returns_time__should_render_with_time
     @model.start_datetime = Time.parse("January 2, 2007 12:00 AM")
     output = calendar_date_select(:model, :start_datetime, :time => "mixed")

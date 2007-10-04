@@ -109,7 +109,7 @@ class CalendarDateSelect
       
       calendar_options = calendar_date_select_process_options(options)
       
-      value = if obj.respond_to?(method) && obj.send(method).respond_to?(:strftime)
+      options[:value] ||= if obj.respond_to?(method) && obj.send(method).respond_to?(:strftime)
         obj.send(method).strftime(CalendarDateSelect.date_format_string(use_time))
       elsif obj.respond_to?("#{method}_before_type_cast") 
         obj.send("#{method}_before_type_cast")
@@ -118,8 +118,6 @@ class CalendarDateSelect
       else
         nil
       end
-      
-      options = options.merge(:value => value)
 
       tag = ActionView::Helpers::InstanceTag.new(object, method, self, nil, options.delete(:object))
       calendar_date_select_output(
