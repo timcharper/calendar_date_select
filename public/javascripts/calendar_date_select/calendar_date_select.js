@@ -118,7 +118,7 @@ CalendarDateSelect.prototype = {
     if(!this.options["embedded"]) Event.observe(document.body, "mousedown", this.bodyClick_handler=this.bodyClick.bindAsEventListener(this));
     
     this.initFrame();
-    if(!this.options["embedded"]) { this.positionCalendarDiv(true) }//.bindAsEventListener(this), 1);
+    if(!this.options["embedded"]) { this.positionCalendarDiv(true) }
     this.callback("after_show")
   },
   positionCalendarDiv: function(post_painted) {
@@ -134,9 +134,8 @@ CalendarDateSelect.prototype = {
     this.calendar_div.style.left = left_px;  this.calendar_div.style.top = top_px;
     
     // draw an iframe behind the calendar -- ugly hack to make IE 6 happy
-    if (post_painted)
-    {
-      this.iframe = $(document.body).build("iframe", {}, { position:"absolute", left: left_px, top: top_px, height: c_height.toString()+"px", width: c_width.toString()+"px", border: "0px"})
+    if (post_painted) {
+      this.iframe = $(document.body).build("iframe", {className: "ie6_blocker"}, { left: left_px, top: top_px, height: c_height.toString()+"px", width: c_width.toString()+"px", border: "0px"})
       this.calendar_div.setStyle({visibility:""});
     }
   },
