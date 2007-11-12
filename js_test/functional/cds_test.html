@@ -193,6 +193,15 @@
       cds = new CalendarDateSelect($("cds_test_div"), {time:true, year_range: [2007, 2007]});
       assert(cds.year_select.setValue(2007), "should allow me to select 2007");
       cds.close();
+    }},
+    test__flexibleYearRange__goToBoundary__shouldRefreshRange: function() {with(this){
+      $("cds_test").value = "January 1, 2007";
+      cds = new CalendarDateSelect($("cds_test_div"), {time:true, year_range: 10});
+      cds.navYear(1997);
+      assert(cds.year_select.setValue(1987), "should have refreshed with 1997 as the center");
+      cds.navYear(2017);
+      assert(cds.year_select.setValue(2027), "should have refreshed with 2027 as the center");
+      cds.close();
     }}
   });
 // ]]>
