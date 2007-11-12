@@ -206,6 +206,12 @@
       
       cds.close();
     }},
+    test__nonflexibleYearRange__initializedWithDateInsideOfRange__shouldShowNavDateAsYear: function() {with(this){
+      $("cds_test").value = "January 1, 2005";
+      cds = new CalendarDateSelect($("cds_test_div"), {time:true, year_range: [1997, 2007]});
+      assertEqual(2005, cds.date.getFullYear(), "When going lesser than year_range");
+      cds.close();
+    }},
     test__flexibleYearRange__goToBoundary__shouldRefreshRange: function() {with(this){
       $("cds_test").value = "January 1, 2007";
       cds = new CalendarDateSelect($("cds_test_div"), {time:true, year_range: 10});
