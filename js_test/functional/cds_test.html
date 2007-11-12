@@ -18,7 +18,9 @@
 <div id="testlog"> </div>
 
 <!-- here go any elements you do the testing on -->
-<input type="text" id="cds_test" />
+<div id="cds_test_div">
+  <input type="text" id="cds_test" />
+</div>
 
 <!-- Tests -->
 <script type="text/javascript" language="javascript">
@@ -156,6 +158,11 @@
       $("cds_test").value = "December 1, 2007 ";
       cds = new CalendarDateSelect($("cds_test"), {time:true});
       assertEqual(true, cds.use_time)
+      cds.close();
+    }},
+    test_passDivElement__shouldUseChildInputForTargetElement: function() {with(this){
+      cds = new CalendarDateSelect($("cds_test_div"), {time:true});
+      assertEqual("INPUT", cds.target_element.nodeName)
       cds.close();
     }}
     
