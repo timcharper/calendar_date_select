@@ -71,6 +71,10 @@ CalendarDateSelect = Class.create();
 CalendarDateSelect.prototype = {
   initialize: function(target_element, options) {
     this.target_element = $(target_element); // make sure it's an element, not a string
+    if (!this.target_element) { alert("Target element " + target_element + " not found!"); return false;}
+    if (down=this.target_element.down("INPUT")) this.target_element = down;
+    
+    // Make sure we've gotten an input element
     this.target_element.calendar_date_select = this;
     this.last_click_at = 0;
     // initialize the date control
@@ -83,7 +87,7 @@ CalendarDateSelect.prototype = {
       calendar_div: nil,
       close_on_click: nil,
       minute_interval: 5,
-      popup_by: target_element,
+      popup_by: this.target_element,
       month_year: "dropdowns",
       onchange: this.target_element.onchange
     }).merge(options || {});
@@ -93,7 +97,6 @@ CalendarDateSelect.prototype = {
     
     this.callback("before_show")
     this.calendar_div = $(this.options.calendar_div);
-    if (!this.target_element) { alert("Target element " + target_element + " not found!"); return false;}
     
     this.parseDate();
     
@@ -408,7 +411,7 @@ CalendarDateSelect.prototype = {
     Event.stopObserving(document.body, "keydown", this.keyDown_handler);
     this.calendar_div.remove(); this.closed=true;
     if (this.iframe) this.iframe.remove();
-    this.target_element.focus();
+    if (this.target_element.type!="hidden") this.target_element.focus();
     this.callback("after_close");
   },
   bodyClick: function(e) { // checks to see if somewhere other than calendar date select grid was clicked.  in which case, close
