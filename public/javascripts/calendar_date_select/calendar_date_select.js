@@ -1,4 +1,4 @@
-// CalendarDateSelect version 1.8.1 - a small prototype based date picker
+// CalendarDateSelect version 1.8.2 - a small prototype based date picker
 // Questions, comments, bugs? - email the Author - Tim Harper <"timseeharper@gmail.seeom".gsub("see", "c")> 
 if (typeof Prototype == 'undefined')
   alert("CalendarDateSelect Error: Prototype could not be found. Please make sure that your application's layout includes prototype.js (e.g. <%= javascript_include_tag :defaults %>) *before* it includes calendar_date_select.js (e.g. <%= calendar_date_select_includes %>).");
@@ -45,6 +45,7 @@ window.f_scrollTop = function() { return ([window.pageYOffset ? window.pageYOffs
 
 _translations = {
   "OK": "OK",
+  "Cancel": "Cancel",
   "Now": "Now",
   "Today": "Today"
 }
@@ -71,6 +72,7 @@ CalendarDateSelect.prototype = {
   initialize: function(target_element, options) {
     this.target_element = $(target_element); // make sure it's an element, not a string
     this.target_element.calendar_date_select = this;
+    this.last_click_at = 0;
     // initialize the date control
     this.options = $H({
       embedded: false,
@@ -115,10 +117,14 @@ CalendarDateSelect.prototype = {
     }
     
     // set the click handler to check if a user has clicked away from the document
-    if(!this.options["embedded"]) Event.observe(document.body, "mousedown", this.bodyClick_handler=this.bodyClick.bindAsEventListener(this));
+    if(!this.options["embedded"]) {
+      Event.observe(document.body, "mousedown", this.bodyClick_handler=this.bodyClick.bindAsEventListener(this));
+      Event.observe(document.body, "keypress", this.keyDown_handler=this.keyPress.bindAsEventListener(this));
+//      alert("hi");
+    }
     
     this.initFrame();
-    if(!this.options["embedded"]) { this.positionCalendarDiv(true) }
+    if(!this.options["embedded"]) { this.positionCalendarDiv(true) }//.bindAsEventListener(this), 1);
     this.callback("after_show")
   },
   positionCalendarDiv: function(post_painted) {
@@ -134,7 +140,8 @@ CalendarDateSelect.prototype = {
     this.calendar_div.style.left = left_px;  this.calendar_div.style.top = top_px;
     
     // draw an iframe behind the calendar -- ugly hack to make IE 6 happy
-    if (post_painted) {
+    if (post_painted)
+    {
       this.iframe = $(document.body).build("iframe", {className: "ie6_blocker"}, { left: left_px, top: top_px, height: c_height.toString()+"px", width: c_width.toString()+"px", border: "0px"})
       this.calendar_div.setStyle({visibility:""});
     }
@@ -149,17 +156,18 @@ CalendarDateSelect.prototype = {
     this.initButtonsDiv();
     this.updateFooter("&nbsp;");
     // make the header buttons
-    this.prev_month_button = header_div.build("a", { innerHTML: "&lt;", href:"#", onclick:function(){return false;}, className: "prev" });
-    this.next_month_button = header_div.build("a", { innerHTML: "&gt;", href:"#", onclick:function(){return false;}, className: "next" });
-    Event.observe(this.prev_month_button, 'mousedown', function () { this.navMonth(this.date.getMonth() - 1 ) }.bindAsEventListener(this));
-    Event.observe(this.next_month_button, 'mousedown', function () { this.navMonth(this.date.getMonth() + 1 ) }.bindAsEventListener(this));
+    this.close_button = header_div.build("a", { innerHTML: "x", href:"#", onclick:function () { this.close(); return false; }.bindAsEventListener(this), className: "close" });
+    this.next_month_button = header_div.build("a", { innerHTML: "&gt;", href:"#", onclick:function () { this.navMonth(this.date.getMonth() + 1 ); return false; }.bindAsEventListener(this), className: "next" });
+    this.prev_month_button = header_div.build("a", { innerHTML: "&lt;", href:"#", onclick:function () { this.navMonth(this.date.getMonth() - 1 ); return false; }.bindAsEventListener(this), className: "prev" });
     
+
     if (this.options.month_year=="dropdowns") {
       this.month_select = new SelectBox(header_div, $R(0,11).map(function(m){return [Date.months[m], m]}), {className: "month", onchange: function () { this.navMonth(this.month_select.getValue()) }.bindAsEventListener(this)}); 
       this.year_select = new SelectBox(header_div, [], {className: "year", onchange: function () { this.navYear(this.year_select.getValue()) }.bindAsEventListener(this)}); 
     } else {
       this.month_year_label = header_div.build("span")
     }
+    
     
     // build the calendar day grid
     this.calendar_day_grid = [];
@@ -181,7 +189,7 @@ CalendarDateSelect.prototype = {
           calendar_date_select: this,
           onmouseover: function () { this.calendar_date_select.dayHover(this); },
           onmouseout: function () { this.calendar_date_select.dayHoverOut(this) },
-          onclick: function() { this.calendar_date_select.updateSelectedDate(this); },
+          onclick: function() { this.calendar_date_select.updateSelectedDate(this, true); },
           className: (weekday==0) || (weekday==6) ? " weekend" : "" //clear the class
         },
         { cursor: "pointer" }
@@ -218,10 +226,11 @@ CalendarDateSelect.prototype = {
           className: "minute" 
         }
       );
+      
     } else if (! this.options.buttons) buttons_div.remove();
     
     if (this.options.buttons) {
-      buttons_div.build("span", {innerHTML: " "});
+      buttons_div.build("span", {innerHTML: "&nbsp;"});
       // Build Today button
       if (this.options.time=="mixed" || !this.options.time) b=buttons_div.build("a", {
           innerHTML: _translations["Today"],
@@ -236,6 +245,12 @@ CalendarDateSelect.prototype = {
         href: "#",
         onclick: function() {this.today(true); return false}.bindAsEventListener(this)
       });
+      
+      if (!this.options.embedded)
+      {
+        buttons_div.build("span", {innerHTML: "&nbsp;"});
+        buttons_div.build("a", { innerHTML: _translations["OK"], href: "#", onclick: function() {this.close(); return false;}.bindAsEventListener(this) });
+      }
     }
   },
   dateString: function() {
@@ -334,7 +349,7 @@ CalendarDateSelect.prototype = {
     this.date.setDate(1);
   },
   updateFooter:function(text) { if (!text) text=this.dateString(); this.footer_div.purgeChildren(); this.footer_div.build("span", {innerHTML: text }); },
-  updateSelectedDate:function(parts) {
+  updateSelectedDate:function(parts, via_click) {
     if ((this.target_element.disabled || this.target_element.readOnly) && this.options.popup!="force") return false;
     if (parts.day) {
       this.selection_made = true;
@@ -356,6 +371,10 @@ CalendarDateSelect.prototype = {
     
     if (this.selection_made) this.updateValue();
     if (this.options.close_on_click) { this.close(); }
+    if (via_click && !this.options.embedded) {
+      if ((new Date() - this.last_click_at) < 333) this.close();
+      this.last_click_at = new Date();
+    }
   },
   setUseTime: function(turn_on) {
     this.use_time = this.options.time && (this.options.time=="mixed" ? turn_on : true) // force use_time to true if time==true && time!="mixed"
@@ -378,7 +397,7 @@ CalendarDateSelect.prototype = {
     d=new Date(); this.date = new Date();
     o = $H({ day: d.getDate(), month: d.getMonth(), year: d.getFullYear(), hour: d.getHours(), minute: d.getMinutes()});
     if ( ! now ) o = o.merge({hour: "", minute:""}); 
-    this.updateSelectedDate(o);
+    this.updateSelectedDate(o, true);
     this.refresh();
   },
   close: function() {
@@ -386,6 +405,7 @@ CalendarDateSelect.prototype = {
     this.callback("before_close");
     this.target_element.calendar_date_select = nil;
     Event.stopObserving(document.body, "mousedown", this.bodyClick_handler);
+    Event.stopObserving(document.body, "keydown", this.keyDown_handler);
     this.calendar_div.remove(); this.closed=true;
     if (this.iframe) this.iframe.remove();
     this.target_element.focus();
@@ -393,6 +413,9 @@ CalendarDateSelect.prototype = {
   },
   bodyClick: function(e) { // checks to see if somewhere other than calendar date select grid was clicked.  in which case, close
     if (! $(Event.element(e)).descendantOf(this.calendar_div) ) this.close();
+  },
+  keyPress: function(e) {
+    if (e.keyCode==Event.KEY_ESC) this.close();
   },
   callback: function(name, param) { if (this.options[name]) { this.options[name].bind(this.target_element)(param); } }
 }

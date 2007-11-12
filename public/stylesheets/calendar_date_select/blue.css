@@ -71,6 +71,12 @@ iframe.ie6_blocker {
   float:right;
 }
 
+.calendar_date_select .cds_header a.close {
+  float:right;
+  display:none;
+}
+
+
 .calendar_date_select .cds_header select.month {
   width:90px;
 }

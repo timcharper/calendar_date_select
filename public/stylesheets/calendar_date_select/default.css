@@ -5,7 +5,6 @@
   width:195px;
   z-index: 1000;
 }
-
 /* this is a fun ie6 hack to get drop downs to stay behind the popup window.  This should always be just underneath .calendar_date_select */
 iframe.ie6_blocker {
   position: absolute;
@@ -70,6 +69,12 @@ iframe.ie6_blocker {
 .calendar_date_select .cds_header a.next {
   float:right;
 }
+
+.calendar_date_select .cds_header a.close {
+  float:right;
+  display:none;
+}
+
 .calendar_date_select .cds_header select.month {
   width:90px;
 }
