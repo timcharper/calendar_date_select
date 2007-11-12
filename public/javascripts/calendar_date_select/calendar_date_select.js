@@ -345,6 +345,7 @@ CalendarDateSelect.prototype = {
     value = $F(this.target_element).strip()
     this.date = value=="" ? NaN : Date.parseFormattedString(this.options['date'] || value);
     if (isNaN(this.date)) this.date = new Date();
+    if (!this.validYear(this.date)) this.date.setYear( (this.date.getFullYear() < this.yearRange().start) ? this.yearRange().start : this.yearRange().end);
     this.selected_date = new Date(this.date);
     this.use_time = /[0-9]:[0-9]{2}/.exec(value) ? true : false;
     this.date.setDate(1);
@@ -382,6 +383,7 @@ CalendarDateSelect.prototype = {
   navTo: function(date) {
     if (!this.validYear(date.getFullYear())) return false;
     this.date = date;
+    this.date.setDate(1);
     this.refresh();
     this.callback("after_navigate", this.date);
     return true;
