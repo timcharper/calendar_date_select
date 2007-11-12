@@ -1,4 +1,4 @@
-// CalendarDateSelect version 1.8.2 - a small prototype based date picker
+// CalendarDateSelect version 1.8.3 - a small prototype based date picker
 // Questions, comments, bugs? - email the Author - Tim Harper <"timseeharper@gmail.seeom".gsub("see", "c")> 
 if (typeof Prototype == 'undefined')
   alert("CalendarDateSelect Error: Prototype could not be found. Please make sure that your application's layout includes prototype.js (e.g. <%= javascript_include_tag :defaults %>) *before* it includes calendar_date_select.js (e.g. <%= calendar_date_select_includes %>).");
@@ -59,7 +59,7 @@ SelectBox.prototype = {
     this.element.purgeChildren();
     that=this; $A(values).each(function(pair) { if (typeof(pair)!="object") {pair = [pair, pair]}; that.element.build("option", { value: pair[1], innerHTML: pair[0]}) });
   },
-  setValue: function(value, callback) {
+  setValue: function(value, add_if_missing) {
     e = this.element;
     matched=false;
     $R(0, e.options.length - 1 ).each(function(i) { if(e.options[i].value==value.toString()) {e.selectedIndex = i; matched=true;}; } );
@@ -74,7 +74,6 @@ CalendarDateSelect.prototype = {
     if (!this.target_element) { alert("Target element " + target_element + " not found!"); return false;}
     if (down=this.target_element.down("INPUT")) this.target_element = down;
     
-    // Make sure we've gotten an input element
     this.target_element.calendar_date_select = this;
     this.last_click_at = 0;
     // initialize the date control
@@ -102,10 +101,7 @@ CalendarDateSelect.prototype = {
     
     // by default, stick it by the target element (if embedded, that's where we'll want it to show up)
     if (this.calendar_div == nil) { this.calendar_div = $( this.options.embedded ? this.target_element.parentNode : document.body ).build('div'); }
-    if (!this.options.embedded) {
-      this.calendar_div.setStyle( { position:"absolute", visibility: "hidden" } )
-      this.positionCalendarDiv();
-    }
+    if (!this.options.embedded) this.calendar_div.setStyle( { position:"absolute", visibility: "hidden", left:0, top:0 } )
     
     this.calendar_div.addClassName("calendar_date_select");
     
@@ -121,58 +117,62 @@ CalendarDateSelect.prototype = {
     
     // set the click handler to check if a user has clicked away from the document
     if(!this.options["embedded"]) {
-      Event.observe(document.body, "mousedown", this.bodyClick_handler=this.bodyClick.bindAsEventListener(this));
+      Event.observe(document.body, "mousedown", this.closeIfClickedOut_handler=this.closeIfClickedOut.bindAsEventListener(this));
       Event.observe(document.body, "keypress", this.keyDown_handler=this.keyPress.bindAsEventListener(this));
-//      alert("hi");
     }
     
-    this.initFrame();
-    if(!this.options["embedded"]) { this.positionCalendarDiv(true) }//.bindAsEventListener(this), 1);
+    this.init();
+    if(!this.options["embedded"]) { this.positionCalendarDiv() };
     this.callback("after_show")
   },
-  positionCalendarDiv: function(post_painted) {
+  positionCalendarDiv: function() {
     above=false;
     c_pos = Position.cumulativeOffset(this.calendar_div); c_left = c_pos[0]; c_top = c_pos[1]; c_dim = this.calendar_div.getDimensions(); c_height = c_dim.height; c_width = c_dim.width; 
     w_top = window.f_scrollTop(); w_height = window.f_height();
-    e_dim = Position.cumulativeOffset($(this.options.popup_by)); e_top = e_dim[1]; e_left = e_dim[0];
+    e_dim = Position.cumulativeOffset($(this.options.popup_by)); e_top = e_dim[1]; e_left = e_dim[0]; e_height = $(this.options.popup_by).getDimensions().height; e_bottom = e_top + e_height;
     
-    if ( (post_painted) && (( c_top + c_height ) > (w_top + w_height)) && ( c_top - c_height > w_top )) above=true;
+    if ( (( e_bottom + c_height ) > (w_top + w_height)) && ( e_bottom - c_height > w_top )) above=true;
     left_px = e_left.toString() + "px";
-    top_px = (above ? (e_top - c_height ) : ( e_top + $(this.options.popup_by).getDimensions().height )).toString() + "px";
+    top_px = (above ? (e_top - c_height ) : ( e_top + e_height )).toString() + "px";
     
     this.calendar_div.style.left = left_px;  this.calendar_div.style.top = top_px;
     
+    this.calendar_div.setStyle({visibility:""});
+    
     // draw an iframe behind the calendar -- ugly hack to make IE 6 happy
-    if (post_painted)
-    {
-      this.iframe = $(document.body).build("iframe", {className: "ie6_blocker"}, { left: left_px, top: top_px, height: c_height.toString()+"px", width: c_width.toString()+"px", border: "0px"})
-      this.calendar_div.setStyle({visibility:""});
-    }
+    this.iframe = $(document.body).build("iframe", {className: "ie6_blocker"}, { left: left_px, top: top_px, height: c_height.toString()+"px", width: c_width.toString()+"px", border: "0px"})
   },
-  initFrame: function() {
+  init: function() {
     that=this;
     // create the divs
     $w("top header body buttons footer bottom").each(function(name) {
       eval(name + "_div = that." + name + "_div = that.calendar_div.build('div', { className: 'cds_"+name+"' }, { clear: 'left'} ); ");
     });
     
+    this.initHeaderDiv();
     this.initButtonsDiv();
+    this.initCalendarGrid();
     this.updateFooter("&nbsp;");
-    // make the header buttons
+    
+    this.refresh();
+    this.setUseTime(this.use_time);
+  },
+  initHeaderDiv: function() {
+    header_div = this.header_div;
     this.close_button = header_div.build("a", { innerHTML: "x", href:"#", onclick:function () { this.close(); return false; }.bindAsEventListener(this), className: "close" });
     this.next_month_button = header_div.build("a", { innerHTML: "&gt;", href:"#", onclick:function () { this.navMonth(this.date.getMonth() + 1 ); return false; }.bindAsEventListener(this), className: "next" });
     this.prev_month_button = header_div.build("a", { innerHTML: "&lt;", href:"#", onclick:function () { this.navMonth(this.date.getMonth() - 1 ); return false; }.bindAsEventListener(this), className: "prev" });
     
-
     if (this.options.month_year=="dropdowns") {
       this.month_select = new SelectBox(header_div, $R(0,11).map(function(m){return [Date.months[m], m]}), {className: "month", onchange: function () { this.navMonth(this.month_select.getValue()) }.bindAsEventListener(this)}); 
       this.year_select = new SelectBox(header_div, [], {className: "year", onchange: function () { this.navYear(this.year_select.getValue()) }.bindAsEventListener(this)}); 
+      this.populateYearRange();
     } else {
       this.month_year_label = header_div.build("span")
     }
-    
-    
-    // build the calendar day grid
+  },
+  initCalendarGrid: function() {
+    body_div = this.body_div;
     this.calendar_day_grid = [];
     days_table = body_div.build("table", { cellPadding: "0px", cellSpacing: "0px", width: "100%" })
     // make the weekdays!
@@ -199,12 +199,10 @@ CalendarDateSelect.prototype = {
       )).build("div");
       this.calendar_day_grid[cell_index];
     }
-    this.refresh();
   },
   initButtonsDiv: function()
   {
     buttons_div = this.buttons_div;
-    // make the time div
     if (this.options["time"])
     {
       blank_time = $A(this.options.time=="mixed" ? [[" - ", ""]] : []);
@@ -234,7 +232,6 @@ CalendarDateSelect.prototype = {
     
     if (this.options.buttons) {
       buttons_div.build("span", {innerHTML: "&nbsp;"});
-      // Build Today button
       if (this.options.time=="mixed" || !this.options.time) b=buttons_div.build("a", {
           innerHTML: _translations["Today"],
           href: "#",
@@ -256,40 +253,15 @@ CalendarDateSelect.prototype = {
       }
     }
   },
-  dateString: function() {
-    return (this.selection_made) ? this.selected_date.toFormattedString(this.use_time) : "&nbsp;";
-  },
-  navMonth: function(month) {
-    prev_day = this.date.getDate();
-    this.date.setMonth(month);
-    
-    this.refresh();
-    this.callback("after_navigate", this.date);
-  },
-  navYear: function(year) {
-    this.date.setYear(year);
-    this.refresh();
-    this.callback("after_navigate", this.date);
-  },
   refresh: function ()
   {
-    m=this.date.getMonth()
-    y=this.date.getFullYear();
-    // set the month
-    if (this.options.month_year == "dropdowns") 
-    {
-      this.month_select.setValue(m, false);
-      
-      e=this.year_select.element; 
-      if ( !(this.year_select.setValue(y)) || e.selectedIndex <= 1 || e.selectedIndex >= e.options.length - 2 ) { 
-        this.year_select.populate( $R( y - this.options.year_range, y+this.options.year_range ).toArray() );
-        this.year_select.setValue(y)
-      }
-    } else {
-      this.month_year_label.update( Date.months[m] + " " + y.toString()  );
-    }
-      
-    // populate the calendar_day_grid
+    this.refreshMonthYear();
+    this.refreshCalendarGrid();
+    
+    this.setSelectedClass();
+    this.updateFooter();
+  },
+  refreshCalendarGrid: function () {
     this.beginning_date = new Date(this.date).stripTime();
     this.beginning_date.setDate(1);
     pre_days = this.beginning_date.getDay() // draw some days before the fact
@@ -316,13 +288,36 @@ CalendarDateSelect.prototype = {
       this.today_cell = this.calendar_day_grid[days_until];
       this.today_cell.addClassName("today");
     }
-    
-    // set the time
-    this.setUseTime(this.use_time);
-    
-    this.setSelectedClass();
-    this.updateFooter();
   },
+  refreshMonthYear: function() {
+    m=this.date.getMonth();
+    y=this.date.getFullYear();
+    // set the month
+    if (this.options.month_year == "dropdowns") 
+    {
+      this.month_select.setValue(m, false);
+      
+      e=this.year_select.element; 
+      if (this.flexibleYearRange() && (!(this.year_select.setValue(y, false)) || e.selectedIndex <= 1 || e.selectedIndex >= e.options.length - 2 )) this.populateYearRange();
+      
+      this.year_select.setValue(y);
+      
+    } else {
+      this.month_year_label.update( Date.months[m] + " " + y.toString()  );
+    }
+  },
+  populateYearRange: function() {
+    this.year_select.populate(this.yearRange().toArray());
+  },
+  yearRange: function() {
+    if (!this.flexibleYearRange())
+      return $R(this.options.year_range[0], this.options.year_range[1]);
+      
+    y = this.date.getFullYear();
+    return $R(y - this.options.year_range, y + this.options.year_range);
+  },
+  flexibleYearRange: function() { return (typeof(this.options.year_range) == "number"); },
+  validYear: function(year) { if (this.flexibleYearRange()) { return true;} else { return this.yearRange().include(year);}  },
   dayHover: function(element) {
     element.addClassName("hover");
     hover_date = new Date(this.selected_date);
@@ -342,6 +337,9 @@ CalendarDateSelect.prototype = {
     }
   },
   reparse: function() { this.parseDate(); this.refresh(); },
+  dateString: function() {
+    return (this.selection_made) ? this.selected_date.toFormattedString(this.use_time) : "&nbsp;";
+  },
   parseDate: function()
   {
     value = $F(this.target_element).strip()
@@ -379,6 +377,15 @@ CalendarDateSelect.prototype = {
       this.last_click_at = new Date();
     }
   },
+  navMonth: function(month) { (target_date = new Date(this.date)).setMonth(month); return (this.navTo(target_date)); },
+  navYear: function(year) { (target_date = new Date(this.date)).setYear(year); return (this.navTo(target_date)); },
+  navTo: function(date) {
+    if (!this.validYear(date.getFullYear())) return false;
+    this.date = date;
+    this.refresh();
+    this.callback("after_navigate", this.date);
+    return true;
+  },
   setUseTime: function(turn_on) {
     this.use_time = this.options.time && (this.options.time=="mixed" ? turn_on : true) // force use_time to true if time==true && time!="mixed"
     if (this.use_time && this.selected_date) { // only set hour/minute if a date is already selected
@@ -407,14 +414,14 @@ CalendarDateSelect.prototype = {
     if (this.closed) return false;
     this.callback("before_close");
     this.target_element.calendar_date_select = nil;
-    Event.stopObserving(document.body, "mousedown", this.bodyClick_handler);
+    Event.stopObserving(document.body, "mousedown", this.closeIfClickedOut_handler);
     Event.stopObserving(document.body, "keydown", this.keyDown_handler);
     this.calendar_div.remove(); this.closed=true;
     if (this.iframe) this.iframe.remove();
     if (this.target_element.type!="hidden") this.target_element.focus();
     this.callback("after_close");
   },
-  bodyClick: function(e) { // checks to see if somewhere other than calendar date select grid was clicked.  in which case, close
+  closeIfClickedOut: function(e) {
     if (! $(Event.element(e)).descendantOf(this.calendar_div) ) this.close();
   },
   keyPress: function(e) {

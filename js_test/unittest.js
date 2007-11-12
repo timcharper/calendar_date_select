@@ -282,8 +282,8 @@ Test.Unit.Assertions.prototype = {
     if (this.errors > 0) return 'error';
     return 'passed';
   },
-  assert: function(expression) {
-    var message = arguments[1] || 'assert: got "' + Test.Unit.inspect(expression) + '"';
+  assert: function(expression, message) {
+    var message = arguments[1] || 'assert: got "' + Test.Unit.inspect(expression) + '"' + (message||"");
     try { expression ? this.pass() : 
       this.fail(message); }
     catch(e) { this.error(e); }
@@ -310,37 +310,37 @@ Test.Unit.Assertions.prototype = {
           ', actual ' + Test.Unit.inspect(actual)); }
     catch(e) { this.error(e); }
   },
-  assertNotEqual: function(expected, actual) {
+  assertNotEqual: function(expected, actual, message) {
     var message = arguments[2] || "assertNotEqual";
     try { (expected != actual) ? this.pass() : 
-      this.fail(message + ': got "' + Test.Unit.inspect(actual) + '"'); }
+      this.fail(message + ': got "' + Test.Unit.inspect(actual) + '"' + (message||"")); }
     catch(e) { this.error(e); }
   },
-  assertIdentical: function(expected, actual) { 
+  assertIdentical: function(expected, actual, message) { 
     var message = arguments[2] || "assertIdentical"; 
     try { (expected === actual) ? this.pass() : 
       this.fail(message + ': expected "' + Test.Unit.inspect(expected) +  
-        '", actual "' + Test.Unit.inspect(actual) + '"'); } 
+        '", actual "' + Test.Unit.inspect(actual) + '"' + (message||"")); } 
     catch(e) { this.error(e); } 
   },
-  assertNotIdentical: function(expected, actual) { 
+  assertNotIdentical: function(expected, actual,message) { 
     var message = arguments[2] || "assertNotIdentical"; 
     try { !(expected === actual) ? this.pass() : 
       this.fail(message + ': expected "' + Test.Unit.inspect(expected) +  
-        '", actual "' + Test.Unit.inspect(actual) + '"'); } 
+        '", actual "' + Test.Unit.inspect(actual) + '"' + (message||"")); } 
     catch(e) { this.error(e); } 
   },
-  assertNull: function(obj) {
+  assertNull: function(obj, message) {
     var message = arguments[1] || 'assertNull'
     try { (obj==null) ? this.pass() : 
-      this.fail(message + ': got "' + Test.Unit.inspect(obj) + '"'); }
+      this.fail(message + ': got "' + Test.Unit.inspect(obj)  + '"' + (message||"")); }
     catch(e) { this.error(e); }
   },
-  assertMatch: function(expected, actual) {
+  assertMatch: function(expected, actual, message) {
     var message = arguments[2] || 'assertMatch';
     var regex = new RegExp(expected);
     try { (regex.exec(actual)) ? this.pass() :
-      this.fail(message + ' : regex: "' +  Test.Unit.inspect(expected) + ' did not match: ' + Test.Unit.inspect(actual) + '"'); }
+      this.fail(message + ' : regex: "' +  Test.Unit.inspect(expected) + ' did not match: ' + Test.Unit.inspect(actual) + '"' + (message||"")); }
     catch(e) { this.error(e); }
   },
   assertHidden: function(element) {

@@ -77,13 +77,17 @@
       
       cds.close();
     }},
-    test_navYear_navMonth: function() { with(this){
+    test_navYear: function() { with(this){
       $("cds_test").value = "January 1, 2007";
       cds = new CalendarDateSelect($("cds_test"), {time: "mixed"});
       cds.navYear(1870);
       assertEqual(2007, cds.selected_date.getFullYear());
       assertEqual(1870, cds.date.getFullYear());
-      
+      cds.close();
+    }},
+    test_navMonth: function() { with(this){
+      $("cds_test").value = "January 1, 2007";
+      cds = new CalendarDateSelect($("cds_test"), {time: "mixed"});
       cds.navMonth(5);
       assertEqual(0, cds.selected_date.getMonth());
       assertEqual(5, cds.date.getMonth())
@@ -133,7 +137,7 @@
       cds = new CalendarDateSelect($("cds_test"), {time:false});
       assertEqual(false, cds.use_time, "When parsing time");
       cds.setUseTime(true); // this will close the control
-      assertEqual(false, cds.use_time, "After calling setUseTime(true)");
+      assert(! cds.use_time, "After calling setUseTime(true)");
       cds.close();
     }},
     test_setMinute_notOnInterval_usesFloor: function() {with(this){
@@ -151,21 +155,45 @@
       cds = new CalendarDateSelect($("cds_test"), {time:true});
       assertEqual(new Date().getFullYear(), cds.selected_date.getFullYear());
       assertEqual(new Date().getFullYear(), cds.date.getFullYear());
-      assertEqual(false, cds.selection_made)
+      assert(! cds.selection_made)
       cds.close();
     }},
     test_parseDate_timeTrue_noTimePassed_useTimeSetToTrueAnyway: function() {with(this){
       $("cds_test").value = "December 1, 2007 ";
       cds = new CalendarDateSelect($("cds_test"), {time:true});
-      assertEqual(true, cds.use_time)
+      assert(cds.use_time)
       cds.close();
     }},
     test_passDivElement__shouldUseChildInputForTargetElement: function() {with(this){
       cds = new CalendarDateSelect($("cds_test_div"), {time:true});
       assertEqual("INPUT", cds.target_element.nodeName)
       cds.close();
+    }},
+    test__flexibleYearRange__datePassedWayBackWhen__shouldInitYearSelectAroundDate: function() {with(this){
+      $("cds_test").value = "July 4, 1776";
+      cds = new CalendarDateSelect($("cds_test_div"), {time:true});
+      assert(cds.flexibleYearRange(), " should have had a flexibleYearRange");
+      assert(cds.year_select.setValue(1776), "Should have allowed me to select 1776");
+      cds.close();
+    }},
+    test__nonflexibleYearRange__dateRangeAtEnds__shouldntAllowNavigationPassedBoundary: function() {with(this){
+      $("cds_test").value = "January 1, 2007";
+      cds = new CalendarDateSelect($("cds_test_div"), {time:true, year_range: [2007, 2007]});
+      
+      assert(! cds.navYear(2006), "should not allow year navigation outside of boundary");
+      assert(! cds.navYear(2008), "should not allow year navigation outside of boundary");
+      assert(! cds.navMonth(-1), "shouldnt allow me to go beyond boundary");
+      assert(! cds.navMonth(13), "shouldnt allow me to go beyond boundary");
+      assert(cds.navMonth(1), "should allow me to be in boundary");
+      assert(cds.navYear(2007), "should allow me to be in boundary");
+      cds.close();
+    }},
+    test__nonflexibleYearRange__shouldPopulateRange: function() {with(this){
+      $("cds_test").value = "January 1, 2007";
+      cds = new CalendarDateSelect($("cds_test_div"), {time:true, year_range: [2007, 2007]});
+      assert(cds.year_select.setValue(2007), "should allow me to select 2007");
+      cds.close();
     }}
-    
   });
 // ]]>
 </script>
