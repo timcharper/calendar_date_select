@@ -30,7 +30,9 @@
       $("cds_test").value="";
       $("cds_test").disabled = false;
       $("cds_test").readOnly = false;
-
+    }},
+    teardown: function() { with(this){
+      assert(cds.closed,"all tests should close their calendar control");
     }},
     testMixedTime_feedDateWithAndWithoutTime_shouldSetAccordingly: function() { with(this) {
       $A(["January 2, 2007 5:00 pm", "January 2, 2007 0:00 pm"]).each(function(d) {
@@ -124,13 +126,16 @@
     test_timePassed_notUsingTime_shouldIgnore: function() {with(this) {
       $("cds_test").value = "May 10, 2007 5:00 pm";
       cds = new CalendarDateSelect($("cds_test"), {time:false});
+      assert(cds.options.get("close_on_click"), "should set close_on_click to true when not using time")
       assertEqual(false, cds.use_time, "When parsing time");
-      cds.today(); // this will close the control
-      assertEqual(false, cds.use_time, "When calling today");
+      cds.today();
+      assert(cds.closed, "should close when clicking today");
+      assert(!cds.use_time, "Should not use time when calling today");
       
       cds = new CalendarDateSelect($("cds_test"), {time:false});
       cds.updateSelectedDate({hours: 5, minutes:30}) // this will close the control
       assertEqual(false, cds.use_time, "When setting hour/minute");
+      assert(cds.closed);
     }},
     test_setUseTime_true_notUsingTime_shouldIgnore: function() {with(this) {
       $("cds_test").value = "May 10, 2007 5:00 pm";

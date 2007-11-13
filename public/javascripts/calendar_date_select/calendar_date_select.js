@@ -90,44 +90,44 @@ CalendarDateSelect.prototype = {
     }).merge(options || {});
     
     this.selection_made = $F(this.target_element).strip()!=="";
-    this.use_time = this.options.time;
+    this.use_time = this.options.get("time");
     
     this.callback("before_show")
-    this.calendar_div = $(this.options.calendar_div);
+    this.calendar_div = $(this.options.get("calendar_div"));
     
     this.parseDate();
     
     // by default, stick it by the target element (if embedded, that's where we'll want it to show up)
-    if (this.calendar_div == nil) { this.calendar_div = $( this.options.embedded ? this.target_element.parentNode : document.body ).build('div'); }
-    if (!this.options.embedded) this.calendar_div.setStyle( { position:"absolute", visibility: "hidden", left:0, top:0 } )
+    if (this.calendar_div == nil) { this.calendar_div = $( this.options.get("embedded") ? this.target_element.parentNode : document.body ).build('div'); }
+    if (!this.options.get("embedded")) this.calendar_div.setStyle( { position:"absolute", visibility: "hidden", left:0, top:0 } )
     
     this.calendar_div.addClassName("calendar_date_select");
     
-    if (this.options["embedded"]) this.options["close_on_click"]=false;
+    if (this.options.get("embedded")) this.options.set("close_on_click", false);
     // logic for close on click
-    if (this.options['close_on_click']===nil )
+    if (this.options.get("close_on_click")===nil )
     {
-      if (this.options['time'])
-        this.options["close_on_click"] = false;
+      if (this.options.get("time"))
+        this.options.set("close_on_click", false);
       else
-        this.options['close_on_click'] = true;
+        this.options.set("close_on_click", true);
     }
     
     // set the click handler to check if a user has clicked away from the document
-    if(!this.options["embedded"]) {
+    if(!this.options.get("embedded")) {
       Event.observe(document, "mousedown", this.closeIfClickedOut_handler=this.closeIfClickedOut.bindAsEventListener(this));
       Event.observe(document, "keypress", this.keyPress_handler=this.keyPress.bindAsEventListener(this));
     }
     
     this.init();
-    if(!this.options["embedded"]) { this.positionCalendarDiv() };
+    if(!this.options.get("embedded")) { this.positionCalendarDiv() };
     this.callback("after_show")
   },
   positionCalendarDiv: function() {
     above=false;
     c_pos = Position.cumulativeOffset(this.calendar_div); c_left = c_pos[0]; c_top = c_pos[1]; c_dim = this.calendar_div.getDimensions(); c_height = c_dim.height; c_width = c_dim.width; 
     w_top = window.f_scrollTop(); w_height = window.f_height();
-    e_dim = Position.cumulativeOffset($(this.options.popup_by)); e_top = e_dim[1]; e_left = e_dim[0]; e_height = $(this.options.popup_by).getDimensions().height; e_bottom = e_top + e_height;
+    e_dim = Position.cumulativeOffset($(this.options.get("popup_by"))); e_top = e_dim[1]; e_left = e_dim[0]; e_height = $(this.options.get("popup_by")).getDimensions().height; e_bottom = e_top + e_height;
     
     if ( (( e_bottom + c_height ) > (w_top + w_height)) && ( e_bottom - c_height > w_top )) above=true;
     left_px = e_left.toString() + "px";
@@ -161,7 +161,7 @@ CalendarDateSelect.prototype = {
     this.next_month_button = header_div.build("a", { innerHTML: "&gt;", href:"#", onclick:function () { this.navMonth(this.date.getMonth() + 1 ); return false; }.bindAsEventListener(this), className: "next" });
     this.prev_month_button = header_div.build("a", { innerHTML: "&lt;", href:"#", onclick:function () { this.navMonth(this.date.getMonth() - 1 ); return false; }.bindAsEventListener(this), className: "prev" });
     
-    if (this.options.month_year=="dropdowns") {
+    if (this.options.get("month_year")=="dropdowns") {
       this.month_select = new SelectBox(header_div, $R(0,11).map(function(m){return [Date.months[m], m]}), {className: "month", onchange: function () { this.navMonth(this.month_select.getValue()) }.bindAsEventListener(this)}); 
       this.year_select = new SelectBox(header_div, [], {className: "year", onchange: function () { this.navYear(this.year_select.getValue()) }.bindAsEventListener(this)}); 
       this.populateYearRange();
@@ -201,9 +201,9 @@ CalendarDateSelect.prototype = {
   initButtonsDiv: function()
   {
     buttons_div = this.buttons_div;
-    if (this.options["time"])
+    if (this.options.get("time"))
     {
-      blank_time = $A(this.options.time=="mixed" ? [[" - ", ""]] : []);
+      blank_time = $A(this.options.get("time")=="mixed" ? [[" - ", ""]] : []);
       buttons_div.build("span", {innerHTML:"@", className: "at_sign"});
       
       t=new Date();
@@ -226,25 +226,25 @@ CalendarDateSelect.prototype = {
         }
       );
       
-    } else if (! this.options.buttons) buttons_div.remove();
+    } else if (! this.options.get("buttons")) buttons_div.remove();
     
-    if (this.options.buttons) {
+    if (this.options.get("buttons")) {
       buttons_div.build("span", {innerHTML: "&nbsp;"});
-      if (this.options.time=="mixed" || !this.options.time) b=buttons_div.build("a", {
+      if (this.options.get("time")=="mixed" || !this.options.get("time")) b=buttons_div.build("a", {
           innerHTML: _translations["Today"],
           href: "#",
           onclick: function() {this.today(false); return false;}.bindAsEventListener(this)
         });
       
-      if (this.options.time=="mixed") buttons_div.build("span", {innerHTML: " | ", className:"button_seperator"})
+      if (this.options.get("time")=="mixed") buttons_div.build("span", {innerHTML: " | ", className:"button_seperator"})
       
-      if (this.options.time) b = buttons_div.build("a", {
+      if (this.options.get("time")) b = buttons_div.build("a", {
         innerHTML: _translations["Now"],
         href: "#",
         onclick: function() {this.today(true); return false}.bindAsEventListener(this)
       });
       
-      if (!this.options.embedded)
+      if (!this.options.get("embedded"))
       {
         buttons_div.build("span", {innerHTML: "&nbsp;"});
         buttons_div.build("a", { innerHTML: _translations["OK"], href: "#", onclick: function() {this.close(); return false;}.bindAsEventListener(this) });
@@ -292,7 +292,7 @@ CalendarDateSelect.prototype = {
     m=this.date.getMonth();
     y=this.date.getFullYear();
     // set the month
-    if (this.options.month_year == "dropdowns") 
+    if (this.options.get("month_year") == "dropdowns") 
     {
       this.month_select.setValue(m, false);
       
@@ -310,12 +310,12 @@ CalendarDateSelect.prototype = {
   },
   yearRange: function() {
     if (!this.flexibleYearRange())
-      return $R(this.options.year_range[0], this.options.year_range[1]);
+      return $R(this.options.get("year_range")[0], this.options.get("year_range")[1]);
       
     y = this.date.getFullYear();
-    return $R(y - this.options.year_range, y + this.options.year_range);
+    return $R(y - this.options.get("year_range"), y + this.options.get("year_range"));
   },
-  flexibleYearRange: function() { return (typeof(this.options.year_range) == "number"); },
+  flexibleYearRange: function() { return (typeof(this.options.get("year_range")) == "number"); },
   validYear: function(year) { if (this.flexibleYearRange()) { return true;} else { return this.yearRange().include(year);}  },
   dayHover: function(element) {
     element.addClassName("hover");
@@ -342,7 +342,7 @@ CalendarDateSelect.prototype = {
   parseDate: function()
   {
     value = $F(this.target_element).strip()
-    this.date = value=="" ? NaN : Date.parseFormattedString(this.options['date'] || value);
+    this.date = value=="" ? NaN : Date.parseFormattedString(this.options.get("date") || value);
     if (isNaN(this.date)) this.date = new Date();
     if (!this.validYear(this.date.getFullYear())) this.date.setYear( (this.date.getFullYear() < this.yearRange().start) ? this.yearRange().start : this.yearRange().end);
     this.selected_date = new Date(this.date);
@@ -351,28 +351,29 @@ CalendarDateSelect.prototype = {
   },
   updateFooter:function(text) { if (!text) text=this.dateString(); this.footer_div.purgeChildren(); this.footer_div.build("span", {innerHTML: text }); },
   updateSelectedDate:function(parts, via_click) {
-    if ((this.target_element.disabled || this.target_element.readOnly) && this.options.popup!="force") return false;
-    if (parts.day) {
+    parts=$H(parts);
+    if ((this.target_element.disabled || this.target_element.readOnly) && this.options.get("popup")!="force") return false;
+    if (parts.get("day")) {
       this.selection_made = true;
       for (x=0; x<=1; x++) {
-      this.selected_date.setDate(parts.day);
-      this.selected_date.setMonth(parts.month);
-      this.selected_date.setYear(parts.year);}
+      this.selected_date.setDate(parts.get("day"));
+      this.selected_date.setMonth(parts.get("month"));
+      this.selected_date.setYear(parts.get("year"));}
     }
     
-    if (!isNaN(parts.hour)) this.selected_date.setHours(parts.hour);
-    if (!isNaN(parts.minute)) this.selected_date.setMinutes( Math.floor_to_interval(parts.minute, this.options.minute_interval) );
-    if (parts.hour === "" || parts.minute === "") 
+    if (!isNaN(parts.get("hour"))) this.selected_date.setHours(parts.get("hour"));
+    if (!isNaN(parts.get("minute"))) this.selected_date.setMinutes( Math.floor_to_interval(parts.get("minute"), this.options.get("minute_interval")) );
+    if (parts.get("hour") === "" || parts.get("minute") === "") 
       this.setUseTime(false);
-    else if (!isNaN(parts.hour) || !isNaN(parts.minute))
+    else if (!isNaN(parts.get("hour")) || !isNaN(parts.get("minute")))
       this.setUseTime(true);
     
     this.updateFooter();
     this.setSelectedClass();
     
     if (this.selection_made) this.updateValue();
-    if (this.options.close_on_click) { this.close(); }
-    if (via_click && !this.options.embedded) {
+    if (this.options.get("close_on_click")) { this.close(); }
+    if (via_click && !this.options.get("embedded")) {
       if ((new Date() - this.last_click_at) < 333) this.close();
       this.last_click_at = new Date();
     }
@@ -388,14 +389,14 @@ CalendarDateSelect.prototype = {
     return true;
   },
   setUseTime: function(turn_on) {
-    this.use_time = this.options.time && (this.options.time=="mixed" ? turn_on : true) // force use_time to true if time==true && time!="mixed"
+    this.use_time = this.options.get("time") && (this.options.get("time")=="mixed" ? turn_on : true) // force use_time to true if time==true && time!="mixed"
     if (this.use_time && this.selected_date) { // only set hour/minute if a date is already selected
-      minute = Math.floor_to_interval(this.selected_date.getMinutes(), this.options.minute_interval);
+      minute = Math.floor_to_interval(this.selected_date.getMinutes(), this.options.get("minute_interval"));
       hour = this.selected_date.getHours();
       
       this.hour_select.setValue(hour);
       this.minute_select.setValue(minute)
-    } else if (this.options.time=="mixed") {
+    } else if (this.options.get("time")=="mixed") {
       this.hour_select.setValue(""); this.minute_select.setValue("");
     }
   },
