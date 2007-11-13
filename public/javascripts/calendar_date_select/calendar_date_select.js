@@ -44,7 +44,6 @@ window.f_scrollTop = function() { return ([window.pageYOffset ? window.pageYOffs
 
 _translations = {
   "OK": "OK",
-  "Cancel": "Cancel",
   "Now": "Now",
   "Today": "Today"
 }

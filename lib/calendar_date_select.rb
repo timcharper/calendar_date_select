@@ -13,6 +13,21 @@ class CalendarDateSelect
       :date => "%d.%m.%Y",
       :time => " %H:%M",
       :javascript_include => "format_finnish"
+    },
+    :american => {
+      :date => "%m/%d/%Y",
+      :time => " %I:%M %p",
+      :javascript_include => "format_american"
+    },
+    :euro_24hr => {
+      :date => "%d %B %Y",
+      :time => " %H:%M", 
+      :javascript_include => "format_euro_24hr"
+    },
+    :italian => {
+      :date => "%d/%m/%Y",
+      :time => " %H:%M",
+      :javascript_include => "format_italian"
     }
   }
   
