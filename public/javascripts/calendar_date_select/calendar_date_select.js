@@ -115,8 +115,8 @@ CalendarDateSelect.prototype = {
     
     // set the click handler to check if a user has clicked away from the document
     if(!this.options["embedded"]) {
-      Event.observe(document.body, "mousedown", this.closeIfClickedOut_handler=this.closeIfClickedOut.bindAsEventListener(this));
-      Event.observe(document.body, "keypress", this.keyDown_handler=this.keyPress.bindAsEventListener(this));
+      Event.observe(document, "mousedown", this.closeIfClickedOut_handler=this.closeIfClickedOut.bindAsEventListener(this));
+      Event.observe(document, "keypress", this.keyDown_handler=this.keyPress.bindAsEventListener(this));
     }
     
     this.init();
