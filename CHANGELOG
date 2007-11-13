@@ -1,3 +1,8 @@
+==Version 1.9.0==
+Nov 13, 2007
+  * Prototype 1.6.0 compatibility update.  Will now break with earlier versions of prototype (ie 1.5.1).  Big thanks to Kevin Alexander and Richard Quadling
+   
+
 ==Version 1.8.3==
 Nov 12, 2007
 
