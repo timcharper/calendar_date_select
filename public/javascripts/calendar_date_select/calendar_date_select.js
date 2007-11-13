@@ -116,7 +116,7 @@ CalendarDateSelect.prototype = {
     // set the click handler to check if a user has clicked away from the document
     if(!this.options["embedded"]) {
       Event.observe(document, "mousedown", this.closeIfClickedOut_handler=this.closeIfClickedOut.bindAsEventListener(this));
-      Event.observe(document, "keypress", this.keyDown_handler=this.keyPress.bindAsEventListener(this));
+      Event.observe(document, "keypress", this.keyPress_handler=this.keyPress.bindAsEventListener(this));
     }
     
     this.init();
@@ -415,8 +415,8 @@ CalendarDateSelect.prototype = {
     if (this.closed) return false;
     this.callback("before_close");
     this.target_element.calendar_date_select = nil;
-    Event.stopObserving(document.body, "mousedown", this.closeIfClickedOut_handler);
-    Event.stopObserving(document.body, "keydown", this.keyDown_handler);
+    Event.stopObserving(document, "mousedown", this.closeIfClickedOut_handler);
+    Event.stopObserving(document, "keypress", this.keyPress_handler);
     this.calendar_div.remove(); this.closed=true;
     if (this.iframe) this.iframe.remove();
     if (this.target_element.type!="hidden") this.target_element.focus();
