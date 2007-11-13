@@ -36,7 +36,7 @@ class HelperMethodsTest < Test::Unit::TestCase
   
   def test_time_false__model_returns_time__should_render_without_time
     @model.start_datetime = Time.parse("January 2, 2007 12:00 AM")
-    output = calendar_date_select(:model, :start_datetime, :time => false)
+    output = calendar_date_select(:model, :start_datetime)
     assert_no_match(/12:00 AM/, output, "Shouldn't have outputted a time")
   end
   
@@ -45,5 +45,14 @@ class HelperMethodsTest < Test::Unit::TestCase
     output = calendar_date_select(:model, :start_datetime)
     
     assert_no_match(/value/, output)
+  end
+  
+  def test__year_range__formats_correctly
+    output = calendar_date_select(:model, :start_datetime)
+    assert_match("year_range:10", output)
+    output = calendar_date_select(:model, :start_datetime, :year_range => 2000..2010)
+    assert_match("year_range:[2000, 2010]", output)
+    output = calendar_date_select(:model, :start_datetime, :year_range => (15.years.ago..5.years.ago))
+    assert_match("year_range:[#{15.years.ago.year}, #{5.years.ago.year}]", output)
   end
 end

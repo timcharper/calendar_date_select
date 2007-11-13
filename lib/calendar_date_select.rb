@@ -104,7 +104,7 @@ class CalendarDateSelect
         calendar_options[key] = "function(param) { #{calendar_options[key]} }" unless calendar_options[key].include?("function") if calendar_options[key]
       end
       
-      calendar_options[:year_range] ||= 10
+      calendar_options[:year_range] = format_year_range(calendar_options[:year_range] || 10)
       calendar_options
     end
     
@@ -159,6 +159,13 @@ class CalendarDateSelect
       end
       
       out
+    end
+    
+  private
+    def format_year_range(year) # nodoc
+      return year unless year.respond_to?(:first)
+      return "[#{year.first}, #{year.last}]" unless year.first.respond_to?(:strftime)
+      return "[#{year.first.year}, #{year.last.year}]"
     end
   end
 end
