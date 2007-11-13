@@ -1,16 +1,145 @@
-1.8.3 - Nov 12, 2007
-* Improved close methods:
-  * Added "OK" button at the bottom
-	* Double clicking a day closes the calendar (not in IE, though... because IE is everyone's favorite browser to program for)
-	* Escape key closes calendar
-* Added optional close button at the top, which is hidden by default.  Don't use this unless you really need it, because it may disappear in the future.
-* Don't focus a hidden element
-* Navigate down to child input element if exists (in case a div tag is passed in).  Resolves problems when input control is wrapped with a error div.  Test cases
-* Allow non-flexible, specific year ranges (pass in an array)
-  * test case to chcek auto-repopulating of flexibleYearRanges
-  * restrict year navigation inside of a non-flexible range
-* Updated test cases
-* Bugfix for duplicate days that were occuring across day-light-saving-time boundaries
-* Added format_american.js (thanks, Wes)
-* Added format_italian.js (thanks, Bigonazzi)
-* Bugfix for Konqueror - Was showing blank white box for popup window - had to do with Iframe hack.
+==Version 1.8.3==
+Nov 12, 2007
+
+	* Improved close methods:
+	  * Added "OK" button at the bottom
+		* Double clicking a day closes the calendar (not in IE, though... because IE is everyone's favorite browser to program for)
+		* Escape key closes calendar
+	* Added optional close button at the top, which is hidden by default.  Don't use this unless you really need it, because it may disappear in the future.
+	* Don't focus a hidden element
+	* Navigate down to child input element if exists (in case a div tag is passed in).  Resolves problems when input control is wrapped with a error div.  Test cases
+	* Allow non-flexible, specific year ranges (pass in an array)
+	  * test case to chcek auto-repopulating of flexibleYearRanges
+	  * restrict year navigation inside of a non-flexible range
+	* Updated test cases
+	* Bugfix for duplicate days that were occuring across day-light-saving-time boundaries
+	* Added format_american.js (thanks, Wes Hays)
+	* Added format_italian.js (thanks, Bigonazzi)
+	* Added format_euro_24hr.js (thanks, James Silberbauer)
+	* Bugfix for Konqueror - Was showing blank white box for popup window - had to do with Iframe hack.
+	* Code-refactoring, clean up, breaking down methods, making the code easier to understand and extend.
+	* Added new stylesheet definition: .calendar_date_select .cds_header a.close { display: none}.  Update your custom stylesheet with this new definition.
+	
+	
+	
+==Version 1.8.1==
+September 27 2007
+  * 1.8.0 was rushed.  There were a bunch of bugs that cropped up immediately.  This deploy includes JavaScript unit testing using the scriptaculous unit test framework! ([http://www.restatesman.com/calendar_date_select/js_test/functional/cds_test.html click here to run the tests on the latest trunk version]).  These unit tests are going to greatly improve the reliability of CalendarDateSelect releases.
+
+==Version 1.8.0==
+
+September 26 2007
+  * Bugfix - Safari 2 issue fixed (was interpreting "" as January 1, 1969)
+  * CSS overhaul - removed buttons and replaced with links.  Cleaned up CSS.  See CSSDiff_1_7_0__1_8_0 for a diff.
+  * :popup => :force (force the user to select a date)
+  * :time => "mixed" - You can now create a calendar control that allows a user to select "all day" or a specific time!
+  * :month_year => "label" - Replace the clunky dropdowns with a text.
+  * Some internal "gardening" on the code
+
+==Version 1.7.1==
+
+Aug 29 2007
+
+  * Rendering options weren't being passed to the input control (like :style, :class, etc.)
+
+==Version 1.7.0==
+
+Aug 24 2007
+
+  * update calendar date select to not rely on dom_id's anymore ( and no longer automatically changes the dom_id for your input fields )
+
+  * applied Steve Madsen's patch for not blanking out invalid dates.
+
+==Version 1.6.1==
+
+Aug 24 2007
+
+  * Serious javascript bug when using "hyphen_ampm" format fixed.  (Was only working in Firefox browsers with firebug installed)
+
+  * Added a bunch of new callbacks: before_show, before_close, after_show, after_close, after_navigate. (see [http://www.restatesman.com/static/calendar?tab=callbacks here] for details)
+
+
+==Version 1.6.0==
+
+July 27 2007
+
+  * Now MUCH easier to change date formats!  See ChangingDateFormat for details.
+  * Opera button labels fixed
+  * Calendar "flicker" fixed when displaying popup window.
+  * JS error 106 being thrown - fixed
+  * Bug fixes relating to calendar date select deciding whether to display above or below an element on a page
+  * XHTML compliance issue resolved - image had an invalid "id"
+  * Disabled/readonly elements can't be updated
+    * (note, if you wish to prevent user from inputting a date without the date picker, use the "embedded" option.  See [http://restatesman.com/static/calendar/ demo] for example).
+  * Changes/cleanups submitted by Steve Madsen.  If you see Steve, tell him what a great guy he is!
+    * Ability to change calendar image via CalendarDateSelect.image=
+    * cleaning up on how input tags are rendered
+
+==Version 1.5.2==
+
+July 12 2007
+  * onchange event handler now supported.
+  * detects to see if prototype is loaded.  If not, shows error message
+  * ability to hide "buttons"
+  * date parsing broken out to static function Date.parseFormattedString() for anyone who wants date's to parse a different way from javascript
+  * you can no longer select 1:60 pm.
+
+==Version 1.5.1==
+
+June 21, 2007
+
+  * fixed following tickets:
+    * Selecting dates in April 2007 doesn't highlight day
+    * Selecting 29 February 2008 returns 1 March 2008
+    * options[:format] needs to be purged
+
+==Version 1.5==
+June 18, 2007
+
+  * New CSS stylesheet
+
+  * Fixed "white on white" css issue when selecting a day
+
+  * Clicking today now updates the input field
+
+==Version 1.4==
+June 16, 2007
+
+  * more bug fixes (selecting across daylight savings time causing js error.  Sometimes clicking a day of the next month after selecting day 31 of the previous month was causing 2 months later to be selected)
+  
+  * CSS improvements and refactoring
+
+  * form builder methods now automatically detect whether or not to use a Time field
+
+  * a bit more optimization
+
+  * refactored date formatter methods and others so they can be more easily overridden.
+
+==Version 1.3==
+June 8, 2007
+
+  * a few bug fixes
+
+  * Modified the helper methods to allow passing of virtually any JavaScript argument into the JavaScript control.
+
+==Version 1.2==
+June 4, 2007
+
+  * Big optimizations to the redrawing of the calendar.  Now, previous/next buttons much more responsive.
+
+  * Improved feel of pop-up dialog - when somewhere else clicked on the screen other than the popup calendar, popup calendar will automatically close.
+
+  * If the popup window won't fit on the screen underneath the control, will automatically position to the top.
+
+
+==Version 1.1==
+June 2, 2007
+
+  * There was a very strange bug that crept in for Internet Explorer.  Internet Explorer does not allow you to set the innerHTML property for "button" elements.  Therefore, it was necessary to change "button" elements to "input" elements of type button.
+
+  * There was a change to the CSS file.  Anything applying styles to "button" elements has been changed to "input.button".  If you have a custom stylesheet, update accordingly.
+
+==Version 1.0==
+June 1, 2007
+
+  * Initial release!
