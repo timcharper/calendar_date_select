@@ -219,7 +219,7 @@ CalendarDateSelect.prototype = {
       buttons_div.build("span", {innerHTML:":", className: "seperator"});
       that=this;
       this.minute_select = new SelectBox(buttons_div,
-        blank_time.concat($R(0,59).select(function(x){return (x % that.options.minute_interval==0)}).map(function(x){ return $A([ Date.padded2(x), x]); } ) ),
+        blank_time.concat($R(0,59).select(function(x){return (x % that.options.get('minute_interval')==0)}).map(function(x){ return $A([ Date.padded2(x), x]); } ) ),
         { 
           calendar_date_select: this, 
           onchange: function() { this.calendar_date_select.updateSelectedDate( {minute: this.value }) }, 

@@ -235,6 +235,13 @@
         assertEqual(0, $$('iframe.ie6_blocker').length)
       
       cds.close();
+    }},
+    test__should_populate_minute_box_according_to_minute_interval: function() {with(this){
+      cds = new CalendarDateSelect($("cds_test_div"), {time: true, minute_interval: 10});
+      assert(cds.minute_select.setValue(0), "should allow me to select 0 minutes" );
+      assert(!cds.minute_select.setValue(5), "should NOT allow me to select 5 minutes");
+      assert(cds.minute_select.setValue(10), "should allow me to select 10 minutes" );
+      cds.close();
     }}
   });
 // ]]>
