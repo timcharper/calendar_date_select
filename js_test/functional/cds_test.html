@@ -208,17 +208,29 @@
     }},
     test__nonflexibleYearRange__initializedWithDateInsideOfRange__shouldShowNavDateAsYear: function() {with(this){
       $("cds_test").value = "January 1, 2005";
-      cds = new CalendarDateSelect($("cds_test_div"), {time:true, year_range: [1997, 2007]});
+      cds = new CalendarDateSelect($("cds_test_div"), {year_range: [1997, 2007]});
       assertEqual(2005, cds.date.getFullYear(), "When going lesser than year_range");
       cds.close();
     }},
     test__flexibleYearRange__goToBoundary__shouldRefreshRange: function() {with(this){
       $("cds_test").value = "January 1, 2007";
-      cds = new CalendarDateSelect($("cds_test_div"), {time:true, year_range: 10});
+      cds = new CalendarDateSelect($("cds_test_div"), {year_range: 10});
       cds.navYear(1997);
       assert(cds.year_select.setValue(1987), "should have refreshed with 1997 as the center");
       cds.navYear(2017);
       assert(cds.year_select.setValue(2027), "should have refreshed with 2027 as the center");
+      cds.close();
+    }},
+    test__should_show_iframe_only_in_ie: function() {with(this){
+      cds = new CalendarDateSelect($("cds_test_div"));
+      
+      if (navigator.appName=="Microsoft Internet Explorer")
+        assertEqual(1, $$('iframe.ie6_blocker').length)
+      else
+        assertEqual(0, $$('iframe.ie6_blocker').length)
+      
+      
+      
       cds.close();
     }}
   });

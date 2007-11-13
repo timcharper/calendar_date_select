@@ -1,7 +1,6 @@
 // CalendarDateSelect version 1.8.3 - a small prototype based date picker
 // Questions, comments, bugs? - email the Author - Tim Harper <"timseeharper@gmail.seeom".gsub("see", "c")> 
-if (typeof Prototype == 'undefined')
-  alert("CalendarDateSelect Error: Prototype could not be found. Please make sure that your application's layout includes prototype.js (e.g. <%= javascript_include_tag :defaults %>) *before* it includes calendar_date_select.js (e.g. <%= calendar_date_select_includes %>).");
+if (typeof Prototype == 'undefined') alert("CalendarDateSelect Error: Prototype could not be found. Please make sure that your application's layout includes prototype.js (e.g. <%= javascript_include_tag :defaults %>) *before* it includes calendar_date_select.js (e.g. <%= calendar_date_select_includes %>).");
 
 Element.addMethods({
   purgeChildren: function(element) { $A(element.childNodes).each(function(e){$(e).remove();}); },
@@ -59,7 +58,7 @@ SelectBox.prototype = {
     this.element.purgeChildren();
     that=this; $A(values).each(function(pair) { if (typeof(pair)!="object") {pair = [pair, pair]}; that.element.build("option", { value: pair[1], innerHTML: pair[0]}) });
   },
-  setValue: function(value, add_if_missing) {
+  setValue: function(value) {
     e = this.element;
     matched=false;
     $R(0, e.options.length - 1 ).each(function(i) { if(e.options[i].value==value.toString()) {e.selectedIndex = i; matched=true;}; } );
@@ -140,7 +139,7 @@ CalendarDateSelect.prototype = {
     this.calendar_div.setStyle({visibility:""});
     
     // draw an iframe behind the calendar -- ugly hack to make IE 6 happy
-    this.iframe = $(document.body).build("iframe", {className: "ie6_blocker"}, { left: left_px, top: top_px, height: c_height.toString()+"px", width: c_width.toString()+"px", border: "0px"})
+    if(navigator.appName=="Microsoft Internet Explorer") this.iframe = $(document.body).build("iframe", {className: "ie6_blocker"}, { left: left_px, top: top_px, height: c_height.toString()+"px", width: c_width.toString()+"px", border: "0px"})
   },
   init: function() {
     that=this;
@@ -264,6 +263,7 @@ CalendarDateSelect.prototype = {
   refreshCalendarGrid: function () {
     this.beginning_date = new Date(this.date).stripTime();
     this.beginning_date.setDate(1);
+    this.beginning_date.setHours(12); // Prevent daylight savings time boundaries from showing a duplicate day
     pre_days = this.beginning_date.getDay() // draw some days before the fact
     if (pre_days < 3) pre_days+=7;
     this.beginning_date.setDate(1 - pre_days + Date.first_day_of_week);
