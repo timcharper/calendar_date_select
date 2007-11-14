@@ -1,6 +1,9 @@
 class CalendarDateSelect
   module IncludesHelper
     def calendar_date_select_includes(*args)
+      return "" if @cds_already_included
+      @cds_already_included=true
+      
       options = (Hash === args.last) ? args.pop : {}
       options.assert_valid_keys(:style, :format, :locale)
       
