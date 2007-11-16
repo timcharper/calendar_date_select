@@ -429,5 +429,5 @@ CalendarDateSelect.prototype = {
   keyPress: function(e) {
     if (e.keyCode==Event.KEY_ESC) this.close();
   },
-  callback: function(name, param) { if (this.options[name]) { this.options[name].bind(this.target_element)(param); } }
+  callback: function(name, param) { if (this.options.get(name)) { this.options.get(name).bind(this.target_element)(param); } }
 }
