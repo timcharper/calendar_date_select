@@ -3,6 +3,7 @@ Nov 15, 2007
   * Removed dependency on deprecated features in 1.6.0.  Thanks again, Richard Quadling!
   * Bugfix - was showing wrong day selected when selecting Mar 23, 2008.  (Day light savings time issue).  Fixed with test case.
   * Added CSS style to show red border around the embedded calendar_date_select div's with errors.
+  * Callbacks were broken with 1.9.0.  Fixed, added test cases.
 
 ==Version 1.9.0==
 Nov 13, 2007
