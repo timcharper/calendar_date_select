@@ -126,9 +126,9 @@ CalendarDateSelect.prototype = {
   },
   positionCalendarDiv: function() {
     above=false;
-    c_pos = Element.Methods.cumulativeOffset(this.calendar_div); c_left = c_pos[0]; c_top = c_pos[1]; c_dim = this.calendar_div.getDimensions(); c_height = c_dim.height; c_width = c_dim.width; 
+    c_pos = this.calendar_div.cumulativeOffset(); c_left = c_pos[0]; c_top = c_pos[1]; c_dim = this.calendar_div.getDimensions(); c_height = c_dim.height; c_width = c_dim.width; 
     w_top = window.f_scrollTop(); w_height = window.f_height();
-    e_dim = Element.Methods.cumulativeOffset($(this.options.get("popup_by"))); e_top = e_dim[1]; e_left = e_dim[0]; e_height = $(this.options.get("popup_by")).getDimensions().height; e_bottom = e_top + e_height;
+    e_dim = $(this.options.get("popup_by")).cumulativeOffset(); e_top = e_dim[1]; e_left = e_dim[0]; e_height = $(this.options.get("popup_by")).getDimensions().height; e_bottom = e_top + e_height;
     
     if ( (( e_bottom + c_height ) > (w_top + w_height)) && ( e_bottom - c_height > w_top )) above=true;
     left_px = e_left.toString() + "px";
