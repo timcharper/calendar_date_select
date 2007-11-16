@@ -57,6 +57,14 @@
       assertEqual(true, cds.use_time, "should have been true when clicking now link");
       cds.close();
     }},
+    test__selectMar_23_2008__shouldSelectCorrectDate: function() { with(this){
+      $("cds_test").value = "Mar 1, 2008"
+      cds = new CalendarDateSelect($("cds_test"), {time: "true"});
+      cds.updateSelectedDate({month: 2 /*+1*/, day: 23, year: 2008})
+      
+      assertEqual("23", $$('td.selected div').first().innerHTML);
+      cds.close();
+    }},
     test_updateSelectedDate: function() { with(this){
       $("cds_test").value = "January 1, 2007"
       cds = new CalendarDateSelect($("cds_test"), {time: "mixed"});

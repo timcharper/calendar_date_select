@@ -121,3 +121,7 @@ iframe.ie6_blocker {
 .calendar_date_select td.today {
   border: 1px dashed blue;
 }
+
+.fieldWithErrors .calendar_date_select {
+  border: 2px solid red;
+}

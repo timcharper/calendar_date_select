@@ -126,5 +126,6 @@ iframe.ie6_blocker {
   border: 1px dashed red;
 }
 
-/* adjust bordered cells to have slightly smaller inner areas so they look the same as the rest of the elements */
- 
+.fieldWithErrors .calendar_date_select {
+  border: 2px solid red;
+}

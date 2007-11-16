@@ -1,4 +1,4 @@
-// CalendarDateSelect version 1.9.0 - a small prototype based date picker
+// CalendarDateSelect version 1.9.1 - a small prototype based date picker
 // Questions, comments, bugs? - email the Author - Tim Harper <"timseeharper@gmail.seeom".gsub("see", "c")> 
 if (typeof Prototype == 'undefined') alert("CalendarDateSelect Error: Prototype could not be found. Please make sure that your application's layout includes prototype.js (e.g. <%= javascript_include_tag :defaults %>) *before* it includes calendar_date_select.js (e.g. <%= calendar_date_select_includes %>).");
 if (Prototype.Version < "1.6") alert("Prototype 1.6.0 is required.  If using earlier version of prototype, please use calendar_date_select version 1.8.3");
@@ -331,7 +331,7 @@ CalendarDateSelect.prototype = {
     // clear selection
     if (this.selected_cell) this.selected_cell.removeClassName("selected");
     
-    if ($R(0,42).include( days_until = this.beginning_date.daysDistance(this.selected_date.stripTime()) )) {
+    if ($R(0,42).include( days_until = this.beginning_date.stripTime().daysDistance(this.selected_date.stripTime()) )) {
       this.selected_cell = this.calendar_day_grid[days_until];
       this.selected_cell.addClassName("selected");
     }
@@ -356,10 +356,9 @@ CalendarDateSelect.prototype = {
     if ((this.target_element.disabled || this.target_element.readOnly) && this.options.get("popup")!="force") return false;
     if (parts.get("day")) {
       this.selection_made = true;
-      for (x=0; x<=1; x++) {
-      this.selected_date.setDate(parts.get("day"));
+      for (x=0; x<=3; x++) this.selected_date.setDate(parts.get("day"));
+      this.selected_date.setYear(parts.get("year"));
       this.selected_date.setMonth(parts.get("month"));
-      this.selected_date.setYear(parts.get("year"));}
     }
     
     if (!isNaN(parts.get("hour"))) this.selected_date.setHours(parts.get("hour"));
