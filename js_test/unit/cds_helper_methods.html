@@ -33,6 +33,11 @@
       assertEqual(5, Math.floor_to_interval(9,5));
       assertEqual(5, Math.floor_to_interval(5,5));
       assertEqual(0, Math.floor_to_interval(1,5));
+    }},
+    test_padded2__should_pad_properly_and_interpret_base_10: function() {with(this) {
+      assertEqual("11", Date.padded2("011"));
+      assertEqual("09", Date.padded2("09"));
+      assertEqual("09", Date.padded2("9"));
     }}
   });
 // ]]>
