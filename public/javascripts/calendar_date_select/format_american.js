@@ -25,10 +25,10 @@ Date.parseFormattedString = function (string) {
   hrs = 0;
   mts = 0;
   if(d[3] != null) {
-    hrs = parseInt(d[3].split('')[0]);
+    hrs = parseInt(d[3].split('')[0], 10);
     if(d[5].toLowerCase() == 'pm') { hrs += 12; } // Add 12 more to hrs
     mts = d[4].split(':')[1];
   }
   
-  return new Date(mdy[2], parseInt(mdy[0])-1, mdy[1], hrs, mts, 0);
+  return new Date(mdy[2], parseInt(mdy[0], 10)-1, mdy[1], hrs, mts, 0);
 }

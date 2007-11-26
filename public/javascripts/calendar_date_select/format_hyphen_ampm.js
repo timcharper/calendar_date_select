@@ -16,7 +16,7 @@ Date.parseFormattedString = function (string) {
   if (d[3]) { date.setMonth(d[3] - 1); }
   if (d[5]) { date.setDate(d[5]); }
   if (d[7]) {
-    hours = parseInt(d[7]);
+    hours = parseInt(d[7], 10);
     offset=0;
     is_pm = (d[9].toLowerCase()=="pm")
     if (is_pm && hours <= 11) hours+=12;
