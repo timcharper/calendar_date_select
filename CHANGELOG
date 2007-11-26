@@ -4,7 +4,7 @@ Nov 26, 2007
   * Applied Ryan Wood's patch to fix the problem with using a form builder against objects like authorization[coverage_attributes][].  Thanks Ryan Wood!
   * Wes Hays brought up the point of parseInt trying to auto-detect number formats.  Wrote code to force interpretation of digits as base10, with test cases to prove it.
   * Misleading test case failure in Safari fixed: Safari won't let a boolean value to a property that should have a function (understandably).  Changed the test variable names to prevent such a conflict.
-  * Now uses css :hover, rather than manually setting/removing the hover class.  If you are using a custom stylesheet, you'll need to change ".calendar_date_select tbody td.hover" to ".calendar_date_select tbody td:hover"
+  * Now uses css :hover, rather than manually setting/removing the hover class.  If you are using a custom stylesheet, you'll need to change ".calendar_date_select tbody td.hover" to ".calendar_date_select tbody td:hover" (thanks, Alex Egg)
   
 ==Version 1.9.1==
 Nov 15, 2007
