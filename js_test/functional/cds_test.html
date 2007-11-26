@@ -32,7 +32,8 @@
       $("cds_test").readOnly = false;
     }},
     teardown: function() { with(this){
-      assert(cds.closed,"all tests should close their calendar control");
+      if (typeof(cds)!="undefined")
+        assert(cds.closed,"all tests should close their calendar control");
     }},
     testMixedTime_feedDateWithAndWithoutTime_shouldSetAccordingly: function() { with(this) {
       $A(["January 2, 2007 5:00 pm", "January 2, 2007 0:00 pm"]).each(function(d) {
@@ -272,6 +273,21 @@
       assert(!cds.minute_select.setValue(5), "should NOT allow me to select 5 minutes");
       assert(cds.minute_select.setValue(10), "should allow me to select 10 minutes" );
       cds.close();
+    }},
+    test__shouldnt_leak_variables: function() {with (this) {
+      var vars = $w("padded2 compare_date str minute hour value e above e_dim e_top e_left matched e_bottom e_height c_pos c_left c_top c_height left_px top_px top_div header_div body_div buttons_div footer_div bottom_div days_tbody row_number cell_index weekday that pre_days use_time m y hover_date x d o")
+      vars.each(function(v) {eval(v + " = -100");});
+      
+      cds = new CalendarDateSelect($("cds_test_div"), {time: true});
+      cds.navMonth(1);
+      cds.navYear(2);
+      cds.dayHover($$('.cds_body td').first());
+      cds.updateSelectedDate({day:1, month:1, year:2007});
+      cds.close();
+      
+      vars.each(function(v) {
+        assert(-100 == eval(v), "Variable " + v + " was leaked");
+      });
     }}
   });
 // ]]>
