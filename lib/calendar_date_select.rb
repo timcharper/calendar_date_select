@@ -109,7 +109,7 @@ class CalendarDateSelect
     end
     
     def calendar_date_select(object, method, options={})
-      obj = instance_eval("@#{object}") || options[:object]
+      obj = options.include?(:object) ? options[:object] : instance_eval("@#{object}")
       
       if !options.include?(:time) && obj.class.respond_to?("columns_hash")
         column_type = (obj.class.columns_hash[method.to_s].type rescue nil)
