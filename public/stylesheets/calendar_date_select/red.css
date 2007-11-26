@@ -118,7 +118,7 @@ iframe.ie6_blocker {
   color:black;
 }
 
-.calendar_date_select tbody td.hover {
+.calendar_date_select tbody td:hover {
   background-color:#ccc;
 } 
 
