@@ -214,7 +214,7 @@
     }},
     test__nonflexibleYearRange__dateRangeAtEnds__shouldntAllowNavigationPassedBoundary: function() {with(this){
       $("cds_test").value = "January 1, 2007";
-      cds = new CalendarDateSelect($("cds_test"), {time:true, year_range: [2007, 2007]});
+      cds = new CalendarDateSelect($("cds_test_div"), {time:true, year_range: [2007, 2007]});
       
       assert(! cds.navYear(2006), "should not allow year navigation outside of boundary");
       assert(! cds.navYear(2008), "should not allow year navigation outside of boundary");
@@ -226,31 +226,31 @@
     }},
     test__nonflexibleYearRange__shouldPopulateRange: function() {with(this){
       $("cds_test").value = "January 1, 2007";
-      cds = new CalendarDateSelect($("cds_test"), {time:true, year_range: [2007, 2007]});
+      cds = new CalendarDateSelect($("cds_test_div"), {time:true, year_range: [2007, 2007]});
       assert(cds.year_select.setValue(2007), "should allow me to select 2007");
       cds.close();
     }},
     test__nonflexibleYearRange__initializedWithDateOutsideOfRange__shouldShowNavDateAsClosestToOutsideYear: function() {with(this){
       $("cds_test").value = "January 1, 1900";
-      cds = new CalendarDateSelect($("cds_test"), {time:true, year_range: [1997, 2007]});
+      cds = new CalendarDateSelect($("cds_test_div"), {time:true, year_range: [1997, 2007]});
       assertEqual(1997, cds.date.getFullYear(), "When going lesser than year_range");
       cds.close();
       
       $("cds_test").value = "January 1, 2010";
-      cds = new CalendarDateSelect($("cds_test"), {time:true, year_range: [1997, 2007]});
+      cds = new CalendarDateSelect($("cds_test_div"), {time:true, year_range: [1997, 2007]});
       assertEqual(2007, cds.date.getFullYear(), "When going greater than year_range");
       
       cds.close();
     }},
     test__nonflexibleYearRange__initializedWithDateInsideOfRange__shouldShowNavDateAsYear: function() {with(this){
       $("cds_test").value = "January 1, 2005";
-      cds = new CalendarDateSelect($("cds_test"), {year_range: [1997, 2007]});
+      cds = new CalendarDateSelect($("cds_test_div"), {year_range: [1997, 2007]});
       assertEqual(2005, cds.date.getFullYear(), "When going lesser than year_range");
       cds.close();
     }},
     test__flexibleYearRange__goToBoundary__shouldRefreshRange: function() {with(this){
       $("cds_test").value = "January 1, 2007";
-      cds = new CalendarDateSelect($("cds_test"), {year_range: 10});
+      cds = new CalendarDateSelect($("cds_test_div"), {year_range: 10});
       cds.navYear(1997);
       assert(cds.year_select.setValue(1987), "should have refreshed with 1997 as the center");
       cds.navYear(2017);
@@ -258,7 +258,7 @@
       cds.close();
     }},
     test__should_show_iframe_only_in_ie: function() {with(this){
-      cds = new CalendarDateSelect($("cds_test"));
+      cds = new CalendarDateSelect($("cds_test_div"));
       
       if (navigator.appName=="Microsoft Internet Explorer")
         assertEqual(1, $$('iframe.ie6_blocker').length)
@@ -268,7 +268,7 @@
       cds.close();
     }},
     test__should_populate_minute_box_according_to_minute_interval: function() {with(this){
-      cds = new CalendarDateSelect($("cds_test"), {time: true, minute_interval: 10});
+      cds = new CalendarDateSelect($("cds_test_div"), {time: true, minute_interval: 10});
       assert(cds.minute_select.setValue(0), "should allow me to select 0 minutes" );
       assert(!cds.minute_select.setValue(5), "should NOT allow me to select 5 minutes");
       assert(cds.minute_select.setValue(10), "should allow me to select 10 minutes" );
@@ -278,7 +278,7 @@
       var vars = $w("padded2 compare_date str minute hour value e above e_dim e_top e_left matched e_bottom e_height c_pos c_left c_top c_height left_px top_px top_div header_div body_div buttons_div footer_div bottom_div days_tbody row_number cell_index weekday that pre_days use_time m y hover_date x d o")
       vars.each(function(v) {eval(v + " = -100");});
       
-      cds = new CalendarDateSelect($("cds_test"), {time: true});
+      cds = new CalendarDateSelect($("cds_test_div"), {time: true});
       cds.navMonth(1);
       cds.navYear(2);
       cds.dayHover($$('.cds_body td').first());
@@ -291,31 +291,13 @@
     }},
     test__valid_date__shouldnt_allow_selection_of_invalid_dates_and_should_apply_css: function() {with (this) {
       $('cds_test').value = "December 11, 2007";
-      cds = new CalendarDateSelect($("cds_test"), {valid_date_check: function(date) { return date < new Date("December 13, 2007")}, time: "mixed"});
-      assertEqual("December 11, 2007", $F('cds_test'));
+      cds = new CalendarDateSelect($("cds_test_div"), {valid_date_check: function(date) { date < new Date("December 13, 2007")}});
       cds.updateSelectedDate({day:13, month:12-1, year:2007});
-      assertEqual("December 11, 2007", $F('cds_test'), "Date should not have been allowed to be selected");
-      cds.updateSelectedDate({day:10, month:12-1, year:2007});
-      assertEqual("December 10, 2007", $F('cds_test'), "Date should not have been allowed to be selected");
-      
-      day_12_element = $$('.calendar_date_select td')[17];
-      day_13_element = $$('.calendar_date_select td')[18];
-      assertEqual(12, day_12_element.day); // make sure we have th right one
-      assertEqual(13, day_13_element.day); // make sure we have th right one
-      assert( ! day_12_element.hasClassName("disabled"), "Day 12 shouldnt be disabled");
-      assert(day_13_element.hasClassName("disabled"), "Day 13 should be disabled");
-      
       cds.close();
-    }},
-    test__valid_date_check_is_nil__should_show_all_cells_as_enabled: function() {with (this) {
-      $('cds_test').value = "December 11, 2007";
-      cds = new CalendarDateSelect($("cds_test"));
       
-      $$('.calendar_date_select td').each(function(e){
-        assert( ! e.hasClassName("disabled"));
+      vars.each(function(v) {
+        assert(-100 == eval(v), "Variable " + v + " was leaked");
       });
-      
-      cds.close();
     }}
   });
 // ]]>

@@ -88,7 +88,8 @@ CalendarDateSelect.prototype = {
       minute_interval: 5,
       popup_by: this.target_element,
       month_year: "dropdowns",
-      onchange: this.target_element.onchange
+      onchange: this.target_element.onchange,
+      valid_date_check: nil
     }).merge(options || {});
     
     this.selection_made = $F(this.target_element).strip()!=="";
@@ -272,6 +273,7 @@ CalendarDateSelect.prototype = {
     
     var today = new Date().stripTime();
     var this_month = this.date.getMonth();
+    vdc = this.options.get("valid_date_check");
     for (var cell_index = 0;cell_index<42; cell_index++)
     {
       day = iterator.getDate(); month = iterator.getMonth();
@@ -279,6 +281,7 @@ CalendarDateSelect.prototype = {
       Element.remove(cell.childNodes[0]); div = cell.build("div", {innerHTML:day});
       if (month!=this_month) div.className = "other";
       cell.day = day; cell.month = month; cell.year = iterator.getFullYear();
+      if (vdc) { console.log(vdc); console.log(iterator); console.log(vdc(iterator)); if (vdc(iterator)) cell.removeClassName("disabled"); else cell.addClassName("disabled") };
       iterator.setDate( day + 1);
     }
     
@@ -350,14 +353,18 @@ CalendarDateSelect.prototype = {
     this.date.setDate(1);
   },
   updateFooter:function(text) { if (!text) text = this.dateString(); this.footer_div.purgeChildren(); this.footer_div.build("span", {innerHTML: text }); },
-  updateSelectedDate:function(parts, via_click) {
-    var parts = $H(parts);
+  updateSelectedDate:function(partsOrElement, via_click) {
+    var parts = $H(partsOrElement);
     if ((this.target_element.disabled || this.target_element.readOnly) && this.options.get("popup") != "force") return false;
     if (parts.get("day")) {
+      var t_selected_date = this.selected_date, vdc = this.options.get("valid_date_check");
+      for (var x = 0; x<=3; x++) t_selected_date.setDate(parts.get("day"));
+      t_selected_date.setYear(parts.get("year"));
+      t_selected_date.setMonth(parts.get("month"));
+      
+      if (vdc && ! vdc(t_selected_date)) { return false; }
+      this.selected_date = t_selected_date;
       this.selection_made = true;
-      for (var x = 0; x<=3; x++) this.selected_date.setDate(parts.get("day"));
-      this.selected_date.setYear(parts.get("year"));
-      this.selected_date.setMonth(parts.get("month"));
     }
     
     if (!isNaN(parts.get("hour"))) this.selected_date.setHours(parts.get("hour"));
