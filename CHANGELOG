@@ -1,4 +1,4 @@
-==Version 2.0 ==
+==Version 1.10 ==
 Dec 3, 2007
   * You can now pass in a parameter to tell CalendarDateSelect not to allow selection of certain dates.  See the [http://www.restatesman.com/static/calendar?tab=other demo] for an example.
   
