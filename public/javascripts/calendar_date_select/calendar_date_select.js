@@ -281,7 +281,7 @@ CalendarDateSelect.prototype = {
       Element.remove(cell.childNodes[0]); div = cell.build("div", {innerHTML:day});
       if (month!=this_month) div.className = "other";
       cell.day = day; cell.month = month; cell.year = iterator.getFullYear();
-      if (vdc) { console.log(vdc); console.log(iterator); console.log(vdc(iterator)); if (vdc(iterator)) cell.removeClassName("disabled"); else cell.addClassName("disabled") };
+      if (vdc) { if (vdc(iterator.stripTime())) cell.removeClassName("disabled"); else cell.addClassName("disabled") };
       iterator.setDate( day + 1);
     }
     
@@ -362,7 +362,7 @@ CalendarDateSelect.prototype = {
       t_selected_date.setYear(parts.get("year"));
       t_selected_date.setMonth(parts.get("month"));
       
-      if (vdc && ! vdc(t_selected_date)) { return false; }
+      if (vdc && ! vdc(t_selected_date.stripTime())) { return false; }
       this.selected_date = t_selected_date;
       this.selection_made = true;
     }

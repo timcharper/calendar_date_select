@@ -83,7 +83,7 @@ class CalendarDateSelect
     def calendar_date_select_process_options(options)
       calendar_options = {}
       callbacks = [:before_show, :before_close, :after_show, :after_close, :after_navigate]
-      for key in [:time, :embedded, :buttons, :format, :year_range, :month_year, :popup, :hidden] + callbacks
+      for key in [:time, :valid_date_check, :embedded, :buttons, :format, :year_range, :month_year, :popup, :hidden] + callbacks
         calendar_options[key] = options.delete(key) if options.has_key?(key)
       end
       
@@ -95,6 +95,16 @@ class CalendarDateSelect
       if calendar_options[:popup].to_s == "force"
         calendar_options[:popup] = "'force'"
         options[:readonly] = true 
+      end
+      
+      if (vdc=calendar_options.delete(:valid_date_check))
+        if vdc.include?(";") || vdc.include?("function")
+          throw ":valid_date_check function is missing a 'return' statement.  Try something like: :valid_date_check => 'if (date > new(Date)) return true; else return false;'" unless vdc.include?("return");
+        end
+        
+        vdc = "return(#{vdc})" unless vdc.include?("return")
+        vdc = "function(date) { #{vdc} }" unless vdc.include?("function")
+        calendar_options[:valid_date_check] = vdc
       end
       
       calendar_options[:popup_by] ||= "this" if calendar_options[:hidden]

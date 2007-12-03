@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), '../test_helper.rb')
+  require File.join(File.dirname(__FILE__), '../test_helper.rb')
 
 class HelperMethodsTest < Test::Unit::TestCase
   include ActionView::Helpers::FormHelper
@@ -45,6 +45,43 @@ class HelperMethodsTest < Test::Unit::TestCase
     output = calendar_date_select(:model, :start_datetime)
     
     assert_no_match(/value/, output)
+  end
+  
+  def test__vdc__should_auto_format_function
+    @model.start_datetime = Time.parse("January 2, 2007 12:00 AM")
+    output = calendar_date_select(:model, 
+      :start_datetime, 
+      :valid_date_check => "date < new Date()"
+    )
+    assert_match("valid_date_check:function(date) { return(date &lt; new Date()) }", output)
+    
+    output = calendar_date_select(:model, 
+      :start_datetime, 
+      :valid_date_check => "return(date < new Date())"
+    )
+    assert_match("valid_date_check:function(date) { return(date &lt; new Date()) }", output)
+    output = calendar_date_select(:model, 
+      :start_datetime, 
+      :valid_date_check => "function(p) { return(date < new Date()) }"
+    )
+    assert_match("valid_date_check:function(p) { return(date &lt; new Date()) }", output)
+  end
+  
+  def test__vdc__excluded_return__should_raise_error
+    throw_message = ":valid_date_check function is missing a 'return' statement.  Try something like: :valid_date_check => 'if (date > new(Date)) return true; else return false;'"
+    assert_throws throw_message.to_sym do
+      output = calendar_date_select(:model, 
+        :start_datetime, 
+        :valid_date_check => "date = 5; date < new Date());"
+      )
+    end
+    
+    assert_throws throw_message.to_sym do
+      output = calendar_date_select(:model, 
+        :start_datetime, 
+        :valid_date_check => "function(p) { date = 5; date < new Date()); }"
+      )
+    end
   end
   
   def test__year_range__formats_correctly
