@@ -118,6 +118,9 @@ iframe.ie6_blocker {
   background-color:#ccc;
 }
 
+.calendar_date_select td.disabled div {
+  color: #000044;
+}
 .calendar_date_select td.today {
   border: 1px dashed blue;
 }

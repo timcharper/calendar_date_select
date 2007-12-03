@@ -119,6 +119,10 @@ iframe.ie6_blocker {
   border: 1px dashed #999;
 }
 
+.calendar_date_select td.disabled div {
+  color: #e6e6e6;
+}
+
 .fieldWithErrors .calendar_date_select {
   border: 2px solid red;
 }
