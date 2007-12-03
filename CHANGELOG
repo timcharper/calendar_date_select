@@ -1,3 +1,7 @@
+==Version 2.0 ==
+Dec 3, 2007
+  * You can now pass in a parameter to tell CalendarDateSelect not to allow selection of certain dates.  See the [demo http://www.restatesman.com/static/calendar?tab=other] for an example.
+  
 ==Version 1.9.2==
 Nov 26, 2007
   * CalendarDateSelect was leaking javascript variables.  (nothing was explicitly declared local, so javascript assumes global).  Added test case and applied fix.  This may help with some of the conflicts CalendarDateSelect has been causing with other scripts.
