@@ -28,6 +28,11 @@ class CalendarDateSelect
       :date => "%d/%m/%Y",
       :time => " %H:%M",
       :javascript_include => "format_italian"
+    },
+    :db => {
+      :date => "%Y-%m-%d",
+      :time => "%H:%M",
+      :javascript_include => "format_db"
     }
   }
   
