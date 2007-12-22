@@ -152,7 +152,7 @@ CalendarDateSelect.prototype = {
     this.initHeaderDiv();
     this.initButtonsDiv();
     this.initCalendarGrid();
-    this.updateFooter("&nbsp;");
+    this.updateFooter("&#160;");
     
     this.refresh();
     this.setUseTime(this.use_time);
@@ -231,7 +231,7 @@ CalendarDateSelect.prototype = {
     } else if (! this.options.get("buttons")) buttons_div.remove();
     
     if (this.options.get("buttons")) {
-      buttons_div.build("span", {innerHTML: "&nbsp;"});
+      buttons_div.build("span", {innerHTML: "&#160;"});
       if (this.options.get("time")=="mixed" || !this.options.get("time")) b = buttons_div.build("a", {
           innerHTML: _translations["Today"],
           href: "#",
@@ -248,7 +248,7 @@ CalendarDateSelect.prototype = {
       
       if (!this.options.get("embedded"))
       {
-        buttons_div.build("span", {innerHTML: "&nbsp;"});
+        buttons_div.build("span", {innerHTML: "&#160;"});
         buttons_div.build("a", { innerHTML: _translations["OK"], href: "#", onclick: function() {this.close(); return false;}.bindAsEventListener(this) });
       }
     }
@@ -340,7 +340,7 @@ CalendarDateSelect.prototype = {
   },
   reparse: function() { this.parseDate(); this.refresh(); },
   dateString: function() {
-    return (this.selection_made) ? this.selected_date.toFormattedString(this.use_time) : "&nbsp;";
+    return (this.selection_made) ? this.selected_date.toFormattedString(this.use_time) : "&#160;";
   },
   parseDate: function()
   {
