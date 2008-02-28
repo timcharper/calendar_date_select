@@ -72,7 +72,7 @@ CalendarDateSelect.prototype = {
   initialize: function(target_element, options) {
     this.target_element = $(target_element); // make sure it's an element, not a string
     if (!this.target_element) { alert("Target element " + target_element + " not found!"); return false;}
-    if (down = this.target_element.down("INPUT")) this.target_element = down;
+    if (this.target_element.tagName != "INPUT") this.target_element = this.target_element.down("INPUT")
     
     this.target_element.calendar_date_select = this;
     this.last_click_at = 0;
