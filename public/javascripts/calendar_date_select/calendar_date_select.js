@@ -140,7 +140,7 @@ CalendarDateSelect.prototype = {
     this.calendar_div.setStyle({visibility:""});
     
     // draw an iframe behind the calendar -- ugly hack to make IE 6 happy
-    if(navigator.appName=="Microsoft Internet Explorer") this.iframe = $(document.body).build("iframe", {className: "ie6_blocker"}, { left: left_px, top: top_px, height: c_height.toString()+"px", width: c_width.toString()+"px", border: "0px"})
+    if(navigator.appName=="Microsoft Internet Explorer") this.iframe = $(document.body).build("iframe", {src: "javascript:false", className: "ie6_blocker"}, { left: left_px, top: top_px, height: c_height.toString()+"px", width: c_width.toString()+"px", border: "0px"})
   },
   init: function() {
     var that = this;
