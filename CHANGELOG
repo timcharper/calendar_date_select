@@ -1,3 +1,7 @@
+== Version 1.10.2 ==
+Mar 10. 2008
+ * bugfix: calendar_date_select_tag doesn't format Time and Date values (thanks for the patch, sskirby!)
+ 
 == Version 1.10.1 ==
 Mar 10, 2008
  * updated to automatically install locale folder
