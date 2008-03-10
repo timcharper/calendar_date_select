@@ -1,3 +1,11 @@
+== Version 1.10.1 ==
+Mar 10, 2008
+ * updated to automatically install locale folder
+ * bugfix - cds "today" was showing up as Mar 9th 2008, when it was really Mar 10th 2008 - was caused by a wrinkle in time (Day light savings time)
+ * Prototype 1.6.0.1 compatibility issue (77) resolved - thanks mike.nicholaides for the patch!
+ * patch applied from mjroghelia to fix ie ssl iframe issue (84)
+ * xhtml error fixed - &nbsp; replaced with #160;
+ 
 ==Version 1.10 ==
 Dec 3, 2007
   * You can now pass in a parameter to tell CalendarDateSelect not to allow selection of certain dates.  See the [http://www.restatesman.com/static/calendar?tab=other demo] for an example.
