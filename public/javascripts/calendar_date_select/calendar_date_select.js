@@ -287,7 +287,7 @@ CalendarDateSelect.prototype = {
     
     if (this.today_cell) this.today_cell.removeClassName("today");
     
-    if ( $R( 0, 42 ).include(days_until = this.beginning_date.daysDistance(today)) ) {
+    if ( $R( 0, 42 ).include(days_until = this.beginning_date.stripTime().daysDistance(today)) ) {
       this.today_cell = this.calendar_day_grid[days_until];
       this.today_cell.addClassName("today");
     }
