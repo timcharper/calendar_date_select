@@ -5,6 +5,7 @@ class HelperMethodsTest < Test::Unit::TestCase
   include ActionView::Helpers::JavaScriptHelper
   include ActionView::Helpers::AssetTagHelper
   include ActionView::Helpers::TagHelper
+  include ActionView::Helpers::FormTagHelper
   
   include CalendarDateSelect::FormHelper
   
@@ -92,4 +93,57 @@ class HelperMethodsTest < Test::Unit::TestCase
     output = calendar_date_select(:model, :start_datetime, :year_range => (15.years.ago..5.years.ago))
     assert_match("year_range:[#{15.years.ago.year}, #{5.years.ago.year}]", output)
   end
+
+  def test__tag__formats_text_correctly_string
+    time = "January 2, 2007 12:01:23 AM"
+    output = calendar_date_select_tag(:name, time)
+
+    assert_match(time, output, "Should have outputted a correctly formatted time")
+  end
+
+  def test__tag__formats_text_correctly_date
+    time = Date.new(2007, 01, 02)
+    output = calendar_date_select_tag(:name, time)
+
+    assert_no_match(/12:01 AM/, output, "Should not have outputted a time")
+    assert_match(CalendarDateSelect.format_date(time), output, "Should have outputted a correctly formatted time")
+  end
+
+  def test__tag__formats_text_correctly_time
+    time = Time.parse("January 2, 2007 12:01:23 AM")
+    output = calendar_date_select_tag(:name, time)
+
+    assert_match(CalendarDateSelect.format_date(time), output, "Should have outputted a correctly formatted time")
+  end
+
+  def test__tag__formats_text_correctly_with_time_option
+    time = Time.parse("January 2, 2007 12:01:23 AM")
+    output = calendar_date_select_tag(:name, time, :time => true)
+
+    assert_match(CalendarDateSelect.format_date(time), output, "Should have outputted a correctly formatted time")
+  end
+
+  def test__tag__formats_text_correctly_with_mixed_option
+    time = Time.parse("January 2, 2007 12:01:23 AM")
+    output = calendar_date_select_tag(:name, time, :time => 'mixed')
+
+    assert_match(CalendarDateSelect.format_date(time), output, "Should have outputted a correctly formatted time")
+  end
+
+  def test__tag__formats_text_correctly_time_as_date
+    time = Time.parse("January 2, 2007 12:01:23 AM")
+    output = calendar_date_select_tag(:name, time, :time => false)
+
+    assert_no_match(/12:01 AM/, output, "Should not have outputted a time")
+    assert_match(time.strftime(CalendarDateSelect.date_format_string(false)), output, "Should have outputted a correctly formatted time")
+  end
+
+  def test__tag__formats_text_correctly_time_with_format
+    time = Time.parse("January 2, 2007 12:01:00 AM")
+    output = calendar_date_select_tag(:name, time, :format => "%Y-%m-%d")
+
+    assert_no_match(/12:01 AM/, output, "Should not have outputted a time")
+    assert_match('2007-01-02', output, "Should have outputted a correctly formatted time")
+  end
+
 end
