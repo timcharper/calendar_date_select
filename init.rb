@@ -1,4 +1,4 @@
-ss%w[calendar_date_select includes_helper].each { |file| 
+%w[calendar_date_select includes_helper].each { |file| 
   require File.join( File.dirname(__FILE__), "lib",file) 
 }
 
