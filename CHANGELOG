@@ -1,3 +1,7 @@
+== Version 1.10.3 ==
+Mar 24. 2008
+ * Fixed active scaffold integration bug.  Thanks tapajos!
+
 == Version 1.10.2 ==
 Mar 10. 2008
  * bugfix: calendar_date_select_tag doesn't format Time and Date values (thanks for the patch, sskirby!)
