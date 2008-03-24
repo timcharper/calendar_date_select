@@ -1,6 +1,6 @@
 == Version 1.10.4 ==
 Mar 24, 2008
- * patch applied to fix issue #92: nil object option causes CalendarDateSelect.calendar_date_select(object, method, options) to not use object.  Thanks, sskirby!!
+ * patch applied to fix issue #92: nil object option causes CalendarDateSelect.calendar_date_select(object, method, options) to not use object.  Thanks, sskirby!
 
 == Version 1.10.3 ==
 Mar 24. 2008
