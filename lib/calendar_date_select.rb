@@ -84,7 +84,7 @@ class CalendarDateSelect
       calendar_date_select_output(tag, calendar_options)
     end
     
-    def format_time(value, options)
+    def format_time(value, options = {})
       if value.respond_to?("strftime")
         if options[:format]
           value = value.strftime(options[:format])
