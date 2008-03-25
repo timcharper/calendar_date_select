@@ -145,5 +145,13 @@ class HelperMethodsTest < Test::Unit::TestCase
     assert_no_match(/12:01 AM/, output, "Should not have outputted a time")
     assert_match('2007-01-02', output, "Should have outputted a correctly formatted time")
   end
+  
+  def test__nil_object_option__should_disregard
+    @model.start_datetime = Time.parse("January 2, 2007 12:00 AM")
+    output = calendar_date_select(:model, :start_datetime, :time => true, :object => nil)
+    assert_match(CalendarDateSelect.format_date(@model.start_datetime), output, "Should have outputted a time")
+  end  
 
 end
+
+
