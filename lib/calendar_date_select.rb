@@ -9,6 +9,11 @@ class CalendarDateSelect
       :time => " %I:%M %p",
       :javascript_include => "format_hyphen_ampm"
     },
+    :iso_date => {
+      :date => "%Y-%m-%d", 
+      :time => " %H:%M",
+      :javascript_include => "format_iso_date"
+    }, 
     :finnish => {
       :date => "%d.%m.%Y",
       :time => " %H:%M",
