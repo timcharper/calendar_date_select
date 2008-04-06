@@ -327,12 +327,10 @@ CalendarDateSelect.prototype = {
     this.updateFooter(hover_date.toFormattedString(this.use_time));
   },
   dayHoverOut: function(element) { this.updateFooter(); },
+  clearSelectedClass: function() {if (this.selected_cell) this.selected_cell.removeClassName("selected");},
   setSelectedClass: function() {
     if (!this.selection_made) return;
-    
-    // clear selection
-    if (this.selected_cell) this.selected_cell.removeClassName("selected");
-    
+    this.clearSelectedClass()
     if ($R(0,42).include( days_until = this.beginning_date.stripTime().daysDistance(this.selected_date.stripTime()) )) {
       this.selected_cell = this.calendar_day_grid[days_until];
       this.selected_cell.addClassName("selected");
@@ -437,3 +435,4 @@ CalendarDateSelect.prototype = {
   },
   callback: function(name, param) { if (this.options.get(name)) { this.options.get(name).bind(this.target_element)(param); } }
 }
+
