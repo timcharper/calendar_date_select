@@ -83,7 +83,6 @@ CalendarDateSelect.prototype = {
       time: false,
       buttons: true,
       year_range: 10,
-      calendar_div: nil,
       close_on_click: nil,
       minute_interval: 5,
       popup_by: this.target_element,
@@ -91,38 +90,16 @@ CalendarDateSelect.prototype = {
       onchange: this.target_element.onchange,
       valid_date_check: nil
     }).merge(options || {});
-    
     this.use_time = this.options.get("time");
-    
-    this.callback("before_show")
-    this.calendar_div = $(this.options.get("calendar_div"));
-    
     this.parseDate();
-    
-    // by default, stick it by the target element (if embedded, that's where we'll want it to show up)
-    if (this.calendar_div == nil) { this.calendar_div = $( this.options.get("embedded") ? this.target_element.parentNode : document.body ).build('div'); }
-    if (!this.options.get("embedded")) this.calendar_div.setStyle( { position:"absolute", visibility: "hidden", left:0, top:0 } )
-    
-    this.calendar_div.addClassName("calendar_date_select");
-    
-    if (this.options.get("embedded")) this.options.set("close_on_click", false);
-    // logic for close on click
-    if (this.options.get("close_on_click")===nil )
-    {
-      if (this.options.get("time"))
-        this.options.set("close_on_click", false);
-      else
-        this.options.set("close_on_click", true);
-    }
-    
-    // set the click handler to check if a user has clicked away from the document
+    this.callback("before_show")
+    this.initCalendarDiv();
     if(!this.options.get("embedded")) {
+      this.positionCalendarDiv()
+      // set the click handler to check if a user has clicked away from the document
       Event.observe(document, "mousedown", this.closeIfClickedOut_handler = this.closeIfClickedOut.bindAsEventListener(this));
       Event.observe(document, "keypress", this.keyPress_handler = this.keyPress.bindAsEventListener(this));
     }
-    
-    this.init();
-    if(!this.options.get("embedded")) { this.positionCalendarDiv() };
     this.callback("after_show")
   },
   positionCalendarDiv: function() {
@@ -141,7 +118,16 @@ CalendarDateSelect.prototype = {
     // draw an iframe behind the calendar -- ugly hack to make IE 6 happy
     if(navigator.appName=="Microsoft Internet Explorer") this.iframe = $(document.body).build("iframe", {src: "javascript:false", className: "ie6_blocker"}, { left: left_px, top: top_px, height: c_height.toString()+"px", width: c_width.toString()+"px", border: "0px"})
   },
-  init: function() {
+  initCalendarDiv: function() {
+    if (this.options.get("embedded")) {
+      var parent = this.target_element.parentNode;
+      var style = {}
+    } else {
+      var parent = document.body
+      var style = { position:"absolute", visibility: "hidden", left:0, top:0 }
+    }
+    this.calendar_div = $(parent).build('div', {className: "calendar_date_select"}, style);
+    
     var that = this;
     // create the divs
     $w("top header body buttons footer bottom").each(function(name) {
@@ -376,11 +362,18 @@ CalendarDateSelect.prototype = {
     this.setSelectedClass();
     
     if (this.selection_made) this.updateValue();
-    if (this.options.get("close_on_click")) { this.close(); }
+    if (this.closeOnClick()) { this.close(); }
     if (via_click && !this.options.get("embedded")) {
       if ((new Date() - this.last_click_at) < 333) this.close();
       this.last_click_at = new Date();
     }
+  },
+  closeOnClick: function() {
+    if (this.options.get("embedded")) return false;
+    if (this.options.get("close_on_click")===nil )
+      return (this.options.get("time")) ? false : true
+    else
+      return (this.options.get("close_on_click"))
   },
   navMonth: function(month) { (target_date = new Date(this.date)).setMonth(month); return (this.navTo(target_date)); },
   navYear: function(year) { (target_date = new Date(this.date)).setYear(year); return (this.navTo(target_date)); },
@@ -435,4 +428,3 @@ CalendarDateSelect.prototype = {
   },
   callback: function(name, param) { if (this.options.get(name)) { this.options.get(name).bind(this.target_element)(param); } }
 }
-
