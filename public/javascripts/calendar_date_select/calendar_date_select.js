@@ -92,7 +92,6 @@ CalendarDateSelect.prototype = {
       valid_date_check: nil
     }).merge(options || {});
     
-    this.selection_made = $F(this.target_element).strip()!=="";
     this.use_time = this.options.get("time");
     
     this.callback("before_show")
@@ -343,6 +342,7 @@ CalendarDateSelect.prototype = {
   parseDate: function()
   {
     var value = $F(this.target_element).strip()
+    this.selection_made = (value != "");
     this.date = value=="" ? NaN : Date.parseFormattedString(this.options.get("date") || value);
     if (isNaN(this.date)) this.date = new Date();
     if (!this.validYear(this.date.getFullYear())) this.date.setYear( (this.date.getFullYear() < this.yearRange().start) ? this.yearRange().start : this.yearRange().end);
