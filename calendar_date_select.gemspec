@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "calendar_date_select"
-  s.version = "1.10.6"
+  s.version = "1.10.7"
   s.date = "2008-06-24"
   s.summary = "A popular and flexible JavaScript DatePicker for RubyOnRails"
   s.email = "timcharper@gmail.com"
