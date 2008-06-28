@@ -13,7 +13,7 @@ It works!
 
 Setup for "vendored gem":
 In enviroment.rb add the gem:
-  config.gem "artmotion-calendar_date_select", :version => "1.10.6", :source => "http://gems.github.com", :lib => 'gem_init'
+  config.gem "timcharper-calendar_date_select", :version => "1.11", :source => "http://gems.github.com", :lib => 'gem_init'
 
 Install the gem locally (this installs the gem system wide)
 	sudo rake gems:install
