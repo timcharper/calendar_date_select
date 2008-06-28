@@ -29,6 +29,11 @@ class CalendarDateSelect
       :time => " %H:%M", 
       :javascript_include => "format_euro_24hr"
     },
+    :euro_24hr_ymd => {
+      :date => "%Y.%m.%d",
+      :time => " %H:%M", 
+      :javascript_include => "format_euro_24hr_ymd"
+    },
     :italian => {
       :date => "%d/%m/%Y",
       :time => " %H:%M",
