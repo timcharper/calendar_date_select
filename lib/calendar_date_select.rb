@@ -159,7 +159,7 @@ class CalendarDateSelect
       use_time = options[:time]
       
       if options[:time].to_s=="mixed"
-        use_time = false if Date===obj.send(method)
+        use_time = false if Date===(obj.respond_to?(method) && obj.send(method))
       end
       
       calendar_options = calendar_date_select_process_options(options)
