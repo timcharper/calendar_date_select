@@ -1,3 +1,5 @@
+ * Calendar Date Select now works as a ruby-gem (thanks, artmotion!)
+
 == Version 1.10.5 ==
 Apr 7, 2008
  * Javascript code refactoring!  Less mess!
