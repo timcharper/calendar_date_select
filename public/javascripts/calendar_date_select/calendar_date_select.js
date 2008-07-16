@@ -6,13 +6,13 @@ if (Prototype.Version < "1.6") alert("Prototype 1.6.0 is required.  If using ear
 Element.addMethods({
   purgeChildren: function(element) { $A(element.childNodes).each(function(e){$(e).remove();}); },
   build: function(element, type, options, style) {
-    var newElement = Element.build(type, options, style);
+    var newElement = Element.buildAndAppend(type, options, style);
     element.appendChild(newElement);
     return newElement;
   }
 });
 
-Element.build = function(type, options, style)
+Element.buildAndAppend = function(type, options, style)
 {
   var e = $(document.createElement(type));
   $H(options).each(function(pair) { eval("e." + pair.key + " = pair.value" ); });
