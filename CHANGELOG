@@ -1,4 +1,7 @@
+== Version 1.11 ==
+
  * Calendar Date Select now works as a ruby-gem (thanks, artmotion!)
+ * Applied fix outlined in Issue #83: http://code.google.com/p/calendardateselect/issues/detail?id=83 (Thanks David Bolton)
 
 == Version 1.10.5 ==
 Apr 7, 2008
