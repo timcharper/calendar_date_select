@@ -113,7 +113,7 @@ class CalendarDateSelect
     def calendar_date_select_process_options(options)
       calendar_options = {}
       callbacks = [:before_show, :before_close, :after_show, :after_close, :after_navigate]
-      for key in [:time, :valid_date_check, :embedded, :buttons, :format, :year_range, :month_year, :popup, :hidden, :minute_interval] + callbacks
+      for key in [:time, :valid_date_check, :embedded, :buttons, :clear_button, :format, :year_range, :month_year, :popup, :hidden, :minute_interval] + callbacks
         calendar_options[key] = options.delete(key) if options.has_key?(key)
       end
       

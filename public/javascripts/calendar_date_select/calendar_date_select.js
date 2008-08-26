@@ -47,7 +47,8 @@ window.f_scrollTop = function() { return ([window.pageYOffset ? window.pageYOffs
 _translations = {
   "OK": "OK",
   "Now": "Now",
-  "Today": "Today"
+  "Today": "Today",
+  "Clear": "Clear"
 }
 SelectBox = Class.create();
 SelectBox.prototype = {
@@ -82,6 +83,7 @@ CalendarDateSelect.prototype = {
       popup: nil,
       time: false,
       buttons: true,
+      clear_button: true,
       year_range: 10,
       close_on_click: nil,
       minute_interval: 5,
@@ -235,6 +237,10 @@ CalendarDateSelect.prototype = {
       {
         buttons_div.build("span", {innerHTML: "&#160;"});
         buttons_div.build("a", { innerHTML: _translations["OK"], href: "#", onclick: function() {this.close(); return false;}.bindAsEventListener(this) });
+        buttons_div.build("span", {innerHTML: "&#160;"});
+        if (this.options.get('clear_button')) {
+          buttons_div.build("a", { innerHTML: _translations["Clear"], href: "#", onclick: function() {this.clearDate(); this.close(); return false;}.bindAsEventListener(this) });
+        }
       }
     }
   },
@@ -337,6 +343,10 @@ CalendarDateSelect.prototype = {
     this.date.setDate(1);
   },
   updateFooter:function(text) { if (!text) text = this.dateString(); this.footer_div.purgeChildren(); this.footer_div.build("span", {innerHTML: text }); },
+  clearDate:function() {
+    if ((this.target_element.disabled || this.target_element.readOnly) && this.options.get("popup") != "force") return false;
+    this.target_element.value = "";
+  },
   updateSelectedDate:function(partsOrElement, via_click) {
     var parts = $H(partsOrElement);
     if ((this.target_element.disabled || this.target_element.readOnly) && this.options.get("popup") != "force") return false;
