@@ -237,10 +237,10 @@ CalendarDateSelect.prototype = {
       {
         buttons_div.build("span", {innerHTML: "&#160;"});
         buttons_div.build("a", { innerHTML: _translations["OK"], href: "#", onclick: function() {this.close(); return false;}.bindAsEventListener(this) });
+      }
+      if (this.options.get('clear_button')) {
         buttons_div.build("span", {innerHTML: "&#160;"});
-        if (this.options.get('clear_button')) {
-          buttons_div.build("a", { innerHTML: _translations["Clear"], href: "#", onclick: function() {this.clearDate(); this.close(); return false;}.bindAsEventListener(this) });
-        }
+        buttons_div.build("a", { innerHTML: _translations["Clear"], href: "#", onclick: function() {this.clearDate(); if (!this.options.get("embedded")) this.close(); return false;}.bindAsEventListener(this) });
       }
     }
   },
@@ -346,6 +346,8 @@ CalendarDateSelect.prototype = {
   clearDate:function() {
     if ((this.target_element.disabled || this.target_element.readOnly) && this.options.get("popup") != "force") return false;
     this.target_element.value = "";
+    this.clearSelectedClass();
+    this.updateFooter('&#160;');
   },
   updateSelectedDate:function(partsOrElement, via_click) {
     var parts = $H(partsOrElement);
