@@ -67,11 +67,25 @@ class CalendarDateSelect
       @@format[:date] + ( time ? @@format[:time] : "" )
     end
     
+    # formates a date with the specified format
     def format_date(date)
       if Date===date
         date.strftime(date_format_string(false))
       else
         date.strftime(date_format_string(true))
+      end
+    end
+
+    # parses a date string using the specified format
+    def parse_date(date)
+      if has_time?(date)
+        hash = ::Date._strptime(date, date_format_string(true))
+        return nil if hash.nil?
+        ::DateTime.new(*hash.values_at(:year, :mon, :mday, :hour, :min))
+      else
+        hash = ::Date._strptime(date, date_format_string(false))
+        return nil if hash.nil?
+        ::Date.new(*hash.values_at(:year, :mon, :mday))
       end
     end
     

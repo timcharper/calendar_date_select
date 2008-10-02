@@ -1,10 +1,12 @@
 require "calendar_date_select/calendar_date_select.rb"
 require "calendar_date_select/includes_helper.rb"
+require "calendar_date_select/active_record_extension.rb"
 
 if Object.const_defined?(:Rails) && File.directory?(Rails.root + "/public")
   ActionView::Helpers::FormHelper.send(:include, CalendarDateSelect::FormHelper)
   ActionView::Base.send(:include, CalendarDateSelect::FormHelper)
   ActionView::Base.send(:include, CalendarDateSelect::IncludesHelper)
+  ActiveRecord::Base.send(:extend, CalendarDateSelect::ActiveRecordExtension)
 
   if ([Rails::VERSION::MAJOR, Rails::VERSION::MINOR] <=> [2, 2]) == -1
     puts "This version of calendar date select (#{CalendarDateSelect.version}) requires Rails 2.2"
