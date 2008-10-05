@@ -78,6 +78,7 @@ class CalendarDateSelect
 
     # parses a date string using the specified format
     def parse_date(date)
+      return date unless String===date
       if has_time?(date)
         hash = ::Date._strptime(date, date_format_string(true))
         return nil if hash.nil?
