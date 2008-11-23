@@ -225,7 +225,7 @@ CalendarDateSelect.prototype = {
           onclick: function() {this.today(false); return false;}.bindAsEventListener(this)
         });
       
-      if (this.options.get("time")=="mixed") buttons_div.build("span", {innerHTML: " | ", className:"button_seperator"})
+      if (this.options.get("time")=="mixed") buttons_div.build("span", {innerHTML: "&#160;|&#160;", className:"button_seperator"})
       
       if (this.options.get("time")) b = buttons_div.build("a", {
         innerHTML: _translations["Now"],
@@ -235,11 +235,11 @@ CalendarDateSelect.prototype = {
       
       if (!this.options.get("embedded") && !this.closeOnClick())
       {
-        buttons_div.build("span", {innerHTML: "&#160;"});
+        buttons_div.build("span", {innerHTML: "&#160;|&#160;", className:"button_seperator"})
         buttons_div.build("a", { innerHTML: _translations["OK"], href: "#", onclick: function() {this.close(); return false;}.bindAsEventListener(this) });
       }
       if (this.options.get('clear_button')) {
-        buttons_div.build("span", {innerHTML: "&#160;"});
+        buttons_div.build("span", {innerHTML: "&#160;|&#160;", className:"button_seperator"})
         buttons_div.build("a", { innerHTML: _translations["Clear"], href: "#", onclick: function() {this.clearDate(); if (!this.options.get("embedded")) this.close(); return false;}.bindAsEventListener(this) });
       }
     }
