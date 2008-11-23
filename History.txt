@@ -1,3 +1,6 @@
+== Version 1.12 ==
+ * Updated for compatibility with Rails 2.2
+ 
 == Version 1.11.1 ==
  * properly wrap buttons if they are too big for the line
  * more translations: german (Jonas), Added russian translation (DEkart)
