@@ -233,7 +233,7 @@ CalendarDateSelect.prototype = {
         onclick: function() {this.today(true); return false}.bindAsEventListener(this)
       });
       
-      if (!this.options.get("embedded"))
+      if (!this.options.get("embedded") && !this.closeOnClick())
       {
         buttons_div.build("span", {innerHTML: "&#160;"});
         buttons_div.build("a", { innerHTML: _translations["OK"], href: "#", onclick: function() {this.close(); return false;}.bindAsEventListener(this) });
