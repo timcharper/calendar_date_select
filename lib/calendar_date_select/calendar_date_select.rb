@@ -78,6 +78,11 @@ class CalendarDateSelect
     def has_time?(value)
       /[0-9]:[0-9]{2}/.match(value.to_s)
     end
+
+    def version
+	VERSION
+    end
+
   end
   
   module FormHelper
