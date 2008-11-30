@@ -1,5 +1,5 @@
 module CalendarDateSelect
-  VERSION = '1.12'
+  VERSION = '1.13'
   FORMATS = {
     :natural => {
       :date => "%B %d, %Y",
@@ -112,9 +112,5 @@ module CalendarDateSelect
     else
       /[0-9]:[0-9]{2}/.match(value.to_s) ? true : false
     end
-  end
-
-  def self.version
-    VERSION
   end
 end

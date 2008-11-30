@@ -1,3 +1,4 @@
+ == Version 1.13
  * Lots of code clean up!
  * Moved test suite over to rspec
  * CalendarDateSelect.default_options implemented.  Use CalendarDateSelect.default_options.update(...) to set the default_options for your app.
