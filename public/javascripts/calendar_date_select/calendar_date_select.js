@@ -15,9 +15,8 @@ Element.addMethods({
 Element.buildAndAppend = function(type, options, style)
 {
   var e = $(document.createElement(type));
-  $H(options).each(function(pair) { eval("e." + pair.key + " = pair.value" ); });
-  if (style) 
-    $H(style).each(function(pair) { eval("e.style." + pair.key + " = pair.value" ); });
+  $H(options).each(function(pair) { e[pair.key] = pair.value });
+  if (style) e.setStyle(style);
   return e;
 };
 nil = null;

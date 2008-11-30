@@ -7,6 +7,7 @@
  * Don't try to focus a hidden or disabled element (closes #129 - thanks Bruno)
  * Call onchange callback when clearing the calendar (closes #137 - thanks Chewi)
  * Fixed issue that made :db format worthless (closes #135, thanks Andreas Zecher)
+ * dramatic optimization for calendar initial-rendering (thanks Yehudab, Bompus)
 
 == Version 1.12 ==
  * Updated for compatibility with Rails 2.2
