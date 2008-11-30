@@ -47,18 +47,37 @@ module CalendarDateSelect
     }
   }
 
+  # Returns the default_options hash.  These options are by default provided to every calendar_date_select control, unless otherwise overrided.
+  # 
+  # Example:
+  #   # At the bottom of config/environment.rb:
+  #   CalendarDateSelect.default_options.update(
+  #     :popup => "force",
+  #     :month_year => "label",
+  #     :image => "custom_calendar_picker.png"
+  #   )
   def self.default_options
     @default_options ||= { :image => "calendar_date_select/calendar.gif" }
   end
 
+  # Set the picker image.  Provide the image url the same way you would provide it to image_tag
   def self.image=(value)
     default_options[:image] = value
   end
 
+  # Returns the options for the given format
+  #
+  # Example:
+  #   CalendarDateSelect.format = :italian
+  #   puts CalendarDateSelect.format[:date]
+  #     => "%d/%m/%Y"
   def self.format
     @format ||= FORMATS[:natural]
   end
 
+  # Set the format.  To see a list of available formats, CalendarDateSelect::FORMATS.keys, or open lib/calendar_date_select/calendar_date_select.rb
+  #
+  # (e.g. CalendarDateSelect.format = :italian)
   def self.format=(format)
     raise "CalendarDateSelect: Unrecognized format specification: #{format}" unless FORMATS.has_key?(format)
     default_options[:format] = format
