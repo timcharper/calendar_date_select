@@ -429,7 +429,7 @@ CalendarDateSelect.prototype = {
     Event.stopObserving(document, "keypress", this.keyPress_handler);
     this.calendar_div.remove(); this.closed = true;
     if (this.iframe) this.iframe.remove();
-    if (this.target_element.type!="hidden") this.target_element.focus();
+    if (this.target_element.type != "hidden" && ! this.target_element.disabled) this.target_element.focus();
     this.callback("after_close");
   },
   closeIfClickedOut: function(e) {

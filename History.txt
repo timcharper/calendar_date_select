@@ -4,6 +4,7 @@
  * calendar_date_select and calendar_date_select_tag accept an :image parameter.
  * Backwards compatibility hook for Rails 2.1
  * RDOC!
+ * Don't try to focus a hidden or disabled element (closes #129 - thanks Bruno)
 
 == Version 1.12 ==
  * Updated for compatibility with Rails 2.2
