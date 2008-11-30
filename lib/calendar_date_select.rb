@@ -6,11 +6,19 @@ if Object.const_defined?(:Rails) && File.directory?(Rails.root + "/public")
   ActionView::Helpers::FormHelper.send(:include, CalendarDateSelect::FormHelpers)
   ActionView::Base.send(:include, CalendarDateSelect::FormHelpers)
   ActionView::Base.send(:include, CalendarDateSelect::IncludesHelper)
-
+  
+  # Filthy backwards compatibility hooks... grumble
   if ([Rails::VERSION::MAJOR, Rails::VERSION::MINOR] <=> [2, 2]) == -1
-    puts "This version of calendar date select (#{CalendarDateSelect.version}) requires Rails 2.2"
-    puts "To use an earlier version of rails, use calendar_date_select version 1.11.x"
-    exit
+    ActionView::Helpers::InstanceTag.class_eval do
+      def self.new_with_backwards_compatibility(object_name, method_name, template_object, object = nil)
+        new(object_name, method_name, template_object, nil, object)
+      end
+    end
+    
+  else
+    ActionView::Helpers::InstanceTag.class_eval do
+      class << self; alias new_with_backwards_compatibility new; end
+    end
   end
 
   # install files
