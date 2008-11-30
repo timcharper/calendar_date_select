@@ -1,6 +1,6 @@
 require "rubygems"
 
-require 'test/unit'
+require 'spec'
 
 require 'active_support'
 require 'action_pack'
@@ -12,7 +12,7 @@ require 'ostruct'
 $: << (File.dirname(__FILE__) + "/../lib")
 require "calendar_date_select"
 
-class Object
+class String
   def to_regexp
     is_a?(Regexp) ? self : Regexp.new(Regexp.escape(self.to_s))
   end

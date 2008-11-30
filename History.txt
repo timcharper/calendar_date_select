@@ -1,3 +1,8 @@
+ * Lots of code clean up!
+ * Moved test suite over to rspec
+ * CalendarDateSelect.default_options implemented.  Use CalendarDateSelect.default_options.update(...) to set the default_options for your app.
+ * calendar_date_select and calendar_date_select_tag accept an :image parameter.
+
 == Version 1.12 ==
  * Updated for compatibility with Rails 2.2
  
