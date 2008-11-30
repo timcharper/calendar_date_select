@@ -345,9 +345,11 @@ CalendarDateSelect.prototype = {
   updateFooter:function(text) { if (!text) text = this.dateString(); this.footer_div.purgeChildren(); this.footer_div.build("span", {innerHTML: text }); },
   clearDate:function() {
     if ((this.target_element.disabled || this.target_element.readOnly) && this.options.get("popup") != "force") return false;
+    var last_value = this.target_element.value;
     this.target_element.value = "";
     this.clearSelectedClass();
     this.updateFooter('&#160;');
+    if (last_value!=this.target_element.value) this.callback("onchange");
   },
   updateSelectedDate:function(partsOrElement, via_click) {
     var parts = $H(partsOrElement);

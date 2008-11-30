@@ -5,6 +5,7 @@
  * Backwards compatibility hook for Rails 2.1
  * RDOC!
  * Don't try to focus a hidden or disabled element (closes #129 - thanks Bruno)
+ * Call onchange callback when clearing the calendar (closes #137 - thanks Chewi)
 
 == Version 1.12 ==
  * Updated for compatibility with Rails 2.2
