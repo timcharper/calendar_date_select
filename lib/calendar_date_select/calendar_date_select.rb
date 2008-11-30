@@ -80,7 +80,7 @@ module CalendarDateSelect
   # (e.g. CalendarDateSelect.format = :italian)
   def self.format=(format)
     raise "CalendarDateSelect: Unrecognized format specification: #{format}" unless FORMATS.has_key?(format)
-    default_options[:format] = format
+    @format = FORMATS[format]
   end
 
   def self.date_format_string(time = false)
