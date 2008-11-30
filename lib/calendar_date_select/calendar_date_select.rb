@@ -42,7 +42,7 @@ module CalendarDateSelect
     },
     :db => {
       :date => "%Y-%m-%d",
-      :time => "%H:%M",
+      :time => " %H:%M",
       :javascript_include => "format_db"
     }
   }
