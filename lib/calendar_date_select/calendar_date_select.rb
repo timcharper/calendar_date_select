@@ -85,8 +85,14 @@ module CalendarDateSelect
     end
   end
 
+  # Detects the presence of time in a date, string
   def self.has_time?(value)
-    /[0-9]:[0-9]{2}/.match(value.to_s) ? true : false
+    case value
+    when DateTime, Time then true
+    when Date           then false
+    else
+      /[0-9]:[0-9]{2}/.match(value.to_s) ? true : false
+    end
   end
 
   def self.version
