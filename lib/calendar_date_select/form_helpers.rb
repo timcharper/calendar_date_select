@@ -198,7 +198,8 @@ module CalendarDateSelect::FormHelpers
         out << " "
         out << image_tag(options[:image],
             :onclick => "new CalendarDateSelect( $(this).previous(), #{options_for_javascript(javascript_options)} );",
-            :style => 'border:0px; cursor:pointer;')
+            :style => 'border:0px; cursor:pointer;',
+			:class=>'calendar_date_select_popup_icon')
       end
       out
     end

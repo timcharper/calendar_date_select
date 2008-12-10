@@ -124,6 +124,11 @@ describe CalendarDateSelect::FormHelpers do
     output.should_not include("image:")
   end
 
+  it "should use the CSS class calendar_date_select_tag for popup selector icon" do
+    output = calendar_date_select_tag(:name, "Some String", :image => "boogy.png")
+    output.should include("calendar_date_select_popup_icon")
+  end
+
   describe "calendar_date_select_tag" do
     it "should use the string verbatim when provided" do
       output = calendar_date_select_tag(:name, "Some String")
