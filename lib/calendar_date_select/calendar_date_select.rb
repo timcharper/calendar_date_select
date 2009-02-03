@@ -62,7 +62,7 @@ module CalendarDateSelect
   #     :image => "custom_calendar_picker.png"
   #   )
   def self.default_options
-    @default_options ||= { :image => "calendar_date_select/calendar.gif" }
+    @calendar_date_select_default_options ||= { :image => "calendar_date_select/calendar.gif" }
   end
 
   # Set the picker image.  Provide the image url the same way you would provide it to image_tag
@@ -77,7 +77,7 @@ module CalendarDateSelect
   #   puts CalendarDateSelect.format[:date]
   #     => "%d/%m/%Y"
   def self.format
-    @format ||= FORMATS[:natural]
+    @calendar_date_select_format ||= FORMATS[:natural]
   end
 
   # Set the format.  To see a list of available formats, CalendarDateSelect::FORMATS.keys, or open lib/calendar_date_select/calendar_date_select.rb
@@ -85,7 +85,7 @@ module CalendarDateSelect
   # (e.g. CalendarDateSelect.format = :italian)
   def self.format=(format)
     raise "CalendarDateSelect: Unrecognized format specification: #{format}" unless FORMATS.has_key?(format)
-    @format = FORMATS[format]
+    @calendar_date_select_format = FORMATS[format]
   end
 
   def self.date_format_string(time = false)
