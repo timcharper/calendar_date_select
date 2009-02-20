@@ -130,6 +130,10 @@ describe CalendarDateSelect::FormHelpers do
   end
 
   describe "calendar_date_select_tag" do
+    before(:each) do
+      @time = Time.parse("January 2, 2007 12:01:23 AM")
+    end
+    
     it "should use the string verbatim when provided" do
       output = calendar_date_select_tag(:name, "Some String")
 
@@ -137,25 +141,26 @@ describe CalendarDateSelect::FormHelpers do
     end
 
     it "should not render the time when time is false (or nil)" do
-      time = Time.parse("January 2, 2007 12:01:23 AM")
-      output = calendar_date_select_tag(:name, time, :time => false)
+      output = calendar_date_select_tag(:name, @time, :time => false)
 
       output.should_not match(/12:01 AM/)
-      output.should include(CalendarDateSelect.format_date(time.to_date))
+      output.should include(CalendarDateSelect.format_date(@time.to_date))
     end
 
     it "should render the time when :time => true" do
-      time = Time.parse("January 2, 2007 12:01:23 AM")
-      output = calendar_date_select_tag(:name, time, :time => true)
+      output = calendar_date_select_tag(:name, @time, :time => true)
 
-      output.should include(CalendarDateSelect.format_date(time))
+      output.should include(CalendarDateSelect.format_date(@time))
     end
 
     it "should render the time when :time => 'mixed'" do
-      time = Time.parse("January 2, 2007 12:01:23 AM")
-      output = calendar_date_select_tag(:name, time, :time => 'mixed')
-
-      output.should include(CalendarDateSelect.format_date(time))
+      output = calendar_date_select_tag(:name, @time, :time => 'mixed')
+      output.should include(CalendarDateSelect.format_date(@time))
+    end
+    
+    it "not include the image option in the result input tag" do
+      output = calendar_date_select_tag(:name, @time, :time => 'mixed')
+      output.should_not include("image=")
     end
   end
 end

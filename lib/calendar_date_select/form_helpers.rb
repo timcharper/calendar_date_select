@@ -96,7 +96,7 @@ module CalendarDateSelect::FormHelpers
   # 
   #   <%= calendar_date_select_tag "event_demo", "", :after_navigate => "alert('The current selected month is ' + this.calendar_date_select.selected_date.getMonth());" ,
   def calendar_date_select_tag( name, value = nil, options = {})
-    options, javascript_options = calendar_date_select_process_options(options)
+    image, options, javascript_options = calendar_date_select_process_options(options)
     value = CalendarDateSelect.format_time(value, javascript_options)
 
     javascript_options.delete(:format)
@@ -106,7 +106,7 @@ module CalendarDateSelect::FormHelpers
       hidden_field_tag(name, value, options) :
       text_field_tag(name, value, options)
 
-    calendar_date_select_output(tag, options, javascript_options)
+    calendar_date_select_output(tag, image, options, javascript_options)
   end
 
   # Similar to the difference between +text_field_tag+ and +text_field+, this method behaves like +text_field+
@@ -126,7 +126,7 @@ module CalendarDateSelect::FormHelpers
       use_time = false if Date===(obj.respond_to?(method) && obj.send(method))
     end
 
-    options, javascript_options = calendar_date_select_process_options(options)
+    image, options, javascript_options = calendar_date_select_process_options(options)
 
     options[:value] ||=
       if(obj.respond_to?(method) && obj.send(method).respond_to?(:strftime))
@@ -142,6 +142,7 @@ module CalendarDateSelect::FormHelpers
     tag = ActionView::Helpers::InstanceTag.new_with_backwards_compatibility(object, method, self, options.delete(:object))
     calendar_date_select_output(
       tag.to_input_field_tag( (javascript_options[:hidden] || javascript_options[:embedded]) ? "hidden" : "text", options),
+      image,
       options,
       javascript_options
     )
@@ -151,6 +152,7 @@ module CalendarDateSelect::FormHelpers
     # extracts any options passed into calendar date select, appropriating them to either the Javascript call or the html tag.
     def calendar_date_select_process_options(options)
       options, javascript_options = CalendarDateSelect.default_options.merge(options), {}
+      image = options.delete(:image)
       callbacks = [:before_show, :before_close, :after_show, :after_close, :after_navigate]
       for key in [:time, :valid_date_check, :embedded, :buttons, :clear_button, :format, :year_range, :month_year, :popup, :hidden, :minute_interval] + callbacks
         javascript_options[key] = options.delete(key) if options.has_key?(key)
@@ -184,10 +186,10 @@ module CalendarDateSelect::FormHelpers
       end
 
       javascript_options[:year_range] = format_year_range(javascript_options[:year_range] || 10)
-      [options, javascript_options]
+      [image, options, javascript_options]
     end
 
-    def calendar_date_select_output(input, options = {}, javascript_options = {})
+    def calendar_date_select_output(input, image, options = {}, javascript_options = {})
       out = input
       if javascript_options[:embedded]
         uniq_id = "cds_placeholder_#{(rand*100000).to_i}"
@@ -196,7 +198,7 @@ module CalendarDateSelect::FormHelpers
         out << javascript_tag("new CalendarDateSelect( $('#{uniq_id}').previous(), #{options_for_javascript(javascript_options)} ); ")
       else
         out << " "
-        out << image_tag(options[:image],
+        out << image_tag(image,
             :onclick => "new CalendarDateSelect( $(this).previous(), #{options_for_javascript(javascript_options)} );",
             :style => 'border:0px; cursor:pointer;',
 			:class=>'calendar_date_select_popup_icon')

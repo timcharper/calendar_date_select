@@ -1,3 +1,5 @@
+ * Bugfix: don't include the :image option in the input field
+
 == Version 1.14
  * Added support for Rails 2.3
 
