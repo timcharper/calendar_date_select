@@ -12,7 +12,7 @@ Hoe.new('calendar_date_select', CalendarDateSelect::VERSION) do |p|
   p.developer('Tim Harper', 'tim c harper at gmail dot com')
 end
 
-
+desc "Set the current gem version in the code (VERSION=version)"
 task :set_version do
   ["lib/calendar_date_select/calendar_date_select.rb", "public/javascripts/calendar_date_select/calendar_date_select.js"].each do |file|
     abs_file = File.dirname(__FILE__) + "/" + file
