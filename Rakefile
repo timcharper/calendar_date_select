@@ -8,7 +8,7 @@ require "activesupport"
 require './lib/calendar_date_select.rb'
 
 Hoe.new('calendar_date_select', CalendarDateSelect::VERSION) do |p|
-  p.rubyforge_name = 'calendar_date_select'
+  p.rubyforge_name = 'cds'
   p.developer('Tim Harper', 'tim c harper at gmail dot com')
 end
 
