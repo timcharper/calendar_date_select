@@ -116,7 +116,7 @@ module CalendarDateSelect::FormHelpers
     obj = options[:object] || instance_variable_get("@#{object}")
 
     if !options.include?(:time) && obj.class.respond_to?("columns_hash")
-      column_type = (obj.class.columns_hash[method.to_s].type rescue nil)
+      column_type = obj.class.columns_hash[method.to_s].type if obj.class.columns_hash.include?(method.to_s)
       options[:time] = true if column_type == :datetime
     end
 
