@@ -195,11 +195,11 @@ module CalendarDateSelect::FormHelpers
         uniq_id = "cds_placeholder_#{(rand*100000).to_i}"
         # we need to be able to locate the target input element, so lets stick an invisible span tag here we can easily locate
         out << content_tag(:span, nil, :style => "display: none; position: absolute;", :id => uniq_id)
-        out << javascript_tag("new CalendarDateSelect( $('#{uniq_id}').previous(), #{options_for_javascript(javascript_options)} ); ")
+        out << javascript_tag("new CalendarDateSelect( $('#{uniq_id}').previous('input'), #{options_for_javascript(javascript_options)} ); ")
       else
         out << " "
         out << image_tag(image,
-            :onclick => "new CalendarDateSelect( $(this).previous(), #{options_for_javascript(javascript_options)} );",
+            :onclick => "new CalendarDateSelect( $(this).previous('input'), #{options_for_javascript(javascript_options)} );",
             :style => 'border:0px; cursor:pointer;',
 			:class=>'calendar_date_select_popup_icon')
       end
