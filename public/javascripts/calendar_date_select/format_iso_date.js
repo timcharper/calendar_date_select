@@ -1,15 +1,14 @@
+// International date format (ISO 8601): yyyy-mm-dd
+// Including time (no seconds): yyyy-mm-dd HH:MM
 Date.prototype.toFormattedString = function(include_time) {
-	var hour;
     var str = this.getFullYear() + "-" + Date.padded2(this.getMonth() + 1) + "-" +Date.padded2(this.getDate());
     if (include_time) {
-        hour = this.getHours();
         str += " " + this.getHours() + ":" + this.getPaddedMinutes();
     }
     return str;
 };
 
-Date.parseFormattedString = function (string) {
-
+Date.parseFormattedString = function(string) {
     var regexp = "([0-9]{4})(-([0-9]{2})(-([0-9]{2})" + 
         "( ([0-9]{1,2}):([0-9]{2})?" +
         "?)?)?)?"; 
