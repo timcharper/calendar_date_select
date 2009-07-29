@@ -1,15 +1,19 @@
 # -*- ruby -*-
 
-require 'rubygems'
-require 'hoe'
 
-$: << File.dirname(__FILE__) + "/lib/"
-require "activesupport"
-require './lib/calendar_date_select.rb'
-
-Hoe.new('calendar_date_select', CalendarDateSelect::VERSION) do |p|
-  p.rubyforge_name = 'cds'
-  p.developer('Tim Harper', 'tim c harper at gmail dot com')
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gemspec|
+    gemspec.name = "calendar_date_select"
+    gemspec.summary = "calendar_date_select fork; includes highlighting"
+    gemspec.description = "This is a fork of the original calendar_date_select, including the additional feature of highlighting dates on the calendar without disabling other dates"
+    gemspec.email = "egarcia@splendeo.es"
+    gemspec.homepage = "http://github.com/kikito/calendar_date_select"
+    gemspec.description = "calendar_date_select fork; includes highlighting"
+    gemspec.authors = ["Enrique Garcia Cota (kikito)", "Tim Charper", "Lars E. Hoeg"]
+  end
+rescue LoadError
+  puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
 end
 
 desc "Set the current gem version in the code (VERSION=version)"
