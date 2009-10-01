@@ -136,7 +136,11 @@ module CalendarDateSelect::FormHelpers
       elsif obj.respond_to?(method)
         obj.send(method).to_s
       else
-        nil
+        begin
+          obj.send(method).strftime(CalendarDateSelect.date_format_string(use_time))
+        rescue
+          nil
+        end
       end
 
     tag = ActionView::Helpers::InstanceTag.new_with_backwards_compatibility(object, method, self, options.delete(:object))
