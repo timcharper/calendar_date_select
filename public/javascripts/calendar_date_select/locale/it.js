@@ -5,5 +5,5 @@ _translations = {
   "OK": "OK",
   "Now": "Ora",
   "Today": "Oggi",
-  "Clear": "Elimina"
+  "Clear": "Cancella"
 }
