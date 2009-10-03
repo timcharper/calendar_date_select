@@ -1,3 +1,6 @@
+== Version 1.15.1
+ * Bugfix: iso_date fixes (Robert Brown)
+
 == Version 1.15
  * Bugfix: don't include the :image option in the input field
 
