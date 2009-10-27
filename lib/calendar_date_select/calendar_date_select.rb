@@ -20,6 +20,11 @@ module CalendarDateSelect
       :time => " %H:%M",
       :javascript_include => "format_finnish"
     },
+    :danish => {
+      :date => "%d/%m/%Y",
+      :time => " %H:%M",
+      :javascript_include => "format_danish"
+    },
     :american => {
       :date => "%m/%d/%Y",
       :time => " %I:%M %p",
