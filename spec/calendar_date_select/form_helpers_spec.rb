@@ -57,7 +57,7 @@ describe CalendarDateSelect::FormHelpers do
       output.should include("default_time:function() { new Date() }")
     end
 
-    it "should wrap default date in javascript function when passed as string" do
+    it "should return formatted date with default time when passed a date object with time option set to true" do
       @model.start_datetime = Date.parse("January 2, 2007")
       output = calendar_date_select(:model, :start_datetime, :time => "true", :default_time => @model.start_datetime)
       output.should match(/default_time:January 02, 2007 12:00 AM/)
