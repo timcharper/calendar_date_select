@@ -50,16 +50,24 @@ describe CalendarDateSelect::FormHelpers do
     output.should_not match(/value/)
   end
 
-  it "should wrap default date in javascript function when passed as string" do
-    @model.start_datetime = Date.parse("January 2, 2007")
-    output = calendar_date_select(:model, :start_datetime, :default_time => "new Date()")
-    output.should include("function() { new Date() }")
-  end
+  describe "default time" do
+    it "should wrap default date in javascript function when passed as string" do
+      @model.start_datetime = Date.parse("January 2, 2007")
+      output = calendar_date_select(:model, :start_datetime, :default_time => "new Date()")
+      output.should include("function() { new Date() }")
+    end
 
-  it "should return formatted date when passed a time object" do
-    @model.start_datetime = Time.parse("January 2, 2007 12:00 AM")
-    output = calendar_date_select(:model, :start_datetime, :default_time => @model.start_datetime)
-    output.should include("Date.parse('January 02, 2007 12:00 AM')")
+    it "should return formatted date when passed a time object without time option set to true" do
+      @model.start_datetime = Time.parse("January 2, 2007 12:00 AM")
+      output = calendar_date_select(:model, :start_datetime, :default_time => @model.start_datetime)
+      output.should match(/January 02, 2007/)
+    end
+
+    it "should return formatted time when passed a time object with time option set to true" do
+      @model.start_datetime = Time.parse("January 2, 2007 12:00 AM")
+      output = calendar_date_select(:model, :start_datetime, :time => "true", :default_time => @model.start_datetime)
+      output.should match(/January 02, 2007 12:00 AM/)
+    end
   end
 
   it "should _vdc__should_auto_format_function" do
