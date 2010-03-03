@@ -126,7 +126,7 @@ module CalendarDateSelect::FormHelpers
       use_time = false if Date===(obj.respond_to?(method) && obj.send(method))
     end
 
-    image, options, javascript_options = calendar_date_select_process_options(options,use_time)
+    image, options, javascript_options = calendar_date_select_process_options(options)
 
     options[:value] ||=
       if(obj.respond_to?(method) && obj.send(method).respond_to?(:strftime))
@@ -150,7 +150,7 @@ module CalendarDateSelect::FormHelpers
 
   private
     # extracts any options passed into calendar date select, appropriating them to either the Javascript call or the html tag.
-    def calendar_date_select_process_options(options,use_time=false)
+    def calendar_date_select_process_options(options)
       options, javascript_options = CalendarDateSelect.default_options.merge(options), {}
       image = options.delete(:image)
       callbacks = [:before_show, :before_close, :after_show, :after_close, :after_navigate]
@@ -160,7 +160,7 @@ module CalendarDateSelect::FormHelpers
 
       if (default_time = javascript_options[:default_time])
         if default_time.respond_to?(:strftime)
-          javascript_options[:default_time] = default_time.strftime(CalendarDateSelect.date_format_string(use_time))
+          javascript_options[:default_time] = default_time.strftime(CalendarDateSelect.date_format_string(true))
         elsif default_time.is_a?(String) && !default_time.empty?
           javascript_options[:default_time] = "function() { #{default_time} }"
         end
