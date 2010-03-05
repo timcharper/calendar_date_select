@@ -158,8 +158,16 @@ module CalendarDateSelect::FormHelpers
       options, javascript_options = CalendarDateSelect.default_options.merge(options), {}
       image = options.delete(:image)
       callbacks = [:before_show, :before_close, :after_show, :after_close, :after_navigate]
-      for key in [:time, :valid_date_check, :embedded, :buttons, :clear_button, :format, :year_range, :month_year, :popup, :hidden, :minute_interval] + callbacks
+      for key in [:default_time, :time, :valid_date_check, :embedded, :buttons, :clear_button, :format, :year_range, :month_year, :popup, :hidden, :minute_interval] + callbacks
         javascript_options[key] = options.delete(key) if options.has_key?(key)
+      end
+
+      if (default_time = javascript_options[:default_time])
+        if default_time.respond_to?(:strftime)
+          javascript_options[:default_time] = default_time.strftime(CalendarDateSelect.date_format_string(true))
+        elsif default_time.is_a?(String) && !default_time.empty?
+          javascript_options[:default_time] = "function() { #{default_time} }"
+        end
       end
 
       # if passing in mixed, pad it with single quotes
