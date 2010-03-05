@@ -2,7 +2,7 @@ require "rubygems"
 
 require 'spec'
 
-gem 'activesupport', ">= 2.2.0"
+gem 'activesupport', "2.3.4"
 gem 'actionpack', ">= 2.2.0"
 
 require 'active_support'
