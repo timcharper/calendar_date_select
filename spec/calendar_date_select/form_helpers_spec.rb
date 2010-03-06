@@ -57,16 +57,16 @@ describe CalendarDateSelect::FormHelpers do
       output.should include("default_time:function() { new Date() }")
     end
 
-    it "should output formatted date with default time when passed a date object" do
+    it "should wrap formatted date with default time with Date() when passed a date object" do
       @model.start_datetime = Date.parse("January 2, 2007")
       output = calendar_date_select(:model, :start_datetime, :default_time => @model.start_datetime)
-      output.should match(/default_time:new Date("January 02, 2007 12:00 AM")/)
+      output.should include("default_time:new Date('January 02, 2007 12:00 AM')")
     end
 
-    it "should output formatted date and time when passed a time object" do
+    it "should wrap formatted date and time with Date() when passed a time object" do
       @model.start_datetime = Time.parse("January 2, 2007 5:45 PM")
       output = calendar_date_select(:model, :start_datetime, :default_time => @model.start_datetime)
-      output.should match(/default_time:new Date("January 02, 2007 05:45 PM")/)
+      output.should include("default_time:new Date('January 02, 2007 05:45 PM')")
     end
   end
 
