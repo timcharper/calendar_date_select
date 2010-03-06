@@ -57,16 +57,16 @@ describe CalendarDateSelect::FormHelpers do
       output.should include("default_time:function() { new Date() }")
     end
 
-    it "should output formatted date with default time when passed a date object" do
+    it "should wrap formatted date with default time with Date() when passed a date object" do
       @model.start_datetime = Date.parse("January 2, 2007")
       output = calendar_date_select(:model, :start_datetime, :default_time => @model.start_datetime)
-      output.should match(/default_time:January 02, 2007 12:00 AM/)
+      output.should include("default_time:new Date('January 02, 2007 12:00 AM')")
     end
 
-    it "should output formatted date and time when passed a time object" do
+    it "should wrap formatted date and time with Date() when passed a time object" do
       @model.start_datetime = Time.parse("January 2, 2007 5:45 PM")
       output = calendar_date_select(:model, :start_datetime, :default_time => @model.start_datetime)
-      output.should match(/default_time:January 02, 2007 05:45 PM/)
+      output.should include("default_time:new Date('January 02, 2007 05:45 PM')")
     end
   end
 
@@ -103,43 +103,6 @@ describe CalendarDateSelect::FormHelpers do
       output = calendar_date_select(:model,
         :start_datetime,
         :valid_date_check => "function(p) { date = 5; date < new Date()); }"
-      )
-    }.should raise_error(ArgumentError, message)
-  end
-
-  it "should _hdc__should_auto_format_function" do
-    @model.start_datetime = Time.parse("January 2, 2007 12:00 AM")
-    output = calendar_date_select(:model,
-      :start_datetime,
-      :highlighted_date_check => "date < new Date()"
-    )
-    output.should include("highlighted_date_check:function(date) { return(date &lt; new Date()) }")
-
-    output = calendar_date_select(:model,
-      :start_datetime,
-      :highlighted_date_check => "return(date < new Date())"
-    )
-    output.should include("highlighted_date_check:function(date) { return(date &lt; new Date()) }")
-    output = calendar_date_select(:model,
-      :start_datetime,
-      :highlighted_date_check => "function(p) { return(date < new Date()) }"
-    )
-    output.should include("highlighted_date_check:function(p) { return(date &lt; new Date()) }")
-  end
-
-  it "should raise an error if the highlighted_date_check function is missing a return statement" do
-    message = ":highlighted_date_check function is missing a 'return' statement.  Try something like: :highlighted_date_check => 'if (date > new(Date)) return true; else return false;'"
-    lambda {
-      output = calendar_date_select(:model,
-        :start_datetime,
-        :highlighted_date_check => "date = 5; date < new Date());"
-      )
-    }.should raise_error(ArgumentError, message)
-
-    lambda {
-      output = calendar_date_select(:model,
-        :start_datetime,
-        :highlighted_date_check => "function(p) { date = 5; date < new Date()); }"
       )
     }.should raise_error(ArgumentError, message)
   end
@@ -190,7 +153,7 @@ describe CalendarDateSelect::FormHelpers do
     before(:each) do
       @time = Time.parse("January 2, 2007 12:01:23 AM")
     end
-
+    
     it "should use the string verbatim when provided" do
       output = calendar_date_select_tag(:name, "Some String")
 
@@ -214,7 +177,7 @@ describe CalendarDateSelect::FormHelpers do
       output = calendar_date_select_tag(:name, @time, :time => 'mixed')
       output.should include(CalendarDateSelect.format_date(@time))
     end
-
+    
     it "not include the image option in the result input tag" do
       output = calendar_date_select_tag(:name, @time, :time => 'mixed')
       output.should_not include("image=")

@@ -164,7 +164,7 @@ module CalendarDateSelect::FormHelpers
 
       if (default_time = javascript_options[:default_time])
         if default_time.respond_to?(:strftime)
-          javascript_options[:default_time] = default_time.strftime(CalendarDateSelect.date_format_string(true))
+          javascript_options[:default_time] = "new Date('#{default_time.strftime(CalendarDateSelect.date_format_string(true))}')"
         elsif default_time.is_a?(String) && !default_time.empty?
           javascript_options[:default_time] = "function() { #{default_time} }"
         end
