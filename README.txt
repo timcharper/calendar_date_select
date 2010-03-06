@@ -2,6 +2,8 @@
 
 http://code.google.com/p/calendardateselect/
 
+This project is looking for a new maintainer. Please contact me if you have sufficient interest in this project to move it forward.
+
 == Examples
 
 "See a demo here":http://electronicholas.com/calendar

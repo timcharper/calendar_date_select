@@ -34,7 +34,7 @@ public/stylesheets/calendar_date_select/plain.css
 public/stylesheets/calendar_date_select/red.css
 public/stylesheets/calendar_date_select/silver.css
 Rakefile
-Readme.txt
+README.txt
 spec/
 spec/calendar_date_select
 spec/calendar_date_select/calendar_date_select_spec.rb
