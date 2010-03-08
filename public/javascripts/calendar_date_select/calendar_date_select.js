@@ -333,9 +333,14 @@ CalendarDateSelect.prototype = {
   parseDate: function()
   {
     var value = $F(this.target_element).strip()
+    var default_time = this.options.get("default_time");
     this.selection_made = (value != "");
     this.date = value=="" ? NaN : Date.parseFormattedString(this.options.get("date") || value);
-    if (isNaN(this.date)) this.date = new Date();
+    if (isNaN(this.date) && !default_time)
+        this.date = new Date();
+    else if (isNaN(this.date) && default_time)
+        this.date = (Object.prototype.toString.apply(default_time) === '[object Function]') ? default_time() : default_time;
+
     if (!this.validYear(this.date.getFullYear())) this.date.setYear( (this.date.getFullYear() < this.yearRange().start) ? this.yearRange().start : this.yearRange().end);
     this.selected_date = new Date(this.date);
     this.use_time = /[0-9]:[0-9]{2}/.exec(value) ? true : false;
