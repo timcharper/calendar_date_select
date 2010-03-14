@@ -209,11 +209,13 @@ module CalendarDateSelect::FormHelpers
         out << content_tag(:span, nil, :style => "display: none; position: absolute;", :id => uniq_id)
         out << javascript_tag("new CalendarDateSelect( $('#{uniq_id}').previous('input'), #{options_for_javascript(javascript_options)} ); ")
       else
-        out << " "
+        # later rails version wraps error field in span tag. We need to wrap image tag in span tag in order to locate target element
+        out << (out.include?("</span>") ? out.gsub("</span>"," ") : " ")
         out << image_tag(image,
             :onclick => "new CalendarDateSelect( $(this).previous('input'), #{options_for_javascript(javascript_options)} );",
             :style => 'border:0px; cursor:pointer;',
 			:class=>'calendar_date_select_popup_icon')
+        out << (out.include?("<span>") ? "</span>" : "")
       end
       out
     end
