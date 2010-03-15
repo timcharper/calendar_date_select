@@ -221,7 +221,7 @@
       cds = new CalendarDateSelect($("cds_test"), {default_time:function() { return new Date('January 02, 2008 2:00 PM') }});
       assertEqual('2008', cds.selected_date.getFullYear());
       assertEqual('2008', cds.date.getFullYear());
-      assert(! cds.selection_made)
+      assert(cds.selection_made)
       cds.close();
     }},
     test_parseDate_defaultTime_javaScriptDatePassed_shouldReturnJavaScriptDate: function() {with(this){
@@ -229,7 +229,7 @@
       cds = new CalendarDateSelect($("cds_test"), {default_time:new Date('January 02, 2007 05:45 PM') });
       assertEqual('2007', cds.selected_date.getFullYear());
       assertEqual('2007', cds.date.getFullYear());
-      assert(! cds.selection_made)
+      assert(cds.selection_made)
       cds.close();
     }},
     test_passDivElement__shouldUseChildInputForTargetElement: function() {with(this){

@@ -334,7 +334,7 @@ CalendarDateSelect.prototype = {
   {
     var value = $F(this.target_element).strip()
     var default_time = this.options.get("default_time");
-    this.selection_made = (value != "");
+    this.selection_made = (value != "" || default_time);
     this.date = value=="" ? NaN : Date.parseFormattedString(this.options.get("date") || value);
     if (isNaN(this.date) && !default_time)
         this.date = new Date();
