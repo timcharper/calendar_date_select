@@ -86,7 +86,7 @@ module CalendarDateSelect::FormHelpers
   #     :before_close => "log('Calendar closing');" ,
   #     :after_close => "log('Calendar closed');",
   #     :after_navigate => "log('Current month is ' + (param.getMonth()+1) + '/' + (param.getFullYear()));",
-  #     :onchange => "log('value changed to - ' + $F(this));"
+  #     :onchange => "log('value changed to - ' + $F(this));" %>
   # 
   # }}}
   # 
