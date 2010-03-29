@@ -18,10 +18,10 @@ end
 
 desc "Set the current gem version in the code according to the VERSION file"
 task :set_version do
-  VERSION=File.read("VERSION")
+  VERSION=File.read("VERSION").strip
   ["lib/calendar_date_select/calendar_date_select.rb", "public/javascripts/calendar_date_select/calendar_date_select.js"].each do |file|
     abs_file = File.dirname(__FILE__) + "/" + file
-    src = File.read(abs_file);
+    src = File.read(abs_file)
     src = src.map do |line|
       case line
       when /^ *VERSION/                        then "  VERSION = '#{VERSION}'\n"
