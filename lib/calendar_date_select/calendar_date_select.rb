@@ -1,5 +1,6 @@
 module CalendarDateSelect
-  VERSION = '1.15'
+  VERSION = '1.16.1'
+
   FORMATS = {
     :natural => {
       :date => "%B %d, %Y",

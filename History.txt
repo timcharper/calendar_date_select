@@ -1,3 +1,11 @@
+== Version 1.16.1
+
+* 1.16 was a lemon release.  Sorry!  Deploy script had an error and messed up the code on the way out.
+
+== Version 1.16
+
+* Ability to specify a default time/date if no time/date is selected in the target form element. (Shih-gian Lee)
+
 == Version 1.15.2
 
 * Fix for set date (day must go last) (ujifgc)
