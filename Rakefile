@@ -2,6 +2,7 @@
 
 
 begin
+  require 'rubygems'
   require 'jeweler'
   Jeweler::Tasks.new do |gemspec|
     gemspec.name = "calendar_date_select"
