@@ -313,7 +313,7 @@ CalendarDateSelect.prototype = {
   validYear: function(year) { if (this.flexibleYearRange()) { return true;} else { return this.yearRange().include(year);}  },
   dayHover: function(element) {
     var hover_date = new Date(this.selected_date);
-    hover_date.setYear(element.year); hover_date.setMonth(element.month); hover_date.setDate(element.day);
+    hover_date.setFullYear(element.year, element.month, element.day);
     this.updateFooter(hover_date.toFormattedString(this.use_time));
   },
   dayHoverOut: function(element) { this.updateFooter(); },
@@ -360,9 +360,7 @@ CalendarDateSelect.prototype = {
     if ((this.target_element.disabled || this.target_element.readOnly) && this.options.get("popup") != "force") return false;
     if (parts.get("day")) {
       var t_selected_date = this.selected_date, vdc = this.options.get("valid_date_check");
-      t_selected_date.setYear(parts.get("year"));
-      t_selected_date.setMonth(parts.get("month"));
-      t_selected_date.setDate(parts.get("day"));
+      t_selected_date.setFullYear(parts.get("year"), parts.get("month"), parts.get("day"));
       
       if (vdc && ! vdc(t_selected_date.stripTime())) { return false; }
       this.selected_date = t_selected_date;
