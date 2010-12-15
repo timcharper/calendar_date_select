@@ -88,7 +88,20 @@ CalendarDateSelect.prototype = {
       minute_interval: 5,
       popup_by: this.target_element,
       month_year: "dropdowns",
-      onchange: this.target_element.onchange,
+      onchange: function(target_element)
+      { return function()
+        { if(target_element.dispatchEvent)
+          { var event=document.createEvent('HTMLEvents');
+            event.initEvent('change', true, true);
+            target_element.dispatchEvent(event);
+          }
+          else
+          { var event=document.createEventObject();
+            event.type='onChange';
+            target_element.fireEvent('onChange', event);
+          }
+        }; 
+      }(this.target_element),
       valid_date_check: nil
     }).merge(options || {});
     this.use_time = this.options.get("time");
