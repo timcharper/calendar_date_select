@@ -21,6 +21,7 @@
 <div id="cds_test_div">
   <input type="text" id="cds_test" />
 </div>
+<div id="cds_status"></div>
 
 <!-- Tests -->
 <script type="text/javascript" language="javascript">
@@ -356,6 +357,16 @@
       cds = new CalendarDateSelect($("cds_test"));
       
       assertEqual(1, $$(".calendar_date_select").length);
+      cds.close();
+    }},
+    test__dynamic_onchange_should_be_fired: function() {with (this) {
+      Event.observe($('cds_test'), 'change', function()
+      { $('cds_status').innerHTML='calendar input changed';
+      });
+      cds = new CalendarDateSelect($("cds_test"), {time: "mixed"});
+      today_now = $$(".cds_buttons a[href=#]");
+      today_now[0].onclick();
+      assertMatch('calendar input changed', $('cds_status').innerHTML, "status div should indicate date changed");
       cds.close();
     }}
   });
