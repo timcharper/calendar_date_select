@@ -1,3 +1,10 @@
+== Version 1.16.2
+
+* Fixed calendar_date_select's method of firing onChange for its target element. (Ethan)
+* added Czech translation. (deric)
+* Fixed issue #11. (Kevin Triemstra)
+* Fixed rubygems dependency in Rakefile (to fix jeweler load error). (Thilo-Alexander Ginkel)
+
 == Version 1.16.1
 
 * 1.16 was a lemon release.  Sorry!  Deploy script had an error and messed up the code on the way out.
