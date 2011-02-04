@@ -309,7 +309,7 @@ CalendarDateSelect.prototype = {
       this.year_select.setValue(y);
       
     } else {
-      this.month_year_label.update( Date.months[m] + " " + y.toString()  );
+      this.month_year_label.update().insert(Date.months[m] + " " + y.toString());
     }
   },
   populateYearRange: function() {
