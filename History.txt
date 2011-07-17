@@ -1,3 +1,7 @@
+== Version 1.16.3
+* hungarian translation added (raszi)
+* Workaround IE bug (mvastola) 
+
 == Version 1.16.2
 
 * Fixed calendar_date_select's method of firing onChange for its target element. (Ethan)
