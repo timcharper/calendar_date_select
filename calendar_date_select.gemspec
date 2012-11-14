@@ -9,7 +9,6 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Shih-gian Lee", "Enrique Garcia Cota (kikito)", "Tim Charper", "Lars E. Hoeg"]
-  s.date = %q{2010-03-29}
   s.description = %q{Calendar date picker for rails}
   s.email = %q{}
   s.extra_rdoc_files = [
