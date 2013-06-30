@@ -1,8 +1,8 @@
 = CalendarDateSelect
 
-http://code.google.com/p/calendardateselect/
+Legacy support as a Rails 3.1+ Engine
 
-* This project is looking for a new maintainer. Please contact me if you have sufficient interest in this project to move it forward.
+http://code.google.com/p/calendardateselect/
 
 == Examples
 
