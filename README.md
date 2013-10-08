@@ -1,6 +1,6 @@
 = CalendarDateSelect
 
-Legacy support as a Rails 3.1+ Engine
+Legacy support as a Rails 3.1+ Engine. For support of earlier versions of Rails, check the 1.x branch.
 
 http://code.google.com/p/calendardateselect/
 
