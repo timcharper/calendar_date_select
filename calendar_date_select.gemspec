@@ -8,7 +8,7 @@ Gem::Specification.new "calendar_date_select", CalendarDateSelect::VERSION do |s
   spec.email         = ["github@marc-andre.ca"]
   spec.description   = "Calendar date picker for rails"
   spec.summary       = "Calendar date picker for rails"
-  spec.homepage      = "http://github.com/marcandre/calendar_date_select"
+  spec.homepage      = "https://github.com/timcharper/calendar_date_select"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files lib app MIT-LICENSE`.split($/)
