@@ -153,7 +153,7 @@ module CalendarDateSelect::FormHelpers
   end
 
   private
-    # extracts any options passed into calendar date select, appropriating them to either the Javascript call or the html tag.
+    # extracts any options passed into calendar date select, appropriating them to either the JavaScript call or the html tag.
     def calendar_date_select_process_options(options)
       options, javascript_options = CalendarDateSelect.default_options.merge(options), {}
       image = options.delete(:image)

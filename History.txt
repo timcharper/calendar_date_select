@@ -82,7 +82,7 @@ Engine for Rails 3.1+
  * Added a clear button (Hendy Tanata)
  * Reverted a change that attempted to fix position in a scrollable div, but caused probles elsewhere
  * Added :minute_interval to calendar_date_select_process_options, fixing http://code.google.com/p/calendardateselect/issues/detail?id=81
- * Add helpers to give the list of javascripts and stylesheets (calendar_date_select_javascripts and calendar_date_select_stylesheets)
+ * Add helpers to give the list of JavaScripts and stylesheets (calendar_date_select_javascripts and calendar_date_select_stylesheets)
  * Converted over to use Hoe (echoe was giving too many problems).  Refactored the directory structure to make it more gem-ish.
 
 == Version 1.11 ==
@@ -92,7 +92,7 @@ Engine for Rails 3.1+
 
 == Version 1.10.5 ==
 Apr 7, 2008
- * Javascript code refactoring!  Less mess!
+ * JavaScript code refactoring!  Less mess!
  * Bugfix - range was including element 42, which is really the 43rd element, so there was an error happening when today happens exactly 43 days after the beginning date (caught this by chance, surprised it wasn't reported before)
 
 == Version 1.10.4 ==
@@ -121,7 +121,7 @@ Dec 3, 2007
   
 ==Version 1.9.2==
 Nov 26, 2007
-  * CalendarDateSelect was leaking javascript variables.  (nothing was explicitly declared local, so javascript assumes global).  Added test case and applied fix.  This may help with some of the conflicts CalendarDateSelect has been causing with other scripts.
+  * CalendarDateSelect was leaking JavaScript variables.  (nothing was explicitly declared local, so JavaScript assumes global).  Added test case and applied fix.  This may help with some of the conflicts CalendarDateSelect has been causing with other scripts.
   * Applied Ryan Wood's patch to fix the problem with using a form builder against objects like authorization[coverage_attributes][].  Thanks Ryan Wood!
   * Wes Hays brought up the point of parseInt trying to auto-detect number formats.  Wrote code to force interpretation of digits as base10, with test cases to prove it.
   * Misleading test case failure in Safari fixed: Safari won't let a boolean value to a property that should have a function (understandably).  Changed the test variable names to prevent such a conflict.
@@ -155,7 +155,7 @@ Nov 12, 2007
 	  * test case to check boundaries of nonFlexibleYearRanges.
 		* Ability to pass in :year_range => 5.years.ago..0.years.ago to calendar_date_select (ruby)
 	* Updated test cases
-	* Bugfix for duplicate days that were occuring across day-light-saving-time boundaries
+	* Bugfix for duplicate days that were occurring across day-light-saving-time boundaries
 	* Added format_american.js (thanks, Wes Hays)
 	* Added format_italian.js (thanks, Bigonazzi)
 	* Added format_euro_24hr.js (thanks, James Silberbauer)
@@ -196,7 +196,7 @@ Aug 24 2007
 
 Aug 24 2007
 
-  * Serious javascript bug when using "hyphen_ampm" format fixed.  (Was only working in Firefox browsers with firebug installed)
+  * Serious JavaScript bug when using "hyphen_ampm" format fixed.  (Was only working in Firefox browsers with firebug installed)
 
   * Added a bunch of new callbacks: before_show, before_close, after_show, after_close, after_navigate. (see [http://www.restatesman.com/static/calendar?tab=callbacks here] for details)
 
@@ -223,7 +223,7 @@ July 12 2007
   * onchange event handler now supported.
   * detects to see if prototype is loaded.  If not, shows error message
   * ability to hide "buttons"
-  * date parsing broken out to static function Date.parseFormattedString() for anyone who wants date's to parse a different way from javascript
+  * date parsing broken out to static function Date.parseFormattedString() for anyone who wants date's to parse a different way from JavaScript
   * you can no longer select 1:60 pm.
 
 ==Version 1.5.1==
@@ -240,14 +240,14 @@ June 18, 2007
 
   * New CSS stylesheet
 
-  * Fixed "white on white" css issue when selecting a day
+  * Fixed "white on white" CSS issue when selecting a day
 
   * Clicking today now updates the input field
 
 ==Version 1.4==
 June 16, 2007
 
-  * more bug fixes (selecting across daylight savings time causing js error.  Sometimes clicking a day of the next month after selecting day 31 of the previous month was causing 2 months later to be selected)
+  * more bug fixes (selecting across daylight savings time causing JS error.  Sometimes clicking a day of the next month after selecting day 31 of the previous month was causing 2 months later to be selected)
   
   * CSS improvements and refactoring
 

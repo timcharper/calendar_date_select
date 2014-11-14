@@ -19,7 +19,7 @@ Date.parseFormattedString = function (string) {
   string = string.strip();
   var d = string.match(new RegExp(regexp, "i"));
   if (d==null) {
-    return Date.parse(string); // Give javascript a chance to parse it.
+    return Date.parse(string); // Give JavaScript a chance to parse it.
   }
   
   mdy = d[1].split('/');

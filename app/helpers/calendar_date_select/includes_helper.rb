@@ -5,7 +5,7 @@ module CalendarDateSelect::IncludesHelper
     "calendar_date_select/#{options[:style] || "default"}"
   end
 
-  # returns an array of javascripts needed for the selected locale, date_format, and calendar control itself.
+  # returns an array of JavaScripts needed for the selected locale, date_format, and calendar control itself.
   def calendar_date_select_javascripts(options = {})
     options.assert_valid_keys(:locale)
     files = ["calendar_date_select/calendar_date_select"]
@@ -14,7 +14,7 @@ module CalendarDateSelect::IncludesHelper
     files
   end
 
-  # returns html necessary to load javascript and css to make calendar_date_select work
+  # returns HTML necessary to load JavaScript and CSS to make calendar_date_select work
   def calendar_date_select_includes(*args)
     return "" if @cds_already_included
     @cds_already_included=true

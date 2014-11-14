@@ -43,7 +43,7 @@ describe CalendarDateSelect::FormHelpers do
   end
 
   describe "default time mode" do
-    it "should wrap default date in javascript function when passed as string" do
+    it "should wrap default date in JavaScript function when passed as string" do
       @model.start_datetime = nil
       output = helper.calendar_date_select(:model, :start_datetime, :default_time => "new Date()")
       output.should match(/value=""/)
@@ -134,7 +134,7 @@ describe CalendarDateSelect::FormHelpers do
     output.should include("boogy.png")
   end
 
-  it "should not pass the :image option as a javascript option" do
+  it "should not pass the :image option as a JavaScript option" do
     output = helper.calendar_date_select_tag(:name, "Some String", :image => "boogy.png")
     output.should_not include("image:")
   end
