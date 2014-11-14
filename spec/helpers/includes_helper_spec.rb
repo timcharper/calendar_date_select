@@ -16,7 +16,7 @@ describe CalendarDateSelect::IncludesHelper do
   end
   
   describe "calendar_date_select_javascripts" do
-    it "should return an array of javascripts" do
+    it "should return an array of JavaScripts" do
       helper.calendar_date_select_javascripts.should == ["calendar_date_select/calendar_date_select"]
     end
     

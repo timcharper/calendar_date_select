@@ -10,7 +10,7 @@ Date.parseFormattedString = function (string) {
       "( ([0-9]{1,2}):([0-9]{2})? *(pm|am)" +
       "?)?)?)?";
   var d = string.match(new RegExp(regexp, "i"));
-  if (d==null) return Date.parse(string); // at least give javascript a crack at it.
+  if (d==null) return Date.parse(string); // at least give JavaScript a crack at it.
   var offset = 0;
   var date = new Date(d[1], 0, 1);
   if (d[3]) { date.setMonth(d[3] - 1); }

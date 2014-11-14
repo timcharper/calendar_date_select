@@ -10,7 +10,7 @@ Date.prototype.toFormattedString = function(include_time){
 Date.parseFormattedString = function (string) {
   var regexp = '([0-9]{1,2})\.(([0-9]{1,2})\.(([0-9]{2,4})( ([0-9]{1,2}):([0-9]{2})? *)?)?)?';
   var d = string.match(new RegExp(regexp, "i"));
-  if (d==null) return Date.parse(string); // at least give javascript a crack at it.
+  if (d==null) return Date.parse(string); // at least give JavaScript a crack at it.
   var offset = 0;
   if (d[5] && d[5].length == 2) {
     // we got only two digits for the year...
