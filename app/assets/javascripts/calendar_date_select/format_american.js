@@ -21,7 +21,7 @@ Date.parseFormattedString = function (string) {
   if (d==null) {
     return Date.parse(string); // Give JavaScript a chance to parse it.
   }
-  
+
   mdy = d[1].split('/');
   hrs = 0;
   mts = 0;
@@ -30,6 +30,6 @@ Date.parseFormattedString = function (string) {
     if(d[6].toLowerCase() == 'pm') { hrs += 12; } // Add 12 more to hrs
     mts = d[5].split(':')[1];
   }
-  
+
   return new Date(mdy[2], parseInt(mdy[0], 10)-1, mdy[1], hrs, mts, 0);
 }

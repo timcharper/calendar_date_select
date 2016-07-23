@@ -120,7 +120,7 @@ iframe.ie6_blocker {
 
 .calendar_date_select tbody td:hover {
   background-color:#ccc;
-} 
+}
 
 .calendar_date_select tbody td.today {
   border: 1px dashed red;
