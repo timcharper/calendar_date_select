@@ -12,8 +12,7 @@ Element.addMethods({
   }
 });
 
-Element.buildAndAppend = function(type, options, style)
-{
+Element.buildAndAppend = function(type, options, style) {
   var e = $(document.createElement(type));
   $H(options).each(function(pair) { e[pair.key] = pair.value });
   if (style) e.setStyle(style);
@@ -88,15 +87,14 @@ CalendarDateSelect.prototype = {
       minute_interval: 5,
       popup_by: this.target_element,
       month_year: "dropdowns",
-      onchange: function(target_element)
-      { return function()
-        { if(target_element.dispatchEvent)
-          { var event=document.createEvent('HTMLEvents');
+      onchange: function(target_element) {
+        return function() {
+          if(target_element.dispatchEvent) {
+            var event=document.createEvent('HTMLEvents');
             event.initEvent('change', true, true);
             target_element.dispatchEvent(event);
-          }
-          else
-          { var event=document.createEventObject();
+          } else {
+            var event=document.createEventObject();
             event.type='onChange';
             target_element.fireEvent('onChange', event);
           }
@@ -183,8 +181,7 @@ CalendarDateSelect.prototype = {
     var days_tbody = days_table.build("tbody")
     // Make the days!
     var row_number = 0, weekday;
-    for(var cell_index = 0; cell_index<42; cell_index++)
-    {
+    for(var cell_index = 0; cell_index<42; cell_index++) {
       weekday = (cell_index+Date.first_day_of_week ) % 7;
       if ( cell_index % 7==0 ) days_row = days_tbody.build("tr", {className: 'row_'+row_number++});
       (this.calendar_day_grid[cell_index] = days_row.build("td", {
@@ -199,11 +196,9 @@ CalendarDateSelect.prototype = {
       this.calendar_day_grid[cell_index];
     }
   },
-  initButtonsDiv: function()
-  {
+  initButtonsDiv: function() {
     var buttons_div = this.buttons_div;
-    if (this.options.get("time"))
-    {
+    if (this.options.get("time")) {
       var blank_time = $A(this.options.get("time")=="mixed" ? [[" - ", ""]] : []);
       buttons_div.build("span", {innerHTML:"@", className: "at_sign"});
 
@@ -245,8 +240,7 @@ CalendarDateSelect.prototype = {
         onclick: function() {this.today(true); return false}.bindAsEventListener(this)
       });
 
-      if (!this.options.get("embedded") && !this.closeOnClick())
-      {
+      if (!this.options.get("embedded") && !this.closeOnClick()) {
         buttons_div.build("span", {innerHTML: "&#160;|&#160;", className:"button_seperator"})
         buttons_div.build("a", { innerHTML: _translations["OK"], href: "#", onclick: function() {this.close(); return false;}.bindAsEventListener(this) });
       }
@@ -256,8 +250,7 @@ CalendarDateSelect.prototype = {
       }
     }
   },
-  refresh: function ()
-  {
+  refresh: function () {
     this.refreshMonthYear();
     this.refreshCalendarGrid();
 
@@ -277,8 +270,7 @@ CalendarDateSelect.prototype = {
     var today = new Date().stripTime();
     var this_month = this.date.getMonth();
     vdc = this.options.get("valid_date_check");
-    for (var cell_index = 0;cell_index<42; cell_index++)
-    {
+    for (var cell_index = 0;cell_index<42; cell_index++) {
       day = iterator.getDate(); month = iterator.getMonth();
       cell = this.calendar_day_grid[cell_index];
       Element.remove(cell.childNodes[0]); div = cell.build("div", {innerHTML:day});
@@ -299,8 +291,7 @@ CalendarDateSelect.prototype = {
     var m = this.date.getMonth();
     var y = this.date.getFullYear();
     // set the month
-    if (this.options.get("month_year") == "dropdowns")
-    {
+    if (this.options.get("month_year") == "dropdowns") {
       this.month_select.setValue(m, false);
 
       var e = this.year_select.element;
@@ -343,8 +334,7 @@ CalendarDateSelect.prototype = {
   dateString: function() {
     return (this.selection_made) ? this.selected_date.toFormattedString(this.use_time) : "&#160;";
   },
-  parseDate: function()
-  {
+  parseDate: function() {
     var value = $F(this.target_element).strip()
     var default_time = this.options.get("default_time");
     this.selection_made = (value != "" || default_time);
