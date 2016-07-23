@@ -1,0 +1,4 @@
+* text=auto
+*.rb text ident
+*.js text ident
+*.css text ident
