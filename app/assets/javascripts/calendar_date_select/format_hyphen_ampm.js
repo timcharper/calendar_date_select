@@ -1,5 +1,5 @@
 Date.prototype.toFormattedString = function(include_time){
-  str = this.getFullYear() + "-" + Date.padded2(this.getMonth() + 1) + "-" +Date.padded2(this.getDate()); 
+  str = this.getFullYear() + "-" + Date.padded2(this.getMonth() + 1) + "-" +Date.padded2(this.getDate());
 
 if (include_time) { hour=this.getHours(); str += " " + this.getAMPMHour() + ":" + this.getPaddedMinutes() + " " + this.getAMPM() }
 return str;
@@ -23,7 +23,7 @@ Date.parseFormattedString = function (string) {
         if (is_pm && hours <= 11) hours+=12;
         if (!is_pm && hours == 12) hours=0;
     }
-    date.setHours(hours); 
+    date.setHours(hours);
   }
   if (d[8]) { date.setMinutes(d[8]); }
   if (d[10]) { date.setSeconds(d[10]); }
